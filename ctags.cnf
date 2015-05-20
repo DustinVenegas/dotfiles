@@ -1,0 +1,5 @@
+--langdef=powershell
+--langmap=powershell:.ps1
+--langmap=powershell:.psm1
+--regex-powershell=/^function[\t ]*([a-zA-Z0-9_-]+)/\1/d,definition/
+--regex-powershell=/^filter[\t ]*([a-zA-Z0-9_-]+)/\1/d,definition/
