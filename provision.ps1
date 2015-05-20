@@ -1,10 +1,3 @@
-# Update submodules
-$vundlePath = "$home\dotFiles\.vim\bundle\Vundle.vim\"
-if (-not (Test-Path "$vundlePath\.git")) {
-    Write-Host "Cloning Vundle to $vundlePath..."
-    git clone https://github.com/gmarik/Vundle.vim.git $vundlePath
-}
-
 # Source our dotFiles/.vimrc
 $dotVimPath = "$home\.vimrc"
 if (-not (Test-Path $dotVimPath)) {
@@ -20,5 +13,5 @@ source ~\dotfiles\.vimrc
     $dotVimRCContent | Out-File -FilePath $dotVimPath -Encoding utf8
 } 
 
-Write-Host "Updating Vundle plugins..."
-vim +PluginInstall +qall
+Write-Host "Updating plugins..."
+vim +PlugInstall +qall
