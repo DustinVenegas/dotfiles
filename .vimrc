@@ -18,7 +18,7 @@ set runtimepath+=~/dotfiles/.vim/autoload
 " Plugged {
     call plug#begin('~/dotfiles/.vim/plugged')
     
-    Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+    Plug 'scrooloose/nerdtree'
     Plug 'tpope/vim-fugitive'
     "Plug 'Markdown'
     "Plug 'gmarik/Vundle.vim'
