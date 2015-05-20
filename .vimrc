@@ -1,7 +1,7 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "   Filename: .vimrc                                                           "
 " Maintainer: Dustin Venegas <dustin.venegas@gmail.com>                        "
-"        URL: https://github.com/DustinVenegas/dotFiles                        "
+"        URL: https://github.com/DustinVenegas/dotfiles                        "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Environment Specific Setup {
@@ -20,6 +20,7 @@ set runtimepath+=~/dotfiles/.vim/autoload
     
     Plug 'scrooloose/nerdtree'
     Plug 'tpope/vim-fugitive'
+    Plug 'jnurmine/Zenburn'
     "Plug 'Markdown'
     "Plug 'gmarik/Vundle.vim'
     "Plug 'tpope/vim-fugitive'
@@ -29,6 +30,8 @@ set runtimepath+=~/dotfiles/.vim/autoload
     "Plug 'TaskList.vim'
     "Plug 'XmlPretty'
     "Plug 'SuperTab-continued.'
+
+    call plug#end()
 " }
 
 
@@ -168,15 +171,16 @@ set runtimepath+=~/dotfiles/.vim/autoload
 
 " Shell
 if has("win32") || has("gui_win32")
-    if executable("PowerShell")
-        " Set PowerShell as the shell for running external ! commands
-        " http://stackoverflow.com/questions/7605917/system-with-powershell-in-vim
-        set shell=PowerShell
-        set shellcmdflag=-ExecutionPolicy\ RemoteSigned\ -Command
-        set shellquote=\"
-        " shellxquote must be a literal space character.
-        set shellxquote= 
-      endif
+    "
+    "if executable("PowerShell")
+    "    " Set PowerShell as the shell for running external ! commands
+    "    " http://stackoverflow.com/questions/7605917/system-with-powershell-in-vim
+    "    set shell=PowerShell
+    "    set shellcmdflag=-ExecutionPolicy\ RemoteSigned\ -Command
+    "    set shellquote=\"
+    "    " shellxquote must be a literal space character.
+    "    set shellxquote= 
+    "  endif
 endif
 " }
 
