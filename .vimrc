@@ -21,6 +21,7 @@ set runtimepath+=~/dotfiles/.vim/autoload
     Plug 'scrooloose/nerdtree'
     Plug 'tpope/vim-fugitive'
     Plug 'jnurmine/Zenburn'
+    Plug 'PProvost/vim-ps1'
     "Plug 'Markdown'
     "Plug 'gmarik/Vundle.vim'
     "Plug 'tpope/vim-fugitive'
