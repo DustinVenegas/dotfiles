@@ -5,6 +5,28 @@ param(
 Write-Host "Provisiong against dotfiles located at $dotfilesPath"
 
 function Test-Application {
+    <#
+    .SYNOPSIS
+    Test if the full application name exists in the current environment
+
+    .DESCRIPTION
+    Test if any applications available through Get-Command match the parameter exactly
+
+    .PARAMETER $name
+    The full name of the application to test
+
+    .RETURNS
+    A boolean if the application exists
+
+    .EXAMPLE
+    # Returns $false
+
+    Test-Application 'choco'
+
+    .EXAMPLE
+    # Returns $true
+    Test-Application 'choco.exe'
+    #>
     param([string]$name)
 
     (Get-Command -Type Application | Where-Object { $_.Name -eq $name }) -ne $null
