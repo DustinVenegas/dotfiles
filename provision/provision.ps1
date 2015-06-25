@@ -1,6 +1,8 @@
 param(
-    [string]$dotfilesPath = (Resolve-Path "$PSScriptRoot\..").Path.Replace("$home",'~')
+    [string]$dotfilesPath = (Resolve-Path "$PSScriptRoot\..")
 )
+
+Write-Host "Provisiong against dotfiles located at $dotfilesPath"
 
 function Test-Application {
     param([string]$name)
@@ -11,11 +13,12 @@ function Test-Application {
 # TODO: fsutil any easier?
 
 # Provision Choco
-if (Test-Application choco) {
+if (Test-Application 'choco.exe') {
     Write-Host "Installing packages"
     # Add personal NuGet packages
     choco source add -n=myget -s https://www.myget.org/F/dustinvenegas/
 
+    # TODO: conditionally install environments based on dev, ossvsdev, comvsdev, etc
     choco install "$dotfilesPath\provision\general-packages.config"
     choco install "$dotfilesPath\provision\development-packages.config"
 } else {
@@ -23,17 +26,18 @@ if (Test-Application choco) {
 }
 
 # Provision VIM
-if (Test-Application vim) {
+if (Test-Application gvim.exe) {
     $vimrcPath = "$HOME\.vimrc"
     if (Test-Path $vimrcPath) {
         Write-Warning ".vimrc already exists at $vimrcPath"
     } else {
         Write-Host "Creating default .vimrc at $vimrcPath"
 
-        Get-Content "$dotfilesPath\provision\.vimrc.template" | %{
+        $dotfilesPathLinux = $dotfilesPath.Path.Replace("$home",'~')
+        Get-Content "$dotfilesPathLinux\provision\.vimrc.template" | %{
             $_  -replace '{{date}}',(Get-Date) `
-                -replace '{{vimrtp}}',"$($dotfilesPath.Replace('\','/'))/.vim" `
-                -replace '{{vimrc}}',"$dotfilesPath\.vimrc"
+                -replace '{{vimrtp}}',"$($dotfilesPathLinux.Replace('\','/'))/.vim" `
+                -replace '{{vimrc}}',"$dotfilesPathLinux\.vimrc"
         } | Out-File -FilePath $vimrcPath -Encoding utf8
     } 
 
