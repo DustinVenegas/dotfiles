@@ -47,6 +47,17 @@ if (Test-Application 'choco.exe') {
     Write-Warning "choco not found"
 }
 
+# Pin any non-pinned app that's installed and auto-updates NOTE: Choco doesn't support pin on install
+$autoUpdates = @('google-chrome-x64','github');
+$pinned = choco pin -r | %{ $_ -Split '\|' | Select-Object -First 1 } 
+choco list -lo -r | %{ 
+        $_ -Split '\|' | Select-Object -First 1 
+    } | Where-Object { 
+        ($autoUpdates -contains $_) -and ($pinned -NotContains $_)
+    } | Foreach-Object {
+        choco pin add -n="$_" -r
+    }
+
 # Provision VIM
 if (Test-Application gvim.exe) {
     $vimrcPath = "$HOME\.vimrc"
