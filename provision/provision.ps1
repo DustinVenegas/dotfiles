@@ -103,3 +103,11 @@ if (Test-Path $PROFILE.CurrentUserCurrentHost) {
     ". $dotfilesPath\WindowsPowershell\Microsoft.PowerShell_profile.ps1" | 
         Out-File -FilePath $PROFILE.CurrentUserCurrentHost -Encoding utf8 -Force
 }
+
+# Mercurial
+if (Test-Path "$HOME\.hgrc") {
+    Write-Warning "HG config already exists at $HOME\.hgrc"
+} else {
+    Write-Host "Creating HG config at $HOME\.hgrc"
+    "%include ~/dotfiles/.hgrc" | Out-File -FilePath $HOME\.hgrc -Encoding utf8 -Force
+}

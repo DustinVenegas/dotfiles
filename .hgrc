@@ -1,0 +1,11 @@
+[alias]
+# Limited log
+llog = log --limit 10
+
+# Graph log
+glog = log --graph
+
+# Limited, graph, log
+lglog = log --graph --limit 10
+
+[extensions]
