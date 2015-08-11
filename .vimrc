@@ -256,6 +256,13 @@ function ToggleHex()
     let &modifiable=l:oldmodifiable
 endfunction
 
+function FindNonAscii()
+    " Locate all characters lying outside the ASCII range. Decimal alternative
+    " is [^\d0-\d127]
+    syntax match nonascii "[^\x00-\x7F]"
+    highlight nonascii guibg=Red ctermbg=2 termbg=2
+endfunction
+
 " Allow overrides {
     if filereadable(expand("~/.vimrc.local"))
         source ~/.vimrc.local
