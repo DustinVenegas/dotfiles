@@ -138,6 +138,10 @@ $VerbosePreference = 'Continue'
 function Prompt {
     SetWindowTitle
 
+    if (Test-Path Function:\Write-VcsStatus) {
+        Write-VcsStatus
+    }
+
     # Prompt:
     #   §
     #   |--- Green if no errors. Red if errors
