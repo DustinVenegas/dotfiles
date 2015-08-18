@@ -138,9 +138,6 @@ $VerbosePreference = 'Continue'
 function Prompt {
     SetWindowTitle
 
-    if (Test-Path Function:\Write-VcsStatus) {
-        Write-VcsStatus
-    }
 
     # Prompt:
     #   §
@@ -153,6 +150,11 @@ function Prompt {
     $colorLocation = [ConsoleColor]::Cyan
 
     write-host "$([char]0x0A7) " -nonewline -f $colorStatus
+
+    if (Test-Path Function:\Write-VcsStatus) {
+        Write-VcsStatus
+    }
+
     write-host ($env:COMPUTERNAME).ToLower() -nonewline -f $colorHost
     write-host ' {' -nonewline -f $colorDelimiter
     write-host (shorten-path (pwd).Path) -nonewline -f $colorLocation
