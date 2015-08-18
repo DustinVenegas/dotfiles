@@ -149,7 +149,7 @@ set runtimepath+=~/dotfiles/.vim/autoload
 " }
 
 " Key Mappings {
-    map <F12> ggVGg? " ROT13 - fun
+    "map <F12> ggVGg? " ROT13 - fun
     map Q gq " Q -> Formatting instead of Ex mode
     inoremap <C-U> <C-G>u<C-U>  " CTRL-U in ins deletes a lot. Use CTRL-G to break into undo first.
     "
