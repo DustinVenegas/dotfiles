@@ -113,7 +113,17 @@ function Test-Administrator {
 }
 
 ################################################################################
+# Aliases
+################################################################################
+function New-ItemFile { 
+    New-Item -Type file $args 
+}
+
+New-Alias -Name touch -Value New-ItemFile -Description "Ben is bitter that PowerShell isn't bash"
+
+################################################################################
 # Customize Prompt 
+################################################################################
 function shorten-path([string] $path) {
    $loc = $path.Replace($HOME, '~')
    # remove prefix for UNC paths
