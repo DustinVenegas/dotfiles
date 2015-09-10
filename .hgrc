@@ -1,11 +1,23 @@
+[ui]
+username = Dustin Venegas <dustin.venegas@gmail.com>
+
 [alias]
 # Limited log
-llog = log --limit 10
+logl = log --limit 10
 
 # Graph log
-glog = log --graph
+logg = log --graph
 
 # Limited, graph, log
-lglog = log --graph --limit 10
+loglg = log --graph --limit 10
+
+# Pull with Rebase
+pullr = pull --rebase
 
 [extensions]
+hggit = ~/projects/hg-git/hggit
+record =
+mq = 
+color = 
+shelve =
+rebase = 
