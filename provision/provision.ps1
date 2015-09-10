@@ -48,7 +48,7 @@ if (Test-Application 'choco.exe') {
 }
 
 # Pin any non-pinned app that's installed and auto-updates NOTE: Choco doesn't support pin on install
-$autoUpdates = @('google-chrome-x64','github');
+$autoUpdates = @('google-chrome-x64','github','dropbox');
 $pinned = choco pin -r | %{ $_ -Split '\|' | Select-Object -First 1 } 
 choco list -lo -r | %{ 
         $_ -Split '\|' | Select-Object -First 1 
