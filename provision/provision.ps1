@@ -112,3 +112,22 @@ if (Test-Path "$HOME\.hgrc") {
     Write-Host "Creating HG config at $HOME\.hgrc"
     "%include ~/dotfiles/.hgrc" | Out-File -FilePath $HOME\.hgrc -Encoding utf8 -Force
 }
+
+# Git - Safe to reapply if you're provisioning
+if (Test-Application 'git.exe') {
+    Write-Host "Setting GIT global config from $dotfilesPath\provision\git-config-commands"
+    Get-Content $dotfilesPath\provision\git-config-commands | ?{ $_ -ne '' } | %{ Write-Host "  Executing: ${_}"; $_ } | Invoke-Expression
+
+    Write-Host "Setting GIT global config, Windows specific values"
+    # Setup KDiff3 merge and diff guitools
+    git config --global mergetool.kdiff3.path 'C:/Program Files/KDiff3/kdiff3.exe'
+    git config --global merge.guitool kdiff3
+    git config --global difftool.kdiff3.path 'C:/Program Files/KDiff3/kdiff3.exe'
+    git config --global diff.guitool kdiff3
+
+    # Windows machine so change anything lf to crlf
+    git config --global core.autocrlf true
+
+    # Set the credential helper to gitextensions
+    git config --global credential.helper !\"C:\\Program Files (x86)\\GitExtensions\\GitCredentialWinStore\\git-credential-winstore.exe\"
+}
