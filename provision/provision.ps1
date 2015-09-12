@@ -44,7 +44,8 @@ if (Test-Application 'choco.exe') {
     choco install "$dotfilesPath\provision\general-packages.config"
     choco install "$dotfilesPath\provision\development-packages.config"
 } else {
-    Write-Warning "choco not found"
+    Write-Warning "Choco not found. Installing."
+    iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
 }
 
 # Pin any non-pinned app that's installed and auto-updates NOTE: Choco doesn't support pin on install
