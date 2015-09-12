@@ -1,2 +1,19 @@
 [alias]
     list-aliases = "!git config -l | grep alias | cut -c 7-"
+    regret = reset
+    merge-branch = !git checkout master && git merge @{-1}
+
+    # History inspection
+    news = log -p HEAD@{1}..HEAD@{0}
+
+	# Show commit log using graph notation
+	lg = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+
+	# List commits showing changed files
+	ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+
+	ra = log --graph --abbrev-commit --date=relative -20 --all --pretty='format:%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset'
+
+    # Commits related to a file
+    filelog = log -u
+    fl = log -u
