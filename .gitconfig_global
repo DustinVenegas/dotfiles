@@ -17,3 +17,4 @@
     # Commits related to a file
     filelog = log -u
     fl = log -u
+    #delete-remote-branch = !git push origin --delete

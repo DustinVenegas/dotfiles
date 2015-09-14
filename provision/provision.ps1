@@ -129,5 +129,5 @@ if (Test-Application 'git.exe') {
     git config --global core.autocrlf true
 
     # Set the credential helper to gitextensions
-    git config --global credential.helper !\"C:\\Program Files (x86)\\GitExtensions\\GitCredentialWinStore\\git-credential-winstore.exe\"
+    #'git config --global credential.helper !"C:\\Program Files (x86)\\GitExtensions\\GitCredentialWinStore\\git-credential-winstore.exe\"' | Invoke-Expression
 }
