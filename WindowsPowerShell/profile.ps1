@@ -69,11 +69,21 @@ function Edit-Hosts{
    GVim c:\windows\system32\drivers\etc\hosts
 }
 
-function grep([string]$search, [string]$path) {
-    if($path -eq $null){ $path = Get-Location }
+function Search-ForLines {
+    param (
+        [Parameter(Mandatory=$True)]
+        [string]$pattern,
+        [Parameter(Mandatory=$False)]
+        [string]$filter
+    )
 
-    select-string -path $path Get-WmiObject -list | Format-Table Path
+    Get-ChildItem $path -Filter $filter | 
+        Select-String $pattern | %{ 
+            "$($_.Path):$($_.LineNumber) - $($_.Line)"
+        }
 }
+
+New-Alias -Name grep -Value Search-ForLines
 
 function New-Guid {
     [guid]::NewGuid().ToString('d')
