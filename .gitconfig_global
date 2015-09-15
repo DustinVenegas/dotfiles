@@ -1,19 +1,75 @@
 [alias]
-    list-aliases = "!git config -l | grep alias | cut -c 7-"
-    regret = reset
-    merge-branch = !git checkout master && git merge @{-1}
+list-aliases = "!git config -l | grep alias | cut -c 7-"
 
-    # History inspection
-    news = log -p HEAD@{1}..HEAD@{0}
+############
+# Utilities
+############
+# So much...
+regret = reset
 
-	# Show commit log using graph notation
-	lg = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+# Unstage all files
+unstage = reset HEAD
 
-	# List commits showing changed files
-	ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+# Commits related to a file
+filelog = log -u
 
-	ra = log --graph --abbrev-commit --date=relative -20 --all --pretty='format:%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset'
+# Pull with rebase, pruning old commits after. Update all submodules.
+up = !git pull --rebase --prune $@ && git submodule update --init --recursive
 
-    # Commits related to a file
-    filelog = log -u
-    fl = log -u
+# Take back the last commit and drop it in your workspace
+undo = reset HEAD~1 --mixed
+
+# Throw away your workspace with a dangling commit for recovery
+wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+
+####################
+# Branch Management
+####################
+# Merge the current branch into master
+merge-into-master = !git checkout master && git merge @{-1}
+
+# Get the current branch name (not so useful in itself, but used in
+# other aliases)
+branch-name = "!git rev-parse --abbrev-ref HEAD"
+
+# Push the current branch to the remote "origin", and set it to track
+# the upstream branch
+publish = "!git push -u origin $(git branch-name)"
+
+# Delete the remote version of the current branch
+unpublish = "!git push origin :$(git branch-name)"
+
+# See all changes between current branch and master
+master-diff = difftool origin/master...
+
+# Given a merge commit, find the span of commits that exist(ed) on that
+# branch. Again, not so useful in itself, but used by other aliases.
+merge-span = "!f() { echo $(git log -1 $2 --merges --pretty=format:%P | cut -d' ' -f1)$1$(git log -1 $2 --merges --pretty=format:%P | cut -d' ' -f2); }; f"
+
+# Delete any branches that have been merged into master
+# See also: https://gist.github.com/robmiller/5133264
+delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+
+#############
+# Spleunking 
+#############
+# Find the commits that were introduced by a merge
+merge-log = "!git log `git merge-span .. $1`"
+
+# Show the changes that were introduced by a merge
+merge-diff = "!git diff `git merge-span ... $1`"
+
+# As above, but in your difftool
+merge-difftool = "!git difftool `git merge-span ... $1`"
+
+# History inspection
+news = log -p HEAD@{1}..HEAD@{0}
+
+# Show commit log using graph notation
+lg = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+
+# List commits showing changed files
+ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+
+ra = log --graph --abbrev-commit --date=relative -20 --all --pretty='format:%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset'
+
