@@ -22,6 +22,7 @@ set runtimepath+=~/dotfiles/.vim/autoload
     Plug 'tpope/vim-fugitive'
     Plug 'jnurmine/Zenburn'
     Plug 'PProvost/vim-ps1'
+    Plug 'kchmck/vim-coffee-script'
     "Plug 'matrix.vim--Yang'
 
     call plug#end()
