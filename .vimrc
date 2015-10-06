@@ -24,7 +24,7 @@ set runtimepath+=~/dotfiles/.vim/autoload
     Plug 'PProvost/vim-ps1'
     Plug 'kchmck/vim-coffee-script'
     Plug 'altercation/vim-colors-solarized'
-    "Plug 'matrix.vim--Yang'
+    Plug 'vim-scripts/matrix.vim--Yang'
 
     call plug#end()
 " }
