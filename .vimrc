@@ -22,15 +22,7 @@ set runtimepath+=~/dotfiles/.vim/autoload
     Plug 'tpope/vim-fugitive'
     Plug 'jnurmine/Zenburn'
     Plug 'PProvost/vim-ps1'
-    "Plug 'Markdown'
-    "Plug 'gmarik/Vundle.vim'
-    "Plug 'tpope/vim-fugitive'
     "Plug 'matrix.vim--Yang'
-    "Plug 'minibufexpl.vim'
-    "Plug 'Tagbar'
-    "Plug 'TaskList.vim'
-    "Plug 'XmlPretty'
-    "Plug 'SuperTab-continued.'
 
     call plug#end()
 " }
