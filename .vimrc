@@ -23,6 +23,7 @@ set runtimepath+=~/dotfiles/.vim/autoload
     Plug 'jnurmine/Zenburn'
     Plug 'PProvost/vim-ps1'
     Plug 'kchmck/vim-coffee-script'
+    Plug 'altercation/vim-colors-solarized'
     "Plug 'matrix.vim--Yang'
 
     call plug#end()
@@ -58,8 +59,8 @@ set runtimepath+=~/dotfiles/.vim/autoload
 
 " Editor {
     " Theme
-    let g:zenburn_high_Contrast = 1
-    colorscheme zenburn
+    set background=dark
+    colorscheme solarized
 
     set autoindent "Auto indenting
     set cul " Set cursor line
