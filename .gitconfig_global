@@ -77,3 +77,5 @@ ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decor
 
 ra = log --graph --abbrev-commit --date=relative -20 --all --pretty='format:%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset'
 
+# Show commits that are branch heads or tagged
+branch-head-layout = "!git log --graph --all --decorate --simplify-by-decoration"
