@@ -77,7 +77,7 @@ function Search-ForLines {
         [string]$filter
     )
 
-    Get-ChildItem $path -Filter $filter | 
+    Get-ChildItem $path -Filter $filter -Recurse | 
         Select-String $pattern | %{ 
             "$($_.Path):$($_.LineNumber) - $($_.Line)"
         }
