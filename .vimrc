@@ -18,12 +18,25 @@ set runtimepath+=~/dotfiles/.vim/autoload
 " Plugged {
     call plug#begin('~/dotfiles/.vim/plugged')
     
+    " File explorer
     Plug 'scrooloose/nerdtree'
+
+    " git Support
     Plug 'tpope/vim-fugitive'
-    Plug 'jnurmine/Zenburn'
+    
+    " Syntax support for PowerShell
     Plug 'PProvost/vim-ps1'
+    
+    " Syntax support for CoffeeScript
     Plug 'kchmck/vim-coffee-script'
+    
+    " Color Sceme named Zenburn
+    Plug 'jnurmine/Zenburn'
+
+    " Color Scheme named Solarized
     Plug 'altercation/vim-colors-solarized'
+    
+    " matrix screen for fun and profit
     Plug 'vim-scripts/matrix.vim--Yang'
 
     call plug#end()
