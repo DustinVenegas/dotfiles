@@ -83,6 +83,8 @@ set runtimepath+=~/dotfiles/.vim/autoload
     set wildmenu
     set wildmode=list:longest,full
     set wrap! " Turn off wrapping by default
+
+    highlight Error gui=undercurl
 " }
 
 " Gui {
