@@ -166,7 +166,7 @@ set runtimepath+=~/dotfiles/.vim/autoload
     nnoremap <silent> <F2> :TagbarToggle<CR>
 " }
 
-" Shell
+" Shell {
 if has("win32") || has("gui_win32")
     "
     "if executable("PowerShell")
