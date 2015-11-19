@@ -160,6 +160,8 @@ set runtimepath+=~/dotfiles/.vim/autoload
 " }
 
 " Language Specific Settings {
+    " Coffeescript tabtop at 2 spaces
+    autocmd BufNewFile,BufReadPost *.coffee setl shiftwidth=2 expandtab
 " }
 
 " Key Mappings {
