@@ -141,20 +141,6 @@ set runtimepath+=~/dotfiles/.vim/autoload
 " }
 
 " Language Specific Settings {
-    " Turn on delphi over pascal by default
-    let pascal_delphi = 'asdf'
-
-    " just functions and classes please
-    let tlist_aspjscript_settings = 'asp;f:function;c:class'
-
-    " just functions and subs please
-    let tlist_aspvbs_settings = 'asp;f:function;s:sub'
-
-    " don't show variables in freaking php
-    let tlist_php_settings = 'php;c:class;d:constant;f:function'
-
-    " just functions and classes please
-    let tlist_vb_settings = 'asp;f:function;c:class'
 " }
 
 " Key Mappings {
