@@ -133,11 +133,6 @@ set runtimepath+=~/dotfiles/.vim/autoload
  " }
 
 " Plugin settings {
-    let b:match_ignorecase = 1 " Ignore case
-
-    " TagBar
-    let g:tagbar_left = 1 " Place on left side
-    let g:tagbar_type_ps1 = { 'ctagstype' : 'powershell', 'kinds' : [ 'd:definition', ], 'sort' : 0 }
 " }
 
 " Language Specific Settings {
