@@ -39,6 +39,9 @@ set runtimepath+=~/dotfiles/.vim/autoload
     " matrix screen for fun and profit
     Plug 'vim-scripts/matrix.vim--Yang'
 
+    " TagBar for ctags support
+    Plug 'majutsushi/tagbar'
+
     call plug#end()
 " }
 
@@ -133,6 +136,27 @@ set runtimepath+=~/dotfiles/.vim/autoload
  " }
 
 " Plugin settings {
+    " TagBar { 
+        let g:tagbar_type_ps1 = {
+            \ 'ctagstype' : 'powershell',
+            \ 'kinds'     : [
+                \ 'f:function',
+                \ 'i:filter',
+                \ 'a:alias'
+            \ ]
+        \ }
+
+        let g:tagbar_type_coffee = {
+            \ 'ctagstype' : 'coffee',
+            \ 'kinds'     : [
+                \ 'c:classes',
+                \ 'm:methods',
+                \ 'f:functions',
+                \ 'v:variables',
+                \ 'f:fields',
+            \ ]
+        \ }
+    " }
 " }
 
 " Language Specific Settings {
