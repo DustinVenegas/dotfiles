@@ -191,8 +191,8 @@ set runtimepath+=~/dotfiles/.vim/autoload
     nnoremap <silent> <F2> :TagbarToggle<CR>
 " }
 
-" Shell {
-if has("win32") || has("gui_win32")
+" Windows Specific {
+if has('win32') || has('win64')
     "
     "if executable("PowerShell")
     "    " Set PowerShell as the shell for running external ! commands
@@ -203,38 +203,39 @@ if has("win32") || has("gui_win32")
     "    " shellxquote must be a literal space character.
     "    set shellxquote= 
     "  endif
+
+    function MyDiff()
+       let opt = '-a --binary '
+       if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+       if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+       let arg1 = v:fname_in
+       if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+       let arg2 = v:fname_new
+       if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+       let arg3 = v:fname_out
+       if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+       if $VIMRUNTIME =~ ' '
+         if &sh =~ '\<cmd'
+           if empty(&shellxquote)
+             let l:shxq_sav = ''
+             set shellxquote&
+           endif
+           let cmd = '"' . $VIMRUNTIME . '\diff"'
+         else
+           let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+         endif
+       else
+         let cmd = $VIMRUNTIME . '\diff'
+       endif
+       silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
+       if exists('l:shxq_sav')
+         let &shellxquote=l:shxq_sav
+       endif
+    endfunction
+
+    set diffexpr=MyDiff()
 endif
 " }
-
-function MyDiff()
-   let opt = '-a --binary '
-   if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-   if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-   let arg1 = v:fname_in
-   if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-   let arg2 = v:fname_new
-   if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-   let arg3 = v:fname_out
-   if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-   if $VIMRUNTIME =~ ' '
-     if &sh =~ '\<cmd'
-       if empty(&shellxquote)
-         let l:shxq_sav = ''
-         set shellxquote&
-       endif
-       let cmd = '"' . $VIMRUNTIME . '\diff"'
-     else
-       let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-     endif
-   else
-     let cmd = $VIMRUNTIME . '\diff'
-   endif
-   silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
-   if exists('l:shxq_sav')
-     let &shellxquote=l:shxq_sav
-   endif
-endfunction
-set diffexpr=MyDiff()
 
 " ex command for toggling hex mode - define mapping if desired
 command -bar Hexmode call ToggleHex()
