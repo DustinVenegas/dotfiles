@@ -59,6 +59,11 @@ set runtimepath+=~/dotfiles/.vim/autoload
     set ttyfast " We're not on dial-up anymore. Send more data over the network.
     set clipboard=unnamed " Use the OS clipboard
 
+    " Hate on backups and swap files
+    set nobackup " do not keep backups after close
+    set nowritebackup " do not keep a backup while working
+    set noswapfile " don't keep swp files either
+
     " Set backup directory to my tmp folder
     set backupdir=$TEMP//
 
