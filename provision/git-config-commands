@@ -5,7 +5,7 @@ git config --global user.name "Dustin Venegas"
 git config --global user.email dustin.venegas@gmail.com
 
 # Global editor to gvim. Test with: git config -e
-git config --global core.editor gvim 
+git config --global core.editor vim 
 
 # For all repositories, ignore your messy leftover files
 git config --global core.excludesfile ~/dotfiles/.gitignore_global
