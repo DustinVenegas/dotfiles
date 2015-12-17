@@ -8,3 +8,6 @@ ln -s ~/dotFiles/.vim ~/.vim
 
 # Install vundle on new systems
 git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+
+# Configure git
+./git-config-commands
