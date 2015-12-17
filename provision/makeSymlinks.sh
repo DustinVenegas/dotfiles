@@ -3,11 +3,15 @@
 # Create symlinks from ~/dotFiles to ~/.{expected}
 ############################
 
-ln -s ~/dotFiles/.vimrc ~/.vimrc
-ln -s ~/dotFiles/.vim ~/.vim
+if [ ! -l ~/.vimrc ]; then
+  ln -s ~/dotfiles/.vimrc ~/.vimrc
+fi
 
-# Install vundle on new systems
-git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+if [ ! -L ~/.vim ]; then
+  ln -s ~/dotfiles/.vim ~/.vim
+fi
+
+vim +PlugInstall +qall
 
 # Configure git
 ./git-config-commands
