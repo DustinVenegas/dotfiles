@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Set the credential store to use the OSX KeyChain (should be Brew installed with git)
+git config --global credential.helper osxkeychain

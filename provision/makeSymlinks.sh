@@ -15,3 +15,6 @@ vim +PlugInstall +qall
 
 # Configure git
 ./git-config-commands
+
+# Configure git for OSX
+./git-config-commands-osx
