@@ -1,0 +1,6 @@
+# Auto detect text files and perform line-ending normalization
+* text=auto
+
+# Files I want normalized
+*.sh text eol=lf
+*.ps1 text eol=clrf
