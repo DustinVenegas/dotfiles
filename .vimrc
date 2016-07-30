@@ -17,30 +17,42 @@ set runtimepath+=~/dotfiles/.vim/autoload
 
 " Plugged {
     call plug#begin('~/dotfiles/.vim/plugged')
-    
+
     " File explorer
     Plug 'scrooloose/nerdtree'
 
     " git Support
     Plug 'tpope/vim-fugitive'
-    
+
     " Syntax support for PowerShell
     Plug 'PProvost/vim-ps1'
-    
+
     " Syntax support for CoffeeScript
     Plug 'kchmck/vim-coffee-script'
-    
+
     " Color Sceme named Zenburn
     Plug 'jnurmine/Zenburn'
 
     " Color Scheme named Solarized
     Plug 'altercation/vim-colors-solarized'
-    
+
+    " Color Scheme named Lucius
+    Plug 'jonathanfilip/vim-lucius'
+
     " matrix screen for fun and profit
     Plug 'vim-scripts/matrix.vim--Yang'
 
     " TagBar for ctags support
     Plug 'majutsushi/tagbar'
+
+    " F# Support
+    Plug 'fsharp/vim-fsharp'
+
+    " Ansible special sauce
+    Plug 'pearofducks/ansible-vim'
+
+    " Airline Status Bar (No Python Requirement)
+    Plug 'vim-airline/vim-airline'
 
     call plug#end()
 " }
@@ -80,8 +92,22 @@ set runtimepath+=~/dotfiles/.vim/autoload
 
 " Editor {
     " Theme
-    set background=dark
-    colorscheme solarized
+    if $TERM == "xterm-256color"
+        set t_Co=256
+    endif
+
+    if $TERM == "screen"
+        set t_Co=256
+    endif
+
+    if has('gui_running')
+        set background=dark
+        colorscheme solarized
+    else
+        set background=dark
+        colorscheme lucius
+        LuciusBlackHighContrast
+    endif
 
     set autoindent "Auto indenting
     set cul " Set cursor line
@@ -99,7 +125,7 @@ set runtimepath+=~/dotfiles/.vim/autoload
     set smarttab " insert blanks in front of lines when tab is pressed
     set softtabstop=4 " Tabs are 4 columns
     "set spell " Spell checking on
-    set statusline=%F%m%r%h%w%{fugitive#statusline()}[FORMAT=%{&ff}][TYPE=%Y][ASCII=\%03.3b][HEX=\%02.2B][POS=%04l,%04v][%p%%][LEN=%L]
+    "set statusline=%F%m%r%h%w%{fugitive#statusline()}[FORMAT=%{&ff}][TYPE=%Y][POS=%04l,%04v][%p%%]
     set tabstop=4 " Tabs are 4 columns
     set wildmenu
     set wildmode=list:longest,full
@@ -141,7 +167,7 @@ set runtimepath+=~/dotfiles/.vim/autoload
  " }
 
 " Plugin settings {
-    " TagBar { 
+    " TagBar {
         let g:tagbar_type_ps1 = {
             \ 'ctagstype' : 'powershell',
             \ 'kinds'     : [
@@ -167,6 +193,9 @@ set runtimepath+=~/dotfiles/.vim/autoload
 " Language Specific Settings {
     " Coffeescript tabtop at 2 spaces
     autocmd BufNewFile,BufReadPost *.coffee setl shiftwidth=2 expandtab
+
+    " yaml indentation
+    au FileType yaml setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
 " }
 
 " Key Mappings {
@@ -201,7 +230,7 @@ if has('win32') || has('win64')
     "    set shellcmdflag=-ExecutionPolicy\ RemoteSigned\ -Command
     "    set shellquote=\"
     "    " shellxquote must be a literal space character.
-    "    set shellxquote= 
+    "    set shellxquote=
     "  endif
 
     function MyDiff()
