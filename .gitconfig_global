@@ -54,6 +54,9 @@ merge-span = "!f() { echo $(git log -1 $2 --merges --pretty=format:%P | cut -d' 
 # See also: https://gist.github.com/robmiller/5133264
 delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 
+# List remote branches by owner (last commiter)
+branch-owners = "!(git for-each-ref --format='%(committerdate) %09 %(authorname) %09 %(refname)' | sort -k5n -k2M -k3n -k4n)"
+
 #############
 # Spleunking 
 #############
