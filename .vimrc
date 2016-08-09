@@ -60,6 +60,9 @@ set runtimepath+=~/dotfiles/.vim/autoload
     " node.js
     Plug 'moll/vim-node'
 
+    " Enhanced vim-javascript syntax/indention
+    Plug 'pangloss/vim-javascript'
+
     call plug#end()
 " }
 
@@ -198,6 +201,11 @@ set runtimepath+=~/dotfiles/.vim/autoload
     " Editorconfig {
         " Ensure compatability of editorconfig with vim-fugitive
         let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+    " }
+
+    " vim-javascript {
+        " Enable syntax highlighting for JSDoc
+        let g:javascript_plugin_jsdoc = 1
     " }
 " }
 
