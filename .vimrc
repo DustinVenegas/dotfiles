@@ -54,6 +54,9 @@ set runtimepath+=~/dotfiles/.vim/autoload
     " Airline Status Bar (No Python Requirement)
     Plug 'vim-airline/vim-airline'
 
+    " .editorconfig Support
+    Plug 'editorconfig/editorconfig-vim'
+
     call plug#end()
 " }
 
@@ -187,6 +190,11 @@ set runtimepath+=~/dotfiles/.vim/autoload
                 \ 'f:fields',
             \ ]
         \ }
+    " }
+
+    " Editorconfig {
+        " Ensure compatability of editorconfig with vim-fugitive
+        let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
     " }
 " }
 
