@@ -57,6 +57,9 @@ set runtimepath+=~/dotfiles/.vim/autoload
     " .editorconfig Support
     Plug 'editorconfig/editorconfig-vim'
 
+    " node.js
+    Plug 'moll/vim-node'
+
     call plug#end()
 " }
 
