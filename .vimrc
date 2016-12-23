@@ -119,7 +119,6 @@ set runtimepath+=~/dotfiles/.vim/autoload
     endif
 
     set autoindent "Auto indenting
-    set cul " Set cursor line
     set cursorcolumn " highlight the current column
     set cursorline " highlight current line
     set expandtab " Make sure tabs turn in to spaces
