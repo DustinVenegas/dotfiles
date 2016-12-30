@@ -226,14 +226,14 @@ set runtimepath+=~/dotfiles/.vim/autoload
     noremap <space> <C-f>
 
     " Make Arrow Keys Useful Again
-"    map <up> <ESC>:Tlist<RETURN>
+    "map <up> <ESC>:Tlist<RETURN>
+    "map <right> <ESC>:Matrix<RETURN>
     map <down> <ESC>:NERDTreeToggle<RETURN>
     map <left> <ESC>:Matrix<RETURN>
-"    map <right> <ESC>:Matrix<RETURN>
 
-    " Ctrl MOdifiers
-    map <C-left> <ESC>:bp<RETURN>
-    map <C-right> <ESC>:bn<RETURN>
+    " Buffer Navigation
+    map <C-left> <ESC>:bprevious<RETURN>
+    map <C-right> <ESC>:bnext<RETURN>
 
     nnoremap <silent> <F2> :TagbarToggle<CR>
 " }
