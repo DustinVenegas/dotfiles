@@ -90,8 +90,6 @@ function Search-ForLines {
         }
 }
 
-New-Alias -Name grep -Value Search-ForLines
-
 function New-Guid {
     [guid]::NewGuid().ToString('d')
 }
@@ -132,6 +130,8 @@ function Test-Administrator {
 ################################################################################
 # Aliases
 ################################################################################
+New-Alias -Name grep -Value Search-ForLines
+
 
 ################################################################################
 # Customize Prompt 
