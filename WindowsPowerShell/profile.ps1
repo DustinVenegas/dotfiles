@@ -22,6 +22,13 @@ Write-Figlet -f='small' "$env:Username@" | Write-Host -ForegroundColor yellow
 Write-Figlet -f='smslant' $env:COMPUTERNAME | Write-Host -ForegroundColor Green
 Write-Host "I'd like to see you move up to the emu class, where I think you belong."
 
+if ((Get-Module -ListAvailable -Name posh-git) -ne $null)
+{
+    Import-Module posh-git
+
+    $global:GitPromptSettings.AfterText = ']'
+}
+
 ################################################################################
 # Set Window Properties
 ################################################################################
@@ -146,9 +153,6 @@ function shorten-path([string] $path) {
 $VerbosePreference = 'Continue'
 
 function Prompt {
-    SetWindowTitle
-
-
     # Prompt:
     #   §
     #   |--- Green if no errors. Red if errors
@@ -161,15 +165,16 @@ function Prompt {
 
     write-host "$([char]0x0A7) " -nonewline -f $colorStatus
 
-    if (Test-Path Function:\Write-VcsStatus) {
-        Write-VcsStatus
-    }
-
     write-host ($env:COMPUTERNAME).ToLower() -nonewline -f $colorHost
     write-host ' {' -nonewline -f $colorDelimiter
     write-host (shorten-path (pwd).Path) -nonewline -f $colorLocation
-    write-host '}' -nonewline -f $colorDelimiter
-    return ' ' 
+    write-host '} ' -nonewline -f $colorDelimiter
+
+    Write-VcsStatus
+
+    SetWindowTitle
+
+    Return ' '
 
     # Todo: 
     # Change to red if the last command didn't succeed

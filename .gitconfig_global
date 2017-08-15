@@ -72,8 +72,8 @@ merge-difftool = "!git difftool `git merge-span ... $1`"
 # History inspection
 news = log -p HEAD@{1}..HEAD@{0}
 
-# Show commit log using graph notation
-lg = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+# Show commit log using graph notation. Use --all to see all branches contextually
+log-graph = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 
 # List commits showing changed files
 ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
