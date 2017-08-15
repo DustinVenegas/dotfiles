@@ -99,7 +99,7 @@ function Convert-ToHex ([long] $dec) {
 }
 
 function Convert-ToBinHex($array) {
-   $str = new-object system.text.stringbuilder
+   $str = New-Object system.text.stringbuilder
    $array | %{
       [void]$str.Append($_.ToString('x2'));
    }
@@ -107,7 +107,7 @@ function Convert-ToBinHex($array) {
 }
 
 function Convert-FromBinHex([string]$binhex) {
-   $arr = new-object byte[] ($binhex.Length/2)
+   $arr = New-Object byte[] ($binhex.Length/2)
    for ( $i=0; $i -lt $arr.Length; $i++ ) {
       $arr[$i] = [Convert]::ToByte($binhex.substring($i*2,2), 16)
    }
@@ -132,17 +132,16 @@ function Test-Administrator {
 ################################################################################
 New-Alias -Name grep -Value Search-ForLines
 
-
 ################################################################################
 # Customize Prompt 
 ################################################################################
-function shorten-path([string] $path) {
+function Shorten-Path([string] $path) {
    $loc = $path.Replace($HOME, '~')
    # remove prefix for UNC paths
-   $loc = $loc -replace '^[^:]+::', ''
+   $loc = $loc -Replace '^[^:]+::', ''
    # make path shorter like tabs in Vim,
    # handle paths starting with \\ and . correctly
-   return ($loc -replace '\\(\.?)([^\\])[^\\]*(?=\\)','\$1$2')
+   return ($loc -Replace '\\(\.?)([^\\])[^\\]*(?=\\)','\$1$2')
 } 
 
 $VerbosePreference = 'Continue'
@@ -159,19 +158,19 @@ function Prompt {
     $colorLocation = [ConsoleColor]::Cyan
     $colorCloud = [ConsoleColor]::DarkMagenta
 
-    write-host "$([char]0x0A7) " -nonewline -f $colorStatus
+    Write-Host "$([char]0x0A7) " -NoNewLine -ForegroundColor $colorStatus
 
     if ($PSSenderInfo)
     {
         # Display the computer name if this is a remote session
         # $PSSenderInfo is only available in PSSession to detect remoting.
         # See `Get-Help about_Automatic_Variables for more information
-        write-host "$(($env:COMPUTERNAME).ToLower()) " -nonewline -f $colorHost
+        Write-Host "$(($env:COMPUTERNAME).ToLower()) " -NoNewLine -ForegroundColor $colorHost
     }
 
-    write-host '{' -nonewline -f $colorDelimiter
-    write-host "$(shorten-path (pwd).Path)" -nonewline -f $colorLocation
-    write-host '} ' -nonewline -f $colorDelimiter
+    Write-Host '{' -NoNewLine -f $colorDelimiter
+    Write-Host "$(shorten-path (pwd).Path)" -NoNewLine -ForegroundColor $colorLocation
+    Write-Host '} ' -NoNewLine -f $colorDelimiter
 
     if (Get-Module 'AzureRM.profile')
     {
