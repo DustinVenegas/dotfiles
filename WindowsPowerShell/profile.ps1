@@ -157,6 +157,7 @@ function Prompt {
     $colorDelimiter = [ConsoleColor]::DarkCyan
     $colorHost = [ConsoleColor]::Green
     $colorLocation = [ConsoleColor]::Cyan
+    $colorCloud = [ConsoleColor]::DarkMagenta
 
     write-host "$([char]0x0A7) " -nonewline -f $colorStatus
 
@@ -165,12 +166,21 @@ function Prompt {
         # Display the computer name if this is a remote session
         # $PSSenderInfo is only available in PSSession to detect remoting.
         # See `Get-Help about_Automatic_Variables for more information
-        write-host ($env:COMPUTERNAME).ToLower() -nonewline -f $colorHost
+        write-host "$(($env:COMPUTERNAME).ToLower()) " -nonewline -f $colorHost
     }
 
-    write-host ' {' -nonewline -f $colorDelimiter
-    write-host (shorten-path (pwd).Path) -nonewline -f $colorLocation
+    write-host '{' -nonewline -f $colorDelimiter
+    write-host "$(shorten-path (pwd).Path)" -nonewline -f $colorLocation
     write-host '} ' -nonewline -f $colorDelimiter
+
+    if (Get-Module 'AzureRM.profile')
+    {
+        $azureContext = Get-AzureRmContext
+        if ($azureContext -and $azureContext.Subscription -and $azureContext.Subscription.Name)
+        {
+            Write-Host "$($azureContext.Subscription.Name) " -NoNewLine
+        }
+    }
 
     Write-VcsStatus
 
