@@ -156,7 +156,7 @@ function Prompt {
     $colorDelimiter = [ConsoleColor]::DarkCyan
     $colorHost = [ConsoleColor]::Green
     $colorLocation = [ConsoleColor]::Cyan
-    $colorCloud = [ConsoleColor]::DarkMagenta
+    $colorCloud = [ConsoleColor]::Magenta
 
     Write-Host "$([char]0x0A7) " -NoNewLine -ForegroundColor $colorStatus
 
@@ -177,7 +177,7 @@ function Prompt {
         $azureContext = Get-AzureRmContext
         if ($azureContext -and $azureContext.Subscription -and $azureContext.Subscription.Name)
         {
-            Write-Host "$($azureContext.Subscription.Name) " -NoNewLine
+            Write-Host "$([char]0x2601)$($azureContext.Subscription.Name) " -NoNewLine -ForegroundColor $colorCloud
         }
     }
 
