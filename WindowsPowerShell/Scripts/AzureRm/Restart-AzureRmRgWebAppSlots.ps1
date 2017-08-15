@@ -6,6 +6,8 @@ Restart all web applications in a resource group by slot
 
 .DESCRIPTION
 Gets a list of all web applications in a given subscription and resource group. It restarts a slot across all of them.
+ - You must be logged in using `AzureRm-Login`.
+ - You must have a subscription selected used Select-AzureRmSubscription or use the `SubscriptionName` variable
 
 .PARAMETER ResourceGroupName
 The resource group name to restart web applications in.
