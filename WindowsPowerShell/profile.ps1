@@ -91,7 +91,7 @@ function Search-ForLines {
 }
 
 function New-Guid {
-    [guid]::NewGuid().ToString('d')
+    [guid]::NewGuid()
 }
 
 function Convert-ToHex ([long] $dec) {
