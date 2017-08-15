@@ -165,7 +165,14 @@ function Prompt {
 
     write-host "$([char]0x0A7) " -nonewline -f $colorStatus
 
-    write-host ($env:COMPUTERNAME).ToLower() -nonewline -f $colorHost
+    if ($PSSenderInfo)
+    {
+        # Display the computer name if this is a remote session
+        # $PSSenderInfo is only available in PSSession to detect remoting.
+        # See `Get-Help about_Automatic_Variables for more information
+        write-host ($env:COMPUTERNAME).ToLower() -nonewline -f $colorHost
+    }
+
     write-host ' {' -nonewline -f $colorDelimiter
     write-host (shorten-path (pwd).Path) -nonewline -f $colorLocation
     write-host '} ' -nonewline -f $colorDelimiter
@@ -175,9 +182,4 @@ function Prompt {
     SetWindowTitle
 
     Return ' '
-
-    # Todo: 
-    # Change to red if the last command didn't succeed
-    #    Write-Host -NoNewLine -ForeGroundColor Red "PS ";
-    #    "$($CurrDir.Name) $(GetPromptMark)".PadLeft((get-location -stack).Count + 1, "+") + " "
 }
