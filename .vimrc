@@ -55,7 +55,7 @@ set runtimepath+=~/dotfiles/.vim/autoload
     Plug 'vim-airline/vim-airline'
 
     " .editorconfig Support
-    Plug 'editorconfig/editorconfig-vim'
+    "Plug 'editorconfig/editorconfig-vim'
 
     " node.js
     Plug 'moll/vim-node'
