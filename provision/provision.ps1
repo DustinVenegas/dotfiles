@@ -124,13 +124,12 @@ if (Test-Application 'git.exe') {
     git config --global credential.helper !\"C:\\Program Files (x86)\\GitExtensions\\GitCredentialWinStore\\git-credential-winstore.exe\"
 }
 
-if (Test-Appliaction 'Get-Command') {
-    if ((Get-Module -Name posh-git -ListAvailable) -ne $null)
-    {
-        Update-Module posh-git -y
-    }
-    else
-    {
-        Install-Module posh-git -Scope CurrentUser -y
-    }
+# posh-git
+if ((Get-Module -Name posh-git -ListAvailable) -ne $null)
+{
+    Write-Host "Updating posh-git"
+    Update-Module posh-git -y
+} else {
+    Write-Host "Installing posh-git"
+    Install-Module posh-git -Scope CurrentUser
 }
