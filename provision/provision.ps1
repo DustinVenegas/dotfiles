@@ -105,14 +105,6 @@ if (Test-Path $PROFILE.CurrentUserCurrentHost) {
         Out-File -FilePath $PROFILE.CurrentUserCurrentHost -Encoding utf8 -Force
 }
 
-# Mercurial
-if (Test-Path "$HOME\.hgrc") {
-    Write-Warning "HG config already exists at $HOME\.hgrc"
-} else {
-    Write-Host "Creating HG config at $HOME\.hgrc"
-    "%include ~/dotfiles/.hgrc" | Out-File -FilePath $HOME\.hgrc -Encoding utf8 -Force
-}
-
 # Git - Safe to reapply if you're provisioning
 if (Test-Application 'git.exe') {
     Write-Host "Setting GIT global config from $dotfilesPath\provision\git-config-commands"
