@@ -131,5 +131,5 @@ if ((Get-Module -Name posh-git -ListAvailable) -ne $null)
     Update-Module posh-git -y
 } else {
     Write-Host "Installing posh-git"
-    Install-Module posh-git -Scope CurrentUser
+    Install-Module posh-git
 }
