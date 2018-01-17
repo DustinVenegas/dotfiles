@@ -127,6 +127,27 @@ function Test-Administrator {
     ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 }
 
+<#
+.DESCRIPTION Builds a Basic header-authenticaion string from a PSCredential instance
+#>
+function New-HttpBasicAuthValue([PSCredential]$credential)
+{
+    $pair = "$($credential.UserName):$($credential.GetnetworkCredential().Password)"
+    $bytes = [System.Text.Encoding]::ASCII.GetBytes($pair)
+    $base64 = [System.Convert]::ToBase64String($bytes)
+
+    return "Basic $base64"
+}
+
+<#
+.DESCRIPTION Builds a header dictionary with a basic auth value using the supplied credential
+#>
+function New-HttpBasicAuthHeader([PSCredential]$credential)
+{
+    $basicAuthValue = New-HttpBasicAuthValue $credential
+    return @{ Authorization = $basicAuthValue }
+}
+
 ################################################################################
 # Aliases
 ################################################################################
