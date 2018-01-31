@@ -1,5 +1,6 @@
 param(
-    [string]$dotfilesPath = (Resolve-Path "$PSScriptRoot\..")
+    [string]$dotfilesPath = (Resolve-Path "$PSScriptRoot\.."),
+    [switch]$chocoInstallCore
 )
 
 Write-Host "Provisiong against dotfiles located at $dotfilesPath"
@@ -35,21 +36,20 @@ function Test-Application {
 # TODO: fsutil any easier?
 
 # Provision Choco
-if (Test-Application 'choco.exe') {
+if (Test-Application 'choco.exe' -and $chocoInstallCore) {
     Write-Host "Installing packages"
     # Add personal NuGet packages
     choco source add -n=myget -s https://www.myget.org/F/dustinvenegas/
 
-    # TODO: conditionally install environments based on dev, ossvsdev, comvsdev, etc
-    choco install "$dotfilesPath\provision\general-packages.config"
-    choco install "$dotfilesPath\provision\development-packages.config"
+    # Represents the core packages for running this configuration
+    choco install "$dotfilesPath\provision\core-packages.config"
 } else {
     Write-Warning "Choco not found. Installing."
     iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
 }
 
 # Pin any non-pinned app that's installed and auto-updates NOTE: Choco doesn't support pin on install
-$autoUpdates = @('google-chrome-x64','nodejs.install','dropbox');
+$autoUpdates = @('google-chrome-x64','nodejs.install','dropbox','jre8','docker-for-windows','powershell','riot-web');
 $pinned = choco pin -r | %{ $_ -Split '\|' | Select-Object -First 1 } 
 choco list -lo -r | %{ 
         $_ -Split '\|' | Select-Object -First 1 
