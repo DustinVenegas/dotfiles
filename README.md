@@ -1,16 +1,11 @@
-## About
+# Dustin Venegas's dotfiles
 
-These are my dot files. 
+A collection of configurations, customizations, settings, etc known as a [dotfiles](https://dotfiles.github.io/) repository, by [Dustin Venegas](https://www.dustinvenegas.com/). This repository should be cloned to `~/dotfiles/`. There's some old setup scripts lying around, but they're a bit crusty.
 
-## Linux Quickstart
 
-Checkout the source to ~/dotFiles. To create symlinks just run the makeSymlinks.sh script. 
+## Layout
 
-## Windows Quickstart
-
-Checkout the source code to ~/dotfiles/. Create a .vimrc in your home directory with the text:
-	source $HOME\dotfiles\.vimrc
-
-## Notes
-
-By default swap files and backups are placed in the system temporary directory (/var/tmp or $TEMP). This may be an issue for you on multiuser systems when editing sensitive files. 
+  * [`.vim`](./.vim/README.md) - [Vim](http://www.vim.org/) modal editor configuration. Expects to be [source](http://vimdoc.sourceforge.net/htmldoc/repeat.html#:source) loaded from `~/.vimrc`
+  * [`nvim`](./nvim/README.md) - [Neovim](https://www.neovim.io/) modal editor configuration. Expects to be [source](https://neovim.io/doc/user/repeat.html#:source) loaded from the appropriate [`XGD_BASE_DIR`](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
+  * [`provision`](./provision/README.md) - Provisioning scripts for this dotfiles repository
+  * [`WindowsPowershell`](./WindowsPowerShell/README.md) - Windows Powershell configuration files and scripts.
