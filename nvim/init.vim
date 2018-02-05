@@ -8,6 +8,8 @@ call plug#begin()
     Plug 'jonathanfilip/vim-lucius'
     Plug 'jnurmine/Zenburn'
     " }}}
+    
+    Plug 'airblade/vim-gitgutter'
 
 call plug#end()
 " }}}

@@ -36,3 +36,9 @@ _Note,_ Source loading the dotfiles configuration has pros and cons. Some operat
   * `:PlugInstall` installs the plugins defined.
   * `:PlugUpgrade` updates [`~/dotfiles/nvim/autoload/plug.vim`](./autoload/plug.vim) to the latest vim-plug version. After verifying the changes, they can be committed to the dotfiles repository for distribution.
 
+### vim-gitgutter
+[airblade/vim-gitgutter](https://github.com/airblade/vim-gitgutter) adds markers to the gutter that indicate if lines were added, modified, or removed in git. 
+
+  * `:GitGutterToggle` toggles the feature on/off
+  * `]c`, `[c`, goes to next and previous hunks
+
