@@ -1,2 +1,2 @@
-" neovim configuration file nvim-qt
-Guifont DejaVu Sans Mono:h15
+" nvim-qt configuration file
+Guifont DejaVu Sans Mono:h14
