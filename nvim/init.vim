@@ -18,7 +18,10 @@ call plug#end()
 " Color schemes/themes {{{
 set termguicolors " Use 24-bit, modern terminal, escape codes for commands
 set background=dark " Seattle? Dark. Not too dark. Just dark.
-colorscheme lucius " Flavor of the week
+
+if globpath(&runtimepath, 'colors/lucius.vim', 1) != ''
+    colorscheme lucius " Flavor of the week
+endif
 " }}}
 
 
