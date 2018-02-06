@@ -11,6 +11,8 @@ call plug#begin()
     
     Plug 'airblade/vim-gitgutter'
 
+    Plug 'junegunn/fzf.vim' " Fuzzy funder; depends on fzf pkg via choco or brew
+
 call plug#end()
 " }}}
 

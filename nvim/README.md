@@ -36,9 +36,16 @@ _Note,_ Source loading the dotfiles configuration has pros and cons. Some operat
   * `:PlugInstall` installs the plugins defined.
   * `:PlugUpgrade` updates [`~/dotfiles/nvim/autoload/plug.vim`](./autoload/plug.vim) to the latest vim-plug version. After verifying the changes, they can be committed to the dotfiles repository for distribution.
 
+
 ### vim-gitgutter
 [airblade/vim-gitgutter](https://github.com/airblade/vim-gitgutter) adds markers to the gutter that indicate if lines were added, modified, or removed in git. 
 
   * `:GitGutterToggle` toggles the feature on/off
   * `]c`, `[c`, goes to next and previous hunks
 
+
+### fzf.vim and fzf
+
+[junegunn/fzf](https://github.com/junegunn/fzf) is a "fuzzy finder" for multiple operating systems without other dependencies. In short, it lists a whole bunch of files and lets you drill down based on fuzzy matching of the filenames. 
+
+In conjunction with [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim), the fuzzy finder can be used in Neovim for opening files and searching code.
