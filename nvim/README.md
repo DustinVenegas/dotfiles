@@ -46,6 +46,39 @@ _Note,_ Source loading the dotfiles configuration has pros and cons. Some operat
 
 ### fzf.vim and fzf
 
-[junegunn/fzf](https://github.com/junegunn/fzf) is a "fuzzy finder" for multiple operating systems without other dependencies. In short, it lists a whole bunch of files and lets you drill down based on fuzzy matching of the filenames. 
+`fzf` is a is a cross-platform "fuzzy finder" that takes a list of entries and provides "fuzzy" filtering based on partial matches. It lets you quickly filter to filename you "kind of" remember a ways down.
 
-In conjunction with [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim), the fuzzy finder can be used in Neovim for opening files and searching code.
+#### Bindings
+
+  * `CTRL-T`/`CTRL-X`/`CTRL-V`: Open in new tab/split/vsplit
+  * `:FzfSomeCommand!`: Fullscreen version of Fzf commands
+  * `:FZF`: Open fzf to the current directory (default)
+  * `<C-x><C-k>`: Dictionary word complete
+
+#### Customizations
+
+  * `:Fzf<command>`: Prefix for all commands. Custom, in order to locate fzf specific functions easily.
+
+#### Other
+
+An `g:fzf_action` exists to configure bindings in addition to the default `CTRL-T`, `CTRL-X`, and `CTRL-V` versions.
+
+
+#### junegunn/fzf
+[junegunn/fzf](https://github.com/junegunn/fzf) adds basic fzf bindings to vim. 
+
+The `fzf` binary must exist in the system path. One method is to install the package to your operating system.
+
+  * Windows: `choco install fzf -y`
+  * macOS: `brew install fzf`
+
+Alternatively, `junegun/fzf` plugin *is* the `fzf` source code. The plugin's `/bin` directory is included in the search path as well. On a POSIX system, you can include the plugin in your [`init.vim`](init.vim) with an included install command. 
+
+```viml
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+```
+
+It's unknown if a similar automation style is available on Windows.
+
+#### junegunn/fzf.vim
+Adds vim specific functions to [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim). This is the thing we customize.

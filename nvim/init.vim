@@ -11,7 +11,8 @@ call plug#begin()
     
     Plug 'airblade/vim-gitgutter'
 
-    Plug 'junegunn/fzf.vim' " Fuzzy funder; depends on fzf pkg via choco or brew
+    Plug 'junegunn/fzf' " Required for fzf.vim
+    Plug 'junegunn/fzf.vim' " fzf fuzzy finder, or way to quickly filter
 
 call plug#end()
 " }}}
@@ -43,15 +44,21 @@ set wrap! " Line wrapping off
 " }}}
 
 
-" netrw, built-in networking file browser, and regular one too {{{
-let g:netrq_liststyle=3 " netrw should display as a tree by default
+" Plugin: fzf.vim {{{
+
+let g:fzf_command_prefix = 'Fzf' " Prefixes all fzf commands with Fzf
+                                 " Allows tab to easily locate commands
+
+" e.g. Replaces word completion with fzf version
+"inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
+
 " }}}
 
 
 " Key Mappings and Shortcuts {{{
 tnoremap <Esc> <C-\><C-n> 		" Ensure ESC also escapes in :terminal mode
 
-" Remap alt+vim_direction_key to switch splits/windows in any mode!
+" alt+(hjkl): Maps A+hjkl in termal/insert/normal
 tnoremap <A-h> <C-\><C-N><C-w>h
 tnoremap <A-j> <C-\><C-N><C-w>j
 tnoremap <A-k> <C-\><C-N><C-w>k
