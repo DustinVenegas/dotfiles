@@ -43,6 +43,11 @@ set wrap! " Line wrapping off
 " }}}
 
 
+" netrw, built-in networking file browser, and regular one too {{{
+let g:netrq_liststyle=3 " netrw should display as a tree by default
+" }}}
+
+
 " Key Mappings and Shortcuts {{{
 tnoremap <Esc> <C-\><C-n> 		" Ensure ESC also escapes in :terminal mode
 
