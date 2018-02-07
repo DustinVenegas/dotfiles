@@ -1,4 +1,5 @@
 .vim/plugged/
 nvim/plugged/
 *.swp
+*.orig
 _viminfo
