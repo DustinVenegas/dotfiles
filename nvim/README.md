@@ -5,6 +5,35 @@
 
 ## Setup
 
+Install directly, or use your favorite package manager.
+
+
+### Chocolatey
+Note, you *may* need to append your Neovim bin dir (`c:\tools\neovim\Neovim\bin`) to your System or User PATH variable.
+
+```ps1
+# Install neovim package with nvim.exe and nvim-qt.exe
+choco install neovim -y
+```
+
+### `Neovim\bin` path in your System PATH Variable
+Next, let's see if we have the environment variable available. Open a **new instance** of Powershell.
+
+```ps1
+# Should return c:\tools\neovim\Neovim\bin
+[System.Environment]::GetEnvironmentVariable("PATH", "Machine") -Split ';' | Where-Object { $_ -like 'c:\tools\neovim\Neovim\bin*' }
+```
+
+Your PATH variable must contain an entry for Neovim's bin directory. The neovim Chocolatey package, as of 2018-02, created a directory at `c:\tools\neovim\Neovim\bin\`. You'll need to add your neovim bin diretcory to your System PATH.
+
+```ps1
+# set a variable pointing at your neovim directory
+$neovimPath = 'C:\tools\neovim\Neovim\bin'
+
+# AS ADMIN, appends $neovimPath variable contents to system PATH variable
+[Environment]::SetEnvironmentVariable("PATH", "$($env:PATH);$neovimPath", "Machine")
+```
+
 
 ### Source from `init.vim`
 
@@ -28,6 +57,11 @@ _Note,_ Source loading the dotfiles configuration has pros and cons. Some operat
 
 ## Plugins
 
+This configuration is intended to gracefully handle missing plugins, themes, and fonts. vim-plug is a hard depndency and is therefore committed directly to the repository. You'll need to run `:PlugInstall` in short order to load plugins, themes, etc.
+
+Why do we take a hard dependency on vim-plug, but ignore the plugin submodules? Some plugins have different platform requirements. They've been for Windows compatability in the past. While not ideal for consistency, this has been sufficient for my needs.
+
+**Note,** if you try to execute `nvim-qt.exe` and a window opens but never really loads then there might be a missing configuration issue. Run `nvim.exe` to ensure there are no configuration errors. You may have to run `:PlugInstall` using the command-line version, `nvim.exe`. 
 
 ### vim-plug
 
