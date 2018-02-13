@@ -24,6 +24,11 @@ set background=dark " Seattle? Dark. Not too dark. Just dark.
 
 if globpath(&runtimepath, 'colors/lucius.vim', 1) != ''
     colorscheme lucius " Flavor of the week
+
+    if !empty($CONEMUBUILD)
+        " Conemu should use LuciusBlack to get around terminal color issues
+        LuciusBlack
+    endif
 endif
 " }}}
 
