@@ -5,18 +5,24 @@
 
 ## Setup
 
-Install directly, or use your favorite package manager.
+These instructions are based on the [Neovim Installation Instructions](https://github.com/neovim/neovim/wiki/Installing-Neovim).
 
+### Windows
 
-### Chocolatey
-Note, you *may* need to append your Neovim bin dir (`c:\tools\neovim\Neovim\bin`) to your System or User PATH variable.
+#### nvim Chocolatey Packages
+
+[Chocolatey](https://chocolatey.org/) is recommended to install and maintain Neovim on Windows. 
+
+[Install Chocolatey](https://chocolatey.org/install).
+
+Open an elevated (admin) PowerShell Console and change directories to `<dotfiles checkout>/nvim`. Run Chocolatey against the [chocolatey-packages.config](./chocolatey-packages.config).
 
 ```ps1
-# Install neovim package with nvim.exe and nvim-qt.exe
-choco install neovim -y
+cd $HOME/dotfiles/nvim/
+choco install chocolatey-packages.config
 ```
 
-### `Neovim\bin` path in your System PATH Variable
+#### `Neovim\bin` path in your System PATH Variable
 Next, let's see if we have the environment variable available. Open a **new instance** of Powershell.
 
 ```ps1
@@ -63,6 +69,8 @@ Why do we take a hard dependency on vim-plug, but ignore the plugin submodules? 
 
 **Note,** if you try to execute `nvim-qt.exe` and a window opens but never really loads then there might be a missing configuration issue. Run `nvim.exe` to ensure there are no configuration errors. You may have to run `:PlugInstall` using the command-line version, `nvim.exe`. 
 
+
+
 ### vim-plug
 
 [junegunn/vim-plug](https://github.com/junegunn/vim-plug) is used to manage neovim plugins. It was selected for its simplicity. 
@@ -71,22 +79,51 @@ Why do we take a hard dependency on vim-plug, but ignore the plugin submodules? 
   * `:PlugUpgrade` updates [`~/dotfiles/nvim/autoload/plug.vim`](./autoload/plug.vim) to the latest vim-plug version. After verifying the changes, they can be committed to the dotfiles repository for distribution.
 
 
+
 ### vim-gitgutter
+
 [airblade/vim-gitgutter](https://github.com/airblade/vim-gitgutter) adds markers to the gutter that indicate if lines were added, modified, or removed in git. 
 
   * `:GitGutterToggle` toggles the feature on/off
   * `]c`, `[c`, goes to next and previous hunks
 
 
-### fzf.vim and fzf
 
-`fzf` is a is a cross-platform "fuzzy finder" that takes a list of entries and provides "fuzzy" filtering based on partial matches. It lets you quickly filter to filename you "kind of" remember a ways down.
+### junegunn/fzf
+
+[junegunn/fzf](https://github.com/junegunn/fzf) is both the `fzf` source code and basic vim bindings for `fzf`.  `fzf` is a cross-platform "fuzzy finder". It takes lists and provides "fuzzy" filtering based on partial or near matches. 
+
+This plugin depends on the `fzf` binary in your PATH. It adds the `FZF` ex-mode command to vim.
+
+  * `:FZF`: Open fzf to the current directory (default)
+
+
+
+#### External Dependencies
+
+You can install `fzf` using a package manager.
+
+  * Windows: `choco install fzf -y`
+  * macOS: `brew install fzf`
+
+Alternatively, the `junegun/fzf` plugin directory *is* the `fzf` source code. The `/bin` directory is already included in the search path. On a POSIX system, you could use a vim-plug "after" command to build `fzf`.
+
+```viml
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+```
+
+Windows would need to take on additional dependencies to perform the same installation style. This dotfiles repository prefers a manual installation due to differing commands on Windows and Linux.
+
+
+
+### junegunn/fzf.vim
+
+[junegunn/fzf.vim](https://github.com/junegunn/fzf.vim) contains vim-specific `fzf` bindings. This is the thing we customize in vim.
 
 #### Bindings
 
   * `CTRL-T`/`CTRL-X`/`CTRL-V`: Open in new tab/split/vsplit
   * `:FzfSomeCommand!`: Fullscreen version of Fzf commands
-  * `:FZF`: Open fzf to the current directory (default)
   * `<C-x><C-k>`: Dictionary word complete
 
 #### Customizations
@@ -97,22 +134,3 @@ Why do we take a hard dependency on vim-plug, but ignore the plugin submodules? 
 
 An `g:fzf_action` exists to configure bindings in addition to the default `CTRL-T`, `CTRL-X`, and `CTRL-V` versions.
 
-
-#### junegunn/fzf
-[junegunn/fzf](https://github.com/junegunn/fzf) adds basic fzf bindings to vim. 
-
-The `fzf` binary must exist in the system path. One method is to install the package to your operating system.
-
-  * Windows: `choco install fzf -y`
-  * macOS: `brew install fzf`
-
-Alternatively, `junegun/fzf` plugin *is* the `fzf` source code. The plugin's `/bin` directory is included in the search path as well. On a POSIX system, you can include the plugin in your [`init.vim`](init.vim) with an included install command. 
-
-```viml
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-```
-
-It's unknown if a similar automation style is available on Windows.
-
-#### junegunn/fzf.vim
-Adds vim specific functions to [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim). This is the thing we customize.
