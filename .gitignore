@@ -3,3 +3,8 @@ nvim/plugged/
 *.swp
 *.orig
 _viminfo
+
+# Skip Pipfile.lock for neovim python virtualenvs because:
+#   - We are running x-platform, which causes *.lock churn
+#   - We're not shipping a binary
+nvim/python-venvs/**/Pipfile.lock
