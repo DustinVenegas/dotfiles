@@ -8,7 +8,7 @@ call plug#begin()
     Plug 'jonathanfilip/vim-lucius'
     Plug 'jnurmine/Zenburn'
     " }}}
-    
+
     Plug 'airblade/vim-gitgutter' " Shows git diff markers in gutter
     Plug 'tpope/vim-fugitive' " Git commands as G* Ex commands
 
@@ -16,7 +16,17 @@ call plug#begin()
     Plug 'junegunn/fzf' " Required for fzf.vim
     Plug 'junegunn/fzf.vim' " fzf fuzzy finder, or way to quickly filter
 
+    Plug 'editorconfig/editorconfig-vim' " Respect .editorconfig files - http://editorconfig.org/
+
 call plug#end()
+" }}}
+
+
+" editorconfig/editorconfig-vim {{{
+
+" Ignore .editorconfig rules for the following wildcarded array:
+let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+
 " }}}
 
 

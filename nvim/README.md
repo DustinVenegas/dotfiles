@@ -231,11 +231,20 @@ An `g:fzf_action` exists to configure bindings in addition to the default `CTRL-
 
 
 
+### editorconfig/editorconfig-vim
+
+[editorconfig/editorconfig-vim](https://github.com/editorconfig/editorconfig-vim) provides validation and auto-formatting for [EditorConfig](http://editorconfig.org/) styles.
+
+  * `:EditorConfigReload`: reload `.editorconfig` files for the current file edited
+
+
+
 ### tpope/vim-fugitive
 
 [tpope/vim-fugitive](https://github.com/tpope/vim-fugitive) adds git Ex Commands, Windows, etc inside of neovim. It provides additional methods to interface with git through vim without using `!bang` Ex Commands or the `:terminal`. It's useful _in addition_ to git's CLI; not as a replacement.
 
 fugitive, and Tim Pope in general, don't make drawer-style plugins. Instead of creating fixed Windows and Viewports the user is expected to manage the vim-fugitive windows. 
+
 
 Opening new buffers for commands is the first methodology. Manually manage them using `<C-W>*` bindings, such as `<C-W><C-C>` to close a window. Get creative with buffers! Tim Pope recommends `<C-W><C-O>` to close all buffers except the currently active one. 
 
