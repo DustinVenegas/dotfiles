@@ -1,6 +1,6 @@
 # neovim
 
-[Neovim](https://www.neovim.io/) modal editor configuration for Dustin Venegas. 
+[Neovim](https://www.neovim.io/) modal editor configuration for Dustin Venegas.
 
 
 
@@ -16,7 +16,7 @@ These instructions are based on the [Neovim Installation Instructions](https://g
 
 #### nvim Chocolatey Packages
 
-[Chocolatey](https://chocolatey.org/) is recommended to install and maintain Neovim on Windows. 
+[Chocolatey](https://chocolatey.org/) is recommended to install and maintain Neovim on Windows.
 
 [Install Chocolatey](https://chocolatey.org/install).
 
@@ -47,7 +47,7 @@ $neovimPath = 'C:\tools\neovim\Neovim\bin'
 [Environment]::SetEnvironmentVariable("PATH", "$($env:PATH);$neovimPath", "Machine")
 ```
 
-Confirm by opening up a *new* shell, typing `nvim-qt.exe`, and pressing enter. 
+Confirm by opening up a *new* shell, typing `nvim-qt.exe`, and pressing enter.
 
 
 
@@ -140,7 +140,7 @@ Check your neovim python health with the following Ex command:
 
 This dotfiles vim configuration expects to be [source](https://neovim.io/doc/user/repeat.html#:source) loaded from the appropriate [`XGD_BASE_DIR`](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html):
   * Windows: `~/AppData/Local/nvim/init.vim`
-  * Linux: `~/.config/nvim/init.vim` 
+  * Linux: `~/.config/nvim/init.vim`
 
 Below is an example `init.vim` file which uses the default checkout location on a Windows machine.
 
@@ -162,13 +162,13 @@ This configuration is intended to gracefully handle missing plugins, themes, and
 
 Why do we take a hard dependency on vim-plug, but ignore the plugin submodules? Some plugins have different platform requirements. They've been for Windows compatability in the past. While not ideal for consistency, this has been sufficient for my needs.
 
-**Note,** if you try to execute `nvim-qt.exe` and a window opens but never really loads then there might be a missing configuration issue. Run `nvim.exe` to ensure there are no configuration errors. You may have to run `:PlugInstall` using the command-line version, `nvim.exe`. 
+**Note,** if you try to execute `nvim-qt.exe` and a window opens but never really loads then there might be a missing configuration issue. Run `nvim.exe` to ensure there are no configuration errors. You may have to run `:PlugInstall` using the command-line version, `nvim.exe`.
 
 
 
 ### vim-plug
 
-[junegunn/vim-plug](https://github.com/junegunn/vim-plug) is used to manage neovim plugins. It was selected for its simplicity. 
+[junegunn/vim-plug](https://github.com/junegunn/vim-plug) is used to manage neovim plugins. It was selected for its simplicity.
 
   * `:PlugInstall` installs the plugins defined.
   * `:PlugUpgrade` updates [`~/dotfiles/nvim/autoload/plug.vim`](./autoload/plug.vim) to the latest vim-plug version. After verifying the changes, they can be committed to the dotfiles repository for distribution.
@@ -177,7 +177,7 @@ Why do we take a hard dependency on vim-plug, but ignore the plugin submodules? 
 
 ### vim-gitgutter
 
-[airblade/vim-gitgutter](https://github.com/airblade/vim-gitgutter) adds markers to the gutter that indicate if lines were added, modified, or removed in git. 
+[airblade/vim-gitgutter](https://github.com/airblade/vim-gitgutter) adds markers to the gutter that indicate if lines were added, modified, or removed in git.
 
   * `:GitGutterToggle` toggles the feature on/off
   * `]c`, `[c`, goes to next and previous hunks
@@ -186,7 +186,7 @@ Why do we take a hard dependency on vim-plug, but ignore the plugin submodules? 
 
 ### junegunn/fzf
 
-[junegunn/fzf](https://github.com/junegunn/fzf) is both the `fzf` source code and basic vim bindings for `fzf`.  `fzf` is a cross-platform "fuzzy finder". It takes lists and provides "fuzzy" filtering based on partial or near matches. 
+[junegunn/fzf](https://github.com/junegunn/fzf) is both the `fzf` source code and basic vim bindings for `fzf`.  `fzf` is a cross-platform "fuzzy finder". It takes lists and provides "fuzzy" filtering based on partial or near matches.
 
 This plugin depends on the `fzf` binary in your PATH. It adds the `FZF` ex-mode command to vim.
 

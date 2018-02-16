@@ -46,11 +46,11 @@ endif
 
 
 " General {{{
-set clipboard+=unnamedplus " Use sys-clipboard, instead of '*','+' registers 
+set clipboard+=unnamedplus " Use sys-clipboard, instead of '*','+' registers
 set tabstop=4 " Tabs count for X spaces
 set shiftwidth=4 " Indent operations shift X spaces
 set softtabstop=-1 " Use {shiftwidth} for value. Allows {tabstop} to stay at 8
-                   " There's somethig 
+                   " There's somethig
 set expandtab " Tabs count for {tabstop} spaces
                    " CTRL-V<Tab> - Insert an actual tab character
 set ignorecase " Searches ignore case. w/smartcase, only all lower-case searches
