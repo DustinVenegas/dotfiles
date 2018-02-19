@@ -9,7 +9,7 @@ call plug#begin()
     Plug 'jnurmine/Zenburn'
     " }}}
     
-    Plug 'airblade/vim-gitgutter'
+    Plug 'airblade/vim-gitgutter' " Shows git diff markers in gutter
 
     Plug 'junegunn/fzf' " Required for fzf.vim
     Plug 'junegunn/fzf.vim' " fzf fuzzy finder, or way to quickly filter
