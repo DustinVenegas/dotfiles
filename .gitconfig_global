@@ -1,3 +1,6 @@
+[push]
+default = simple # Push a branch, assuming remote/local names match, to "origin"
+
 [remote "origin"]
 prune = true # Prune remote branches removed since last fetch
 
