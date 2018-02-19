@@ -1,3 +1,6 @@
+[remote "origin"]
+prune = true # Prune remote branches removed since last fetch
+
 [alias]
 list-aliases = "!git config -l | grep alias | cut -c 7-"
 
@@ -82,3 +85,6 @@ ra = log --graph --abbrev-commit --date=relative -20 --all --pretty='format:%C(y
 
 # Show commits that are branch heads or tagged
 branch-head-layout = "!git log --graph --all --decorate --simplify-by-decoration"
+
+# Modeline or non-standard named .gitconfig
+# vim:fileformat=unix filetype=.gitconfig
