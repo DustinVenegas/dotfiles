@@ -89,3 +89,10 @@ nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 " }}}
+
+
+augroup filetype_markdown
+    autocmd!
+    autocmd BufNewFile,BufRead *.md setlocal spell
+    autocmd BufNewFile,BufRead *.rdoc setlocal spell
+augroup END
