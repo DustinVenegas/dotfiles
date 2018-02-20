@@ -10,6 +10,8 @@ call plug#begin()
     " }}}
     
     Plug 'airblade/vim-gitgutter' " Shows git diff markers in gutter
+    Plug 'tpope/vim-fugitive' " Git commands as G* Ex commands
+
 
     Plug 'junegunn/fzf' " Required for fzf.vim
     Plug 'junegunn/fzf.vim' " fzf fuzzy finder, or way to quickly filter

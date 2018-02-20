@@ -229,3 +229,39 @@ Windows would need to take on additional dependencies to perform the same instal
 
 An `g:fzf_action` exists to configure bindings in addition to the default `CTRL-T`, `CTRL-X`, and `CTRL-V` versions.
 
+
+
+### tpope/vim-fugitive
+
+[tpope/vim-fugitive](https://github.com/tpope/vim-fugitive) adds git Ex Commands, Windows, etc inside of neovim. It provides additional methods to interface with git through vim without using `!bang` Ex Commands or the `:terminal`. It's useful _in addition_ to git's CLI; not as a replacement.
+
+fugitive, and Tim Pope in general, don't make drawer-style plugins. Instead of creating fixed Windows and Viewports the user is expected to manage the vim-fugitive windows. 
+
+Opening new buffers for commands is the first methodology. Manually manage them using `<C-W>*` bindings, such as `<C-W><C-C>` to close a window. Get creative with buffers! Tim Pope recommends `<C-W><C-O>` to close all buffers except the currently active one. 
+
+Changing the active buffer and returning with ':Gedit' is the other methodology. Commands like `glog` will open a RO buffer in your active window. You'll have to use a `:Gedit` variation in order to return to actually editing the file. 
+
+#### Bindings
+
+  * `Gedit`, `Gsplit`, `Gvsplit` edits a revision, splits a revision, virt-splits a version
+  * `:Git [args]` runs a `git` command (w/params) relative to the repository root
+  * `:Glcd`, `:Gcd` changes directory of the local buffer, or project directory, relative to the repository root
+  * `:Glog` loads previous revisions of the active buffer file as RO buffers, replacing the active buffer. Use `:cnext` and `:cprev` to navigate revisions. Afterward, use a `Gedit` variation to continue editing the origional buffer.
+  * `:Gstatus` displays `git status` output
+    * `-` adds and resets (stanges/unstages) files
+    * `ca` performs `Gcommit --amend` on the file selected
+    * `<C-N>`, `<C-P>` next and previous file
+    * `D` performs a `Gdiff` against the file selected
+    * `p` performs `:Git add --patch`
+    * 'q' closes status
+    * 'r' reload status
+    * 'U' checkout
+    * 'C' switches the buffer to a commit dialog
+  * `:Gcommit` opens a buffer asking for a commit message at `.git/COMMIT_EDITMSG`
+    * `:Gwrite` will commit files with the log message specified
+  * `:G<git-command>` invokes the git command specified. For example, pull, push, fetch, log, llog, etc
+
+#### Customizations
+
+None yet!
+
