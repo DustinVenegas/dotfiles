@@ -3,6 +3,14 @@
 [Neovim](https://www.neovim.io/) modal editor configuration for Dustin Venegas.
 
 
+## Useful Shortcuts
+
+  * With `spell` on you can...
+    *  `]s` and `[s` motions for next and previous mistakes. 
+    * `zg`, `zG` add **good** word spellings to spellfile, internal-wordlist
+    * `zw`, `zW` add **wrong** word spellings to spellfile, internal-wordlist
+    * `zu`, `zU` clears good and wrong word spellings from spellfile, internal-wordlist
+
 
 ## Setup
 
@@ -16,28 +24,29 @@ These instructions are based on the [Neovim Installation Instructions](https://g
 
 #### nvim Chocolatey Packages
 
-[Chocolatey](https://chocolatey.org/) is recommended to install and maintain Neovim on Windows.
-
-[Install Chocolatey](https://chocolatey.org/install).
-
-Open an elevated (admin) PowerShell Console and change directories to `<dotfiles checkout>/nvim`. Run Chocolatey against the [chocolatey-packages.config](./chocolatey-packages.config).
+[Chocolatey](https://chocolatey.org/) is recommended to install and maintain Neovim on Windows. Chocolatey should install the packages listed in [`chocolatey-packages.config`](./chocolatey-packages.config).
 
 ```ps1
+# In an elevated (Administrator) PowerShell Consone. Use `csudo` on ConEmu!
+
+# Change directories to where we usually check out dotfiles
 cd $HOME/dotfiles/nvim/
-choco install chocolatey-packages.config
+
+# Chocolatey, install packages in the config with automatic confirmation
+choco install chocolatey-packages.config -y
 ```
 
 
 
 #### Add `neovim.exe` and `neovim-qt.exe` to your System PATH variable
-Next, let's see if we have the environment variable available. Open a **new instance** of Powershell.
+Next, let's see if we have the environment variable available. Open a **new instance** of PowerShell.
 
 ```ps1
 # Should return c:\tools\neovim\Neovim\bin
 [System.Environment]::GetEnvironmentVariable("PATH", "Machine") -Split ';' | Where-Object { $_ -like 'c:\tools\neovim\Neovim\bin*' }
 ```
 
-Your PATH variable must contain an entry for Neovim's bin directory. The neovim Chocolatey package, as of 2018-02, created a directory at `c:\tools\neovim\Neovim\bin\`. You'll need to add your neovim bin diretcory to your System PATH.
+Your PATH variable must contain an entry for Neovim's bin directory. The neovim Chocolatey package, as of 2018-02, created a directory at `c:\tools\neovim\Neovim\bin\`. You'll need to add your neovim bin directory to your System PATH.
 
 ```ps1
 # set a variable pointing at your neovim directory
@@ -58,9 +67,9 @@ The [`chocolatey-packages`](chocolatey-packages.config) bundle should include `p
 
 ##### Virtual Environment
 
-Neovim recommends a dedicated python virtualenv. Python recommends using [`pipenv`](https://github.com/pypa/pipenv) for this purpose.
+Neovim recommends a dedicated python virtual environment (`virtualenv`). Virtual environments prevent polluting the global library with dependencies. Python recommends [`pipenv`](https://github.com/pypa/pipenv) for this purpose. As a bonus, it also manages `pipfiles` dependencies.
 
-The python virtualenvs and pipfiles dedicated for neovim are kept under [`python-envs/`](python-envs/). Virtual environments prevent polluting the global library with dependencies. Locating the `python` binaries across distributes also becomes easier. `pipenv -py` from a virtualenv will return the correct `python` path across all platforms.
+A `pipfile` exists for each neovim Python environment under [`python-envs/`](python-envs/). It needs to be periodically restored, or refreshed. Running `pipenv -py` with a `pipfile` in the current working directory returns the _actual_ `python` binary location.
 
 First, we need to install python2 and python3.
 
@@ -70,7 +79,7 @@ pip3 install --upgrade pipenv
 pip2 install --upgrade pipenv
 ```
 
-Next, use `pipenv` to install the latest dependencies and setup a virtual environment. Finally, we print the virtualenv path to the python executable.
+Next, use `pipenv` to install the latest dependencies and setup a virtual environment. Finally, we print the actual python executable path.
 
 ```bash
 # setup base python 2.7 virtualenv
@@ -86,7 +95,7 @@ pipenv --py
 popd
 ```
 
-Finally, edit your machine's `init.vim` (not the dotfiles one) using Ex command `:edit $MYVIMRC`. Specify **both** python executeables **before** it source loads this dotfiles repository's[`init.vim`](init.vim).
+Finally, edit your machine's `init.vim` (not the dotfiles one) using Ex command `:edit $MYVIMRC`. Specify **both** python executables **before** it source loads this dotfiles repository's[`init.vim`](init.vim).
 
 ```viml
 " Maps to dotfiles virtualenv versions for neovim using pipenv
@@ -107,7 +116,7 @@ source ~/dotfiles/nvim/init.vim
 
 ##### Creating and Modifying Virtual Environments
 
-Keep these in mind when creating or modifying the python virtualenv instances:
+Keep these in mind when creating or modifying the python `virtualenv`, `pipfile`, or `pipenv` components:
   * Each folder under `python-venvs` should represent an environment and contain a `Pipfile`
   * Each `Pipfile` contains the python dependencies, specifically for neovim, for the virtual environment
   * Each python environment must include the `neovim` module
@@ -138,7 +147,7 @@ Check your neovim python health with the following Ex command:
 
 ### Source from `init.vim`
 
-This dotfiles vim configuration expects to be [source](https://neovim.io/doc/user/repeat.html#:source) loaded from the appropriate [`XGD_BASE_DIR`](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html):
+This dotfiles configuration expects to be [source](https://neovim.io/doc/user/repeat.html#:source) loaded from the appropriate [`XGD_BASE_DIR`](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html):
   * Windows: `~/AppData/Local/nvim/init.vim`
   * Linux: `~/.config/nvim/init.vim`
 
@@ -158,9 +167,9 @@ _Note,_ Source loading the dotfiles configuration has pros and cons. Some operat
 
 ## Plugins
 
-This configuration is intended to gracefully handle missing plugins, themes, and fonts. vim-plug is a hard depndency and is therefore committed directly to the repository. You'll need to run `:PlugInstall` in short order to load plugins, themes, etc.
+This configuration is intended to gracefully handle missing plugins, themes, and fonts. vim-plug is a hard dependency and is therefore committed directly to the repository. You'll need to run `:PlugInstall` in short order to load plugins, themes, etc.
 
-Why do we take a hard dependency on vim-plug, but ignore the plugin submodules? Some plugins have different platform requirements. They've been for Windows compatability in the past. While not ideal for consistency, this has been sufficient for my needs.
+Why do we take a hard dependency on vim-plug, but ignore the plugin submodules? Some plugins have different platform requirements. They've been for Windows compatibility in the past. While not ideal for consistency, this has been sufficient for my needs.
 
 **Note,** if you try to execute `nvim-qt.exe` and a window opens but never really loads then there might be a missing configuration issue. Run `nvim.exe` to ensure there are no configuration errors. You may have to run `:PlugInstall` using the command-line version, `nvim.exe`.
 
@@ -218,7 +227,7 @@ Windows would need to take on additional dependencies to perform the same instal
 #### Bindings
 
   * `CTRL-T`/`CTRL-X`/`CTRL-V`: Open in new tab/split/vsplit
-  * `:FzfSomeCommand!`: Fullscreen version of Fzf commands
+  * `:FzfSomeCommand!`: Full screen version of Fzf commands
   * `<C-x><C-k>`: Dictionary word complete
 
 #### Customizations
@@ -255,17 +264,17 @@ Changing the active buffer and returning with ':Gedit' is the other methodology.
   * `Gedit`, `Gsplit`, `Gvsplit` edits a revision, splits a revision, virt-splits a version
   * `:Git [args]` runs a `git` command (w/params) relative to the repository root
   * `:Glcd`, `:Gcd` changes directory of the local buffer, or project directory, relative to the repository root
-  * `:Glog` loads previous revisions of the active buffer file as RO buffers, replacing the active buffer. Use `:cnext` and `:cprev` to navigate revisions. Afterward, use a `Gedit` variation to continue editing the origional buffer.
+  * `:Glog` loads previous revisions of the active buffer file as RO buffers, replacing the active buffer. Use `:cnext` and `:cprev` to navigate revisions. Afterward, use a `Gedit` variation to continue editing the original buffer.
   * `:Gstatus` displays `git status` output
-    * `-` adds and resets (stanges/unstages) files
+    * `-` adds and resets (stages/un-stages) files
     * `ca` performs `Gcommit --amend` on the file selected
     * `<C-N>`, `<C-P>` next and previous file
     * `D` performs a `Gdiff` against the file selected
     * `p` performs `:Git add --patch`
-    * 'q' closes status
-    * 'r' reload status
-    * 'U' checkout
-    * 'C' switches the buffer to a commit dialog
+    * `q` closes status
+    * `r` reload status
+    * `U` checkout
+    * `C` switches the buffer to a commit dialog
   * `:Gcommit` opens a buffer asking for a commit message at `.git/COMMIT_EDITMSG`
     * `:Gwrite` will commit files with the log message specified
   * `:G<git-command>` invokes the git command specified. For example, pull, push, fetch, log, llog, etc

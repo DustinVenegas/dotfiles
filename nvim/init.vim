@@ -38,7 +38,7 @@ if globpath(&runtimepath, 'colors/lucius.vim', 1) != ''
     colorscheme lucius " Flavor of the week
 
     if !empty($CONEMUBUILD)
-        " Conemu should use LuciusBlack to get around terminal color issues
+        " ConEmu should use LuciusBlack to get around terminal color issues
         LuciusBlack
     endif
 endif
@@ -50,7 +50,6 @@ set clipboard+=unnamedplus " Use sys-clipboard, instead of '*','+' registers
 set tabstop=4 " Tabs count for X spaces
 set shiftwidth=4 " Indent operations shift X spaces
 set softtabstop=-1 " Use {shiftwidth} for value. Allows {tabstop} to stay at 8
-                   " There's somethig
 set expandtab " Tabs count for {tabstop} spaces
                    " CTRL-V<Tab> - Insert an actual tab character
 set ignorecase " Searches ignore case. w/smartcase, only all lower-case searches
@@ -75,7 +74,7 @@ let g:fzf_command_prefix = 'Fzf' " Prefixes all fzf commands with Fzf
 " Key Mappings and Shortcuts {{{
 tnoremap <Esc> <C-\><C-n> 		" Ensure ESC also escapes in :terminal mode
 
-" alt+(hjkl): Maps A+hjkl in termal/insert/normal
+" alt+(hjkl): Maps A+hjkl in terminal/insert/normal
 tnoremap <A-h> <C-\><C-N><C-w>h
 tnoremap <A-j> <C-\><C-N><C-w>j
 tnoremap <A-k> <C-\><C-N><C-w>k
@@ -93,6 +92,7 @@ nnoremap <A-l> <C-w>l
 
 augroup filetype_markdown
     autocmd!
+    " Turn spell check on for the buffer
     autocmd BufNewFile,BufRead *.md setlocal spell
     autocmd BufNewFile,BufRead *.rdoc setlocal spell
 augroup END
