@@ -71,6 +71,39 @@ let g:fzf_command_prefix = 'Fzf' " Prefixes all fzf commands with Fzf
 " }}}
 
 
+" Plugin: vim-fugitive {{{
+
+    " (:Gstatus based)
+    nnoremap <Leader>g?     :help fugitive<CR>
+    nnoremap <Leader>g<CR>  :Gedit<CR>
+
+    " git commit (:Gstatus based)
+    nnoremap <Leader>gcA    :Gcommit --amend --reuse-message=HEAD
+    nnoremap <Leader>gca    :Gcommit --amend
+    nnoremap <Leader>gcva   :Gcommit --amend --verbose
+    nnoremap <Leader>gcc    :Gcommit
+    nnoremap <Leader>gcvc   :Gcommit --verbose
+
+    " git diff (:Gstatus based)
+    nnoremap <Leader>gD     :Gdiff<CR>
+    nnoremap <Leader>gds    :Gsdiff<CR>
+    nnoremap <Leader>gdv    :Gvdiff<CR>
+
+    nnoremap <Leader>gpa    :Git add --patch
+    nnoremap <Leader>gpr    :Git reset --patch
+
+    " status
+    nnoremap <Leader>gs     :Gstatus<CR>
+
+    " Misc
+    nnoremap <Leader>gl     :silent! Glog<CR>:bot copen<CR>
+    nnoremap <Leader>gb     :Gblame<CR>
+    nnoremap <Leader>gB     :Gbrowse<CR>
+    nnoremap <Leader>ge     :Gedit<CR>
+    nnoremap <Leader>gM     :Gmove<Space>
+" }}}
+
+
 " Key Mappings and Shortcuts {{{
 tnoremap <Esc> <C-\><C-n> 		" Ensure ESC also escapes in :terminal mode
 
