@@ -6,7 +6,7 @@
 ## Useful Shortcuts
 
   * With `spell` on you can...
-    *  `]s` and `[s` motions for next and previous mistakes. 
+    *  `]s` and `[s` motions for next and previous mistakes.
     * `zg`, `zG` add **good** word spellings to spellfile, internal-wordlist
     * `zw`, `zW` add **wrong** word spellings to spellfile, internal-wordlist
     * `zu`, `zU` clears good and wrong word spellings from spellfile, internal-wordlist
@@ -252,12 +252,12 @@ An `g:fzf_action` exists to configure bindings in addition to the default `CTRL-
 
 [tpope/vim-fugitive](https://github.com/tpope/vim-fugitive) adds git Ex Commands, Windows, etc inside of neovim. It provides additional methods to interface with git through vim without using `!bang` Ex Commands or the `:terminal`. It's useful _in addition_ to git's CLI; not as a replacement.
 
-fugitive, and Tim Pope in general, don't make drawer-style plugins. Instead of creating fixed Windows and Viewports the user is expected to manage the vim-fugitive windows. 
+fugitive, and Tim Pope in general, don't make drawer-style plugins. Instead of creating fixed Windows and Viewports the user is expected to manage the vim-fugitive windows.
 
 
-Opening new buffers for commands is the first methodology. Manually manage them using `<C-W>*` bindings, such as `<C-W><C-C>` to close a window. Get creative with buffers! Tim Pope recommends `<C-W><C-O>` to close all buffers except the currently active one. 
+Opening new buffers for commands is the first methodology. Manually manage them using `<C-W>*` bindings, such as `<C-W><C-C>` to close a window. Get creative with buffers! Tim Pope recommends `<C-W><C-O>` to close all buffers except the currently active one.
 
-Changing the active buffer and returning with ':Gedit' is the other methodology. Commands like `glog` will open a RO buffer in your active window. You'll have to use a `:Gedit` variation in order to return to actually editing the file. 
+Changing the active buffer and returning with ':Gedit' is the other methodology. Commands like `glog` will open a RO buffer in your active window. You'll have to use a `:Gedit` variation in order to return to actually editing the file.
 
 #### Bindings
 
@@ -281,5 +281,5 @@ Changing the active buffer and returning with ':Gedit' is the other methodology.
 
 #### Customizations
 
-None yet!
+// TODO: Determine how to sync bindings.
 
