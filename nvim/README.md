@@ -283,3 +283,12 @@ Changing the active buffer and returning with ':Gedit' is the other methodology.
 
 // TODO: Determine how to sync bindings.
 
+
+
+### 'mileszs/ack.vim'
+
+[mileszs/ack.vim](https://github.com/mileszs/ack.vim) adds the `:Ack` Ex command to perform an "ack-like search".
+
+Behind the scenes the tool to search in file contents may be one of many including ack, [RipGrep, `rg`](https://github.com/BurntSushi/ripgrep), and [The Silver Searcher, `ag`](https://github.com/ggreer/the_silver_searcher), or others. Setup to prefer `rg`, over `ag`, over `<default>`.
+
+Uses the `:help quicklist` and `:help locationlist` for search results. See `:help ack.txt` for more information.

@@ -12,6 +12,9 @@ call plug#begin()
     Plug 'airblade/vim-gitgutter' " Shows git diff markers in gutter
     Plug 'tpope/vim-fugitive' " Git commands as G* Ex commands
 
+    Plug 'mileszs/ack.vim' " grepprg replacement using vim's quickfix list
+                           " backed by grep, ack, ripgrep, ag, etc
+                           " SEE `:help ack.txt`
 
     Plug 'junegunn/fzf' " Required for fzf.vim
     Plug 'junegunn/fzf.vim' " fzf fuzzy finder, or way to quickly filter
@@ -21,6 +24,25 @@ call plug#begin()
 call plug#end()
 " }}}
 
+" Avoid errors on Windows by turning off gitgutter grep by default
+let g:gitgutter_grep=''
+
+if executable('grep')
+    " Use Grep for :Ack commands, since it exists
+    let g:gitgutter_grep='grep'
+    set grepprg='grep'
+
+if executable('rg')
+    " Use RipGrep (rg) for :Ack commands
+    let g:ackprg='rg --vimgrep'
+
+    " Remove colors and headings to match grep returns
+    set grepprg=rg\ --vimgrep\ --no-heading
+    let g:gitgutter_grep='rg'
+endif
+
+" }}}
+
 
 " editorconfig/editorconfig-vim {{{
 
@@ -28,7 +50,6 @@ call plug#end()
 let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 
 " }}}
-
 
 " Color schemes/themes {{{
 set termguicolors " Use 24-bit, modern terminal, escape codes for commands
