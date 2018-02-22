@@ -83,13 +83,13 @@ Next, use `pipenv` to install the latest dependencies and setup a virtual enviro
 
 ```bash
 # setup base python 2.7 virtualenv
-pushd nvim/python-envs/2.7/
+pushd nvim/python-venvs/2.7/
 pipenv install
 pipenv --py
 popd
 
 # setup base python 3.6 virtualenv
-pushd nvim/python-envs/3.6/
+pushd nvim/python-venvs/3.6/
 pipenv install
 pipenv --py
 popd
