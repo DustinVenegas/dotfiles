@@ -24,20 +24,22 @@ call plug#begin()
 call plug#end()
 " }}}
 
-" Avoid errors on Windows by turning off gitgutter grep by default
+
+" mileszs/ack.vim {{{
+
+" Avoid errosr on Windows by turning off gitgutter grep by default
 let g:gitgutter_grep=''
 
 if executable('grep')
     " Use Grep for :Ack commands, since it exists
     let g:gitgutter_grep='grep'
     set grepprg='grep'
+endif
 
 if executable('rg')
     " Use RipGrep (rg) for :Ack commands
     let g:ackprg='rg --vimgrep'
-
-    " Remove colors and headings to match grep returns
-    set grepprg=rg\ --vimgrep\ --no-heading
+    set grepprg='rg'
     let g:gitgutter_grep='rg'
 endif
 
