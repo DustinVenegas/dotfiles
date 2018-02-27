@@ -29,6 +29,13 @@ if ((Get-Module -ListAvailable -Name posh-git) -ne $null)
     $global:GitPromptSettings.AfterText = ']'
 }
 
+
+if (Test-Path C:\ProgramData\Chocolatey\lib\ripgrep\tools\_rg.ps1)
+{
+    # Source the ripgrep configuration
+. "$($env:ChocolateyInstall)\lib\ripgrep\tools\_rg.ps1"
+}
+
 ################################################################################
 # Set Window Properties
 ################################################################################
@@ -257,4 +264,5 @@ function Prompt {
     SetWindowTitle
 
     Return ' '
+}
 
