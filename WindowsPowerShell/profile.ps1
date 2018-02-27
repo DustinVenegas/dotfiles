@@ -1,8 +1,8 @@
-﻿################################################################################
+################################################################################
 # Global Variables
 ################################################################################
 $env:EDITOR = 'gvim.exe'
-$MaximumHistoryCount=1024 
+$MaximumHistoryCount=1024
 
 ################################################################################
 # Welcome Message
@@ -36,7 +36,7 @@ function SetWindowTitle() {
     # Set the window title
     # [Console History Number][Current Directory] [Console Host Name::Console Host Version]
 
-    # Obtain the last history record and add one to see what our "current" 
+    # Obtain the last history record and add one to see what our "current"
     # history is going to be after we execute this command.
     $currentHistoryIndex = (get-history | `
             Sort-Object 'id' -descending | `
@@ -84,8 +84,8 @@ function Search-ForLines {
         [string]$filter
     )
 
-    Get-ChildItem $path -Filter $filter -Recurse | 
-        Select-String $pattern | %{ 
+    Get-ChildItem $path -Filter $filter -Recurse |
+        Select-String $pattern | %{
             "$($_.Path):$($_.LineNumber) - $($_.Line)"
         }
 }
@@ -170,7 +170,7 @@ $hostPrivateDataOpts.DebugBackgroundColor = "Black"
 $hostPrivateDataOpts.VerboseForegroundColor = "Black"
 $hostPrivateDataOpts.VerboseBackgroundColor = "DarkGray"
 
-# White on yellow; 
+# White on yellow;
 $hostPrivateDataOpts.WarningForegroundColor = "White" # Better look...
 $hostPrivateDataOpts.WarningBackgroundColor = "Yellow" # Better look...
 
@@ -180,12 +180,12 @@ $hostPrivateDataOpts.ErrorBackgroundColor = "Red" # I can't allow you to...
 function Write-StreamColorVariations {
     # Useful for verifying colors. Writes examples of various textual or logging pipelines.
 
-    # Momento global preferences to work around `-debug` switch starting PS Debugger 
+    # Momento global preferences to work around `-debug` switch starting PS Debugger
     $origDebugPreference = $DebugPreference
     $DebugPreference = 'Continue'
 
     # Write examples on each textual pipeline
-    @('Debug','Verbose','Information','Warning','Error','Host') | 
+    @('Debug','Verbose','Information','Warning','Error','Host') |
         %{ &"Write-$($_)" $($_) -InformationAction Continue -WarningAction Continue -ErrorAction Continue -Verbose}
 
     # Reset preferences to momento value
@@ -204,7 +204,7 @@ Related Preferences
 }
 
 ################################################################################
-# Customize Prompt 
+# Customize Prompt
 ################################################################################
 function Shorten-Path([string] $path) {
    $loc = $path.Replace($HOME, '~')
@@ -213,7 +213,7 @@ function Shorten-Path([string] $path) {
    # make path shorter like tabs in Vim,
    # handle paths starting with \\ and . correctly
    return ($loc -Replace '\\(\.?)([^\\])[^\\]*(?=\\)','\$1$2')
-} 
+}
 
 $VerbosePreference = 'Continue'
 
@@ -221,7 +221,7 @@ function Prompt {
     # Prompt:
     #   §
     #   |--- Green if no errors. Red if errors
-    
+
     # our theme
     $colorStatus = if ($? -eq $true) {[ConsoleColor]::DarkCyan} else { [ConsoleColor]::Red }
     $colorDelimiter = [ConsoleColor]::DarkCyan
@@ -257,4 +257,4 @@ function Prompt {
     SetWindowTitle
 
     Return ' '
-}
+
