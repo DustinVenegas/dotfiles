@@ -292,3 +292,9 @@ Changing the active buffer and returning with ':Gedit' is the other methodology.
 Behind the scenes the tool to search in file contents may be one of many including ack, [RipGrep, `rg`](https://github.com/BurntSushi/ripgrep), and [The Silver Searcher, `ag`](https://github.com/ggreer/the_silver_searcher), or others. Setup to prefer `rg`, over `ag`, over `<default>`.
 
 Uses the `:help quicklist` and `:help locationlist` for search results. See `:help ack.txt` for more information.
+
+
+### Syntax Plugins
+
+  * [PProvost/vim-ps1](https://github.com/PProvost/vim-ps1) adds support for PowerShell syntax.
+

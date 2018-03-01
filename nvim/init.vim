@@ -21,7 +21,20 @@ call plug#begin()
 
     Plug 'editorconfig/editorconfig-vim' " Respect .editorconfig files - http://editorconfig.org/
 
+    " Syntax and Language Support {{{
+    Plug 'PProvost/vim-ps1' " PowerShell
+
+    " }}}
+
 call plug#end()
+" }}}
+
+" Syntax and Language Support{{{
+
+    " 'PProvost/vim-ps1' {{{
+    " Unfold script blocks. Used when `foldmethod` is `syntax`
+    let g:ps1_nofold_blocks=1
+    " }}}
 " }}}
 
 
