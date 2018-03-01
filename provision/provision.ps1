@@ -50,10 +50,10 @@ if (Test-Application 'choco.exe' -and $chocoInstallCore) {
 
 # Pin any non-pinned app that's installed and auto-updates NOTE: Choco doesn't support pin on install
 $autoUpdates = @('google-chrome-x64','nodejs.install','dropbox','jre8','docker-for-windows','powershell','riot-web');
-$pinned = choco pin -r | %{ $_ -Split '\|' | Select-Object -First 1 } 
-choco list -lo -r | %{ 
-        $_ -Split '\|' | Select-Object -First 1 
-    } | Where-Object { 
+$pinned = choco pin -r | %{ $_ -Split '\|' | Select-Object -First 1 }
+choco list -lo -r | %{
+        $_ -Split '\|' | Select-Object -First 1
+    } | Where-Object {
         ($autoUpdates -contains $_) -and ($pinned -NotContains $_)
     } | Foreach-Object {
         choco pin add -n="$_" -r
@@ -73,7 +73,7 @@ if (Test-Application gvim.exe) {
                 -replace '{{vimrtp}}',"$($dotfilesPathLinux.Replace('\','/'))/.vim" `
                 -replace '{{vimrc}}',"$dotfilesPathLinux\.vimrc"
         } | Out-File -FilePath $vimrcPath -Encoding utf8
-    } 
+    }
 
     Write-Host "Updating vim plugins..."
     vim +PlugInstall +qall
@@ -89,7 +89,7 @@ if (Test-Path $PROFILE.CurrentUserAllHosts) {
 
     New-Item -type file -force $PROFILE.CurrentUserAllHosts | Out-Null
 
-    ". $dotfilesPath\WindowsPowershell\profile.ps1" | 
+    ". $dotfilesPath\WindowsPowershell\profile.ps1" |
         Out-File -FilePath $PROFILE.CurrentUserAllHosts -Encoding utf8 -Force
 }
 
@@ -101,7 +101,7 @@ if (Test-Path $PROFILE.CurrentUserCurrentHost) {
 
     New-Item -type file -force $PROFILE.CurrentUserCurrentHost | Out-Null
 
-    ". $dotfilesPath\WindowsPowershell\Microsoft.PowerShell_profile.ps1" | 
+    ". $dotfilesPath\WindowsPowershell\Microsoft.PowerShell_profile.ps1" |
         Out-File -FilePath $PROFILE.CurrentUserCurrentHost -Encoding utf8 -Force
 }
 
