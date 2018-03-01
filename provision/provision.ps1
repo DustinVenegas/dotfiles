@@ -120,8 +120,8 @@ if (Test-Application 'git.exe') {
     # Windows machine so change anything lf to crlf
     git config --global core.autocrlf true
 
-    # Set the credential helper to gitextensions
-    git config --global credential.helper manager
+    # Store credentials in Windows Credential Manager
+    git config --global credential.helper wincred
 }
 
 # posh-git
