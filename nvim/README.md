@@ -284,6 +284,29 @@ Changing the active buffer and returning with ':Gedit' is the other methodology.
 // TODO: Determine how to sync bindings.
 
 
+### 'ripgrep'
+
+[BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep), AKA `rg`, is a cross-platform, very fast, alternative to ack/grep.
+
+Why ripgrep over ack, grep, ag (The Silver Searcher), etc? It makes `:grep` work cross-platform. It's really fast. It respects .gitignore files. Swank name.
+
+#### Prerequisites
+
+Run `choco install chocolatey-packages.config` or `choco install ripgrep -y` directory to install on Windows. Chocolatey should create a ShimGen in `C:\ProgramData\chocolatey\bin\rg.exe`, which should be in your machine's PATH. The binary should be located at `C:\ProgramData\chocolatey\lib\ripgrep\tools\rg.exe`.
+
+Configurations attempt to detect the existence of RipGrep and use it as the default where appropriate. For example, below are some of the items that prefer Ripgrep if it's available:
+
+  * Sets `grepprg` for `:grep` searches in vim
+  * Configures `mileszs/ack.vim` for `:Ack` searches
+  * `fzf` should use rg by default
+  * `fzf` in PowerShell should prefer Ripgrep
+  * Probably others
+
+#### Bindings
+
+  * `-uuu` removes search restrictions, up to 3. One includes `.gitignore` entries, two searches hidden, three locates binaries
+  * `rg -S SmartCaseSearch` performs a smart case search
+
 
 ### 'mileszs/ack.vim'
 

@@ -46,14 +46,22 @@ let g:gitgutter_grep=''
 if executable('grep')
     " Use Grep for :Ack commands, since it exists
     let g:gitgutter_grep='grep'
-    set grepprg='grep'
+    set grepprg=grep
 endif
 
 if executable('rg')
     " Use RipGrep (rg) for :Ack commands
-    let g:ackprg='rg --vimgrep'
-    set grepprg='rg'
+    let g:ackprg='rg --vimgrep --no-heading'
     let g:gitgutter_grep='rg'
+    set grepprg=rg\ --vimgrep\ --no-heading
+    set grepformat=%f:%l:%c:%m,%f:%l:%m
+                  " |  |  |  + Message
+                  " |  |  + Column Number
+                  " |  + Line Number
+                  " + Filename
+
+    " Use rg as the default fzf command (fuzzy finder) for listing files
+    let $FZF_DEFAULT_COMMAND='rg --files --vimgrep'
 endif
 
 " }}}
@@ -105,6 +113,7 @@ let g:fzf_command_prefix = 'Fzf' " Prefixes all fzf commands with Fzf
 "inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
 
 " }}}
+
 
 
 " Plugin: vim-fugitive {{{
