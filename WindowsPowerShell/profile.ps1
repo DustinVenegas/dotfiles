@@ -158,7 +158,7 @@ function New-HttpBasicAuthHeader([PSCredential]$credential)
 ################################################################################
 # Aliases
 ################################################################################
-New-Alias -Name grep -Value Search-ForLines
+New-Alias -Name grep -Value rg
 
 ################################################################################
 # Colors
@@ -209,6 +209,12 @@ Related Preferences
   `$ProgressPreference = $ProgressPreference
 "@ -InformationAction Continue
 }
+
+################################################################################
+# Plugins
+################################################################################
+# Set the fzf (Fuzzy Finder) default to use rg (RipGrep)
+$env:FZF_DEFAULT_COMMAND = 'rg --files --vimgrep'
 
 ################################################################################
 # Customize Prompt
