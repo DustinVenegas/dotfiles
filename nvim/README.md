@@ -1,6 +1,6 @@
 # neovim
 
-[Neovim](https://www.neovim.io/) modal editor configuration for Dustin Venegas.
+[Neovim](https://www.neovim.io/) editor configuration for Dustin Venegas.
 
 
 ## Useful Shortcuts
@@ -12,19 +12,13 @@
     * `zu`, `zU` clears good and wrong word spellings from spellfile, internal-wordlist
 
 
-## Setup
+## Install
 
 These instructions are based on the [Neovim Installation Instructions](https://github.com/neovim/neovim/wiki/Installing-Neovim).
 
+### Chocolatey
 
-
-### Windows
-
-
-
-#### nvim Chocolatey Packages
-
-[Chocolatey](https://chocolatey.org/) is recommended to install and maintain Neovim on Windows. Chocolatey should install the packages listed in [`chocolatey-packages.config`](./chocolatey-packages.config).
+[Chocolatey](https://chocolatey.org/) is a great installation method for Windows. All packages are listed in [`chocolatey-packages.config`](./chocolatey-packages.config) and can be installed with the following Powershell, from an elevated (Administrator) console.
 
 ```ps1
 # In an elevated (Administrator) PowerShell Consone. Use `csudo` on ConEmu!
@@ -36,19 +30,16 @@ cd $HOME/dotfiles/nvim/
 choco install chocolatey-packages.config -y
 ```
 
+#### System PATH and the neovim Chocolatey Package
 
+**NOTE!** Add `neovim.exe` and `neovim-qt.exe` to your System PATH variable
 
-#### Add `neovim.exe` and `neovim-qt.exe` to your System PATH variable
-Next, let's see if we have the environment variable available. Open a **new instance** of PowerShell.
-
-```ps1
-# Should return c:\tools\neovim\Neovim\bin
-[System.Environment]::GetEnvironmentVariable("PATH", "Machine") -Split ';' | Where-Object { $_ -like 'c:\tools\neovim\Neovim\bin*' }
-```
-
-Your PATH variable must contain an entry for Neovim's bin directory. The neovim Chocolatey package, as of 2018-02, created a directory at `c:\tools\neovim\Neovim\bin\`. You'll need to add your neovim bin directory to your System PATH.
+The nvim Chocolatey package comes with `neovim.exe` and `neovim-qt.exe`. The installer does not add these to the system PATH.
 
 ```ps1
+# Check the current path. Current entries with "neovim" are printed.
+[System.Environment]::GetEnvironmentVariable("PATH", "Machine") -Split ';' | Where-Object { $_ -like '*Neovim\bin*' }
+
 # set a variable pointing at your neovim directory
 $neovimPath = 'C:\tools\neovim\Neovim\bin'
 
@@ -59,19 +50,31 @@ $neovimPath = 'C:\tools\neovim\Neovim\bin'
 Confirm by opening up a *new* shell, typing `nvim-qt.exe`, and pressing enter.
 
 
+### Python Support
 
-#### Python 2/3 Support
+The [`chocolatey-packages`](chocolatey-packages.config) bundle should include `python2` and `python3`. You can install them directly using `choco install 'python2;python3' -y`.
 
-The [`chocolatey-packages`](chocolatey-packages.config) bundle should include `python2` and `python3`. You can install them directly using `choco install 'python2;python3' -y`. Binaries for `python`, `pip2` and `pip3` should all be added to your system PATH after logging out and back in.
+These packages come with `python`, `pip2` and `pip3`. They are not added to the system PATH, and need to be added by hand.
+
+```ps1
+# Check the current path. Current entries with "neovim" are printed.
+[System.Environment]::GetEnvironmentVariable("PATH", "Machine") -Split ';' | Where-Object { $_ -like '*python*' }
+
+# set a variable pointing at your neovim directory
+$neovimPath = 'C:\tools\neovim\Neovim\bin'
+
+# AS ADMIN, appends $neovimPath variable contents to system PATH variable
+[Environment]::SetEnvironmentVariable("PATH", "$($env:PATH);$neovimPath", "Machine")
+```
 
 
-##### Virtual Environment
+#### Virtual Environment
 
-Neovim recommends a dedicated python virtual environment (`virtualenv`). Virtual environments prevent polluting the global library with dependencies. Python recommends [`pipenv`](https://github.com/pypa/pipenv) for this purpose. As a bonus, it also manages `pipfiles` dependencies.
+Python recommends [`pipenv`](https://github.com/pypa/pipenv) for creating a Python Virtual Environment. This prevents collisions and resolutions between Neovim and your global python library. `pipenv` also manages `pipfiles` dependencies, which makes maintenance straightforward.
 
-A `pipfile` exists for each neovim Python environment under [`python-envs/`](python-envs/). It needs to be periodically restored, or refreshed. Running `pipenv -py` with a `pipfile` in the current working directory returns the _actual_ `python` binary location.
+A `pipfile` exists for each neovim Python environment under [`python-envs/`](python-envs/). Running `pipenv -py` with a `pipfile` in the current working directory returns the _actual_ `python` binary location.
 
-First, we need to install python2 and python3.
+First, we need to install the `pipenv` program for python2 and python3.
 
 ```ps1
 # From any directory. pipenv can create/manage python deps and venvs
