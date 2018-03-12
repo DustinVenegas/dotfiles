@@ -238,6 +238,9 @@ Windows would need to take on additional dependencies to perform the same instal
 
 An `g:fzf_action` exists to configure bindings in addition to the default `CTRL-T`, `CTRL-X`, and `CTRL-V` versions.
 
+#### Issues
+
+  * (Windows) `fzf#vim#with_preview` uses a Ruby script that requires additional tools to function on Windows. The script is located at `dotfiles\nvim\plugged\fzf.vim\bin\preview.rb`.
 
 
 ### editorconfig/editorconfig-vim

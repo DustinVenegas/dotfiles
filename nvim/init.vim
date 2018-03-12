@@ -108,13 +108,19 @@ set wrap! " Line wrapping off
 
 let g:fzf_command_prefix = 'Fzf' " Prefixes all fzf commands with Fzf
                                  " Allows tab to easily locate commands
+if executable('rg')
 
-" e.g. Replaces word completion with fzf version
-"inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
+    " Rg (RipGrep) for Fzf
+    command! -bang -nargs=* FzfRg
+      \ call fzf#vim#grep(
+      \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+      \   <bang>0 ? fzf#vim#grep('up:60%')
+      \           : fzf#vim#grep('right:50%:hidden', '?'),
+      \   <bang>0)
+
+endif
 
 " }}}
-
-
 
 " Plugin: vim-fugitive {{{
 
@@ -174,3 +180,4 @@ augroup filetype_markdown
     autocmd BufNewFile,BufRead *.md setlocal spell
     autocmd BufNewFile,BufRead *.rdoc setlocal spell
 augroup END
+
