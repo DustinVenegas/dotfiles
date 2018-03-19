@@ -5,7 +5,8 @@ Dotfiles for Windows PowerShell.
 ## Prerequisites
 
 ```ps1
-Install-Module -Name PSFzf -y
+Install-Module -Name PSFzf
+Install-Module -Name posh-git
 ```
 
 ## Modules
@@ -23,3 +24,7 @@ PSModules of note.
   * `ALT-C` Directories
   * `ALT-A` Historical Arguments
   * `Invoke-Fzf` PowerShell CmdLet
+
+### posh-git
+
+[Posh-Git](https://github.com/dahlbyk/posh-git) adds Git bindings and prompts to PowerShell.
