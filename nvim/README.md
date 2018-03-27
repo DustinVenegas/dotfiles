@@ -38,13 +38,15 @@ The nvim Chocolatey package comes with `neovim.exe` and `neovim-qt.exe`. The ins
 
 ```ps1
 # Check the current path. Current entries with "neovim" are printed.
-[System.Environment]::GetEnvironmentVariable("PATH", "Machine") -Split ';' | Where-Object { $_ -like '*Neovim\bin*' }
+$userEnvVars = [System.Environment]::GetEnvironmentVariable("PATH", "User")
+$userEnvVars -Split ';' | Where-Object { $_ -like '*Neovim\bin*' }
 
 # set a variable pointing at your neovim directory
 $neovimPath = 'C:\tools\neovim\Neovim\bin'
 
+
 # AS ADMIN, appends $neovimPath variable contents to system PATH variable
-[Environment]::SetEnvironmentVariable("PATH", "$($env:PATH);$neovimPath", "Machine")
+[Environment]::SetEnvironmentVariable("PATH", "$($userEnvVars);$neovimPath", "User")
 ```
 
 Confirm by opening up a *new* shell, typing `nvim-qt.exe`, and pressing enter.
@@ -58,13 +60,14 @@ These packages come with `python`, `pip2` and `pip3`. They are not added to the 
 
 ```ps1
 # Check the current path. Current entries with "neovim" are printed.
-[System.Environment]::GetEnvironmentVariable("PATH", "Machine") -Split ';' | Where-Object { $_ -like '*python*' }
+$userEnvVars = [System.Environment]::GetEnvironmentVariable("PATH", "User")
+$userEnvVars -Split ';' | Where-Object { $_ -like '*python*' }
 
 # set a variable pointing at your neovim directory
 $neovimPath = 'C:\tools\neovim\Neovim\bin'
 
 # AS ADMIN, appends $neovimPath variable contents to system PATH variable
-[Environment]::SetEnvironmentVariable("PATH", "$($env:PATH);$neovimPath", "Machine")
+[Environment]::SetEnvironmentVariable("PATH", "$($userEnvVars);$neovimPath", "User")
 ```
 
 
