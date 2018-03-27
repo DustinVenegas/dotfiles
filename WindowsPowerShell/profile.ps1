@@ -11,7 +11,7 @@ Clear-Host
 
 function Write-Figlet {
     # Completely unnecessary and do it regardless.
-    if(Get-command figlet) {
+    if(Get-command figlet -ErrorAction SilentlyContinue) {
         figlet $args
     } else {
         $args
