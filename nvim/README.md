@@ -185,8 +185,10 @@ Why do we take a hard dependency on vim-plug, but ignore the plugin submodules? 
 
 [junegunn/vim-plug](https://github.com/junegunn/vim-plug) is used to manage neovim plugins. It was selected for its simplicity.
 
-  * `:PlugInstall` installs the plugins defined.
-  * `:PlugUpgrade` updates [`~/dotfiles/nvim/autoload/plug.vim`](./autoload/plug.vim) to the latest vim-plug version. After verifying the changes, they can be committed to the dotfiles repository for distribution.
+  * `:PlugInstall` installs defined plugins
+  * `:PlugDiff` shows a diff of incoming changes
+  * `:PlugUpdate` updates all plugins
+  * `:PlugUpgrade` updates [`~/dotfiles/nvim/autoload/plug.vim`](./autoload/plug.vim) to the latest vim-plug version. Verify changes, then commit updates to this repository.
 
 
 
