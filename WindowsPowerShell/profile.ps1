@@ -7,15 +7,10 @@ $MaximumHistoryCount=1024
 ################################################################################
 # Welcome Message
 ################################################################################
-Clear-Host
-
-function Write-Figlet {
-    # Completely unnecessary and do it regardless.
-    if(Get-command figlet -ErrorAction SilentlyContinue) {
-        figlet $args
-    } else {
-        $args
-    }
+if ($env:PSModulePath -Split ';' | ? { $_ -eq $PSScriptRoot }) {
+    Write-Verbose "Dotfiles PSModule Path already exists"
+} else {
+    $env:psmodulepath += ";$PSScriptRoot/Modules"
 }
 
 Write-Figlet -f='small' "$env:Username@" | Write-Host -ForegroundColor yellow
@@ -26,6 +21,7 @@ if ((Get-Module -ListAvailable -Name posh-git) -ne $null)
 {
     Import-Module posh-git
 
+    # Removes extra space
     $global:GitPromptSettings.AfterText = ']'
 }
 
