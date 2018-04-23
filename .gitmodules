@@ -1,3 +1,0 @@
-[submodule "RabbitMQTools"]
-	path = WindowsPowerShell/Modules/RabbitMQTools
-	url = https://github.com/mariuszwojcik/RabbitMQTools
