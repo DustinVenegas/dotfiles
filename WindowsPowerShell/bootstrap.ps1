@@ -1,16 +1,25 @@
 #Requires -Version 4
 #Requires -RunAsAdministrator
 
-# As an end-user, we trust the PSGallery
 if ((Get-PSRepository -Name PSGallery).InstallationPolicy -eq 'Untrusted')
 {
-    # Trust PSGallery
+    # Trust scripts (remove warnings) when downloading from PSGallery
     Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Trusted'
 }
 
 # Install modules
-Install-Module -Repository PSGallery posh-git -Scope CurrentUser
-Install-Module -Repository PSGallery PSFzf -Scope CurrentUser
+$expectedModules = @( 'posh-git', 'PSFzf' )
+$expectedModules | %{
+    if (Get-Module -Name $_)
+    {
+        Update-Module $_
+    }
+    else
+    {
+        Install-Module -Repository PSGallery $_ -Scope CurrentUser
+    }
+}
 
 # Download the latest help files
-Update-Help
+# HACK: Ignore errors due to 'Failed to update Help for the module(s)' errors
+Update-Help -ErrorAction SilentlyContinue
