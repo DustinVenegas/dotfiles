@@ -5,6 +5,9 @@ Dotfiles for Windows PowerShell.
 ## Prerequisites
 
 ```ps1
+# Update HelpFiles (as Admin)
+Update-Help
+
 Install-Module -Name PSFzf
 Install-Module -Name posh-git
 ```

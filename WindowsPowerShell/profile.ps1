@@ -7,10 +7,10 @@ $MaximumHistoryCount=1024
 ################################################################################
 # Welcome Message
 ################################################################################
-if ($env:PSModulePath -Split ';' | ? { $_ -eq $PSScriptRoot }) {
-    Write-Verbose "Dotfiles PSModule Path already exists"
-} else {
-    $env:psmodulepath += ";$PSScriptRoot/Modules"
+if (($env:PSModulePath -Split ';') -NotContains $PSScriptRoot)
+{
+    Write-Verbose "Added $PSScriptRoot/Modules to $PSModulePath"
+    $env:PSModulePath += ";$(Join-Path -Path $PSScriptRoot -ChildPath Modules/)"
 }
 
 Write-Figlet -f='small' "$env:Username@" | Write-Host -ForegroundColor yellow
