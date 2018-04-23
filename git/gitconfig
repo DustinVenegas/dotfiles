@@ -1,2 +1,7 @@
+[core]
+	# Symlinked from dotfiles/git/
+	excludesfile = ~/.gitignore
+	attributesfile = ~/.gitattributes
+
 # Modeline or non-standard named .gitconfig
 # vim:fileformat=unix filetype=.gitconfig

@@ -61,13 +61,17 @@ function Ensure-PoshGit
     }
 }
 
-$config = @{
-    'PathHome' = Join-Path -Path $HOME -ChildPath '.gitconfig'
-    'PathDotfiles' = Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig'
+# Ensures $DOTFILES_BASE/git
+#    /gitconfig to $HOME/.gitconfig, as the default .gitconfig
+#    /gitignore to $HOME/.gitignore, for default ignore entries
+#    /gitattributes to $HOME/.gitattributes, for default file attribute entries
+$hardLinks = @{
+    (Join-Path -Path $HOME -ChildPath '.gitconfig') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig');
+    (Join-Path -Path $HOME -ChildPath '.gitignore') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitignore');
+    (Join-Path -Path $HOME -ChildPath '.gitattributes') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitattributes');
 }
 
-# Ensures $DOTFILES_BASE/git/gitconfig to $HOME/.gitconfig
-Ensure-HardLinkTo -Path $config.PathHome -Target $config.PathDotfiles
+$hardLinks.Keys | %{ Ensure-HardLinkTo -Path $_ -Target $hardLinks[$_] }
 
 # Install or update Posh-Git
 Ensure-PoshGit
