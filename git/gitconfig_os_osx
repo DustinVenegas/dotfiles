@@ -1,0 +1,5 @@
+[credential]
+	helper = osxkeychain
+
+[core]
+	editor "mvim -f"

@@ -105,31 +105,3 @@ if (Test-Path $PROFILE.CurrentUserCurrentHost) {
         Out-File -FilePath $PROFILE.CurrentUserCurrentHost -Encoding utf8 -Force
 }
 
-# Git - Safe to reapply if you're provisioning
-if (Test-Application 'git.exe') {
-    Write-Host "Setting GIT global config from $dotfilesPath\provision\git-config-commands"
-    Get-Content $dotfilesPath\provision\git-config-commands | ?{ $_ -ne '' } | %{ Write-Host "  Executing: ${_}"; $_ } | Invoke-Expression
-
-    Write-Host "Setting GIT global config, Windows specific values"
-    # Setup KDiff3 merge and diff guitools
-    git config --global mergetool.kdiff3.path 'C:/Program Files/KDiff3/kdiff3.exe'
-    git config --global merge.guitool kdiff3
-    git config --global difftool.kdiff3.path 'C:/Program Files/KDiff3/kdiff3.exe'
-    git config --global diff.guitool kdiff3
-
-    # Windows machine so change anything lf to crlf
-    git config --global core.autocrlf true
-
-    # Store credentials in Windows Credential Manager
-    git config --global credential.helper wincred
-}
-
-# posh-git
-if ((Get-Module -Name posh-git -ListAvailable) -ne $null)
-{
-    Write-Host "Updating posh-git"
-    Update-Module posh-git -y
-} else {
-    Write-Host "Installing posh-git"
-    Install-Module posh-git
-}
