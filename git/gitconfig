@@ -1,7 +1,25 @@
 [core]
-	# Symlinked from dotfiles/git/
-	excludesfile = ~/.gitignore
-	attributesfile = ~/.gitattributes
+	excludesfile = ~/.gitignore # dotfiles hardlinked
+	attributesfile = ~/.gitattributes # dotfiles hardlinked
+	editor = vim
+[user]
+	name = Dustin Venegas
+	email = dustin.venegas@gmail.com
+[merge]
+	conflictstyle = diff3
+	tool = kdiff3
+	guitool = kdiff3
+[mergetool]
+	prompt = false
+[diff]
+	tool = vimdiff
+	guitool = kdiff3
+[push]
+	default = simple
+[remote "origin"]
+	prune = true # Removes origin remotes that were deleted
+[include]
+	path = .gitconfig_os
 
 # Modeline or non-standard named .gitconfig
 # vim:fileformat=unix filetype=.gitconfig

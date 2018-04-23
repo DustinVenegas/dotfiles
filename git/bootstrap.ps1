@@ -62,11 +62,13 @@ function Ensure-PoshGit
 }
 
 # Ensures $DOTFILES_BASE/git
-#    /gitconfig to $HOME/.gitconfig, as the default .gitconfig
-#    /gitignore to $HOME/.gitignore, for default ignore entries
-#    /gitattributes to $HOME/.gitattributes, for default file attribute entries
+#    $HOME/.gitconfig -> $dotfiles/git/gitconfig
+#    $HOME/.gitconfig_os -> $dotfiles/git/gitconfig_os_windows
+#    $HOME/.gitignore -> $dotfiles/git/gitignore
+#    $HOME/.gitattributes -> $dotfiles/git/gitattributes
 $hardLinks = @{
     (Join-Path -Path $HOME -ChildPath '.gitconfig') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig');
+    (Join-Path -Path $HOME -ChildPath '.gitconfig_os') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig_os_windows');
     (Join-Path -Path $HOME -ChildPath '.gitignore') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitignore');
     (Join-Path -Path $HOME -ChildPath '.gitattributes') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitattributes');
 }
