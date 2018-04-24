@@ -56,98 +56,6 @@ if (Test-Path "$PSScriptRoot\scripts") {
 }
 
 ################################################################################
-# Custom Functions
-################################################################################
-function exp([string] $loc = '.') {
-   # open explorer in this directory
-   explorer "/e,"$loc""
-}
-
-function Edit-HostProfile{
-   GVim $profile
-}
-
-function Edit-Profile{
-   GVim $profile
-}
-
-function Edit-Hosts{
-   GVim c:\windows\system32\drivers\etc\hosts
-}
-
-function Search-ForLines {
-    param (
-        [Parameter(Mandatory=$True)]
-        [string]$pattern,
-        [Parameter(Mandatory=$False)]
-        [string]$filter
-    )
-
-    Get-ChildItem $path -Filter $filter -Recurse |
-        Select-String $pattern | %{
-            "$($_.Path):$($_.LineNumber) - $($_.Line)"
-        }
-}
-
-function New-Guid {
-    [guid]::NewGuid()
-}
-
-function Convert-ToHex ([long] $dec) {
-   return "0x" + $dec.ToString("X")
-}
-
-function Convert-ToBinHex($array) {
-   $str = New-Object system.text.stringbuilder
-   $array | %{
-      [void]$str.Append($_.ToString('x2'));
-   }
-   return $str.ToString()
-}
-
-function Convert-FromBinHex([string]$binhex) {
-   $arr = New-Object byte[] ($binhex.Length/2)
-   for ( $i=0; $i -lt $arr.Length; $i++ ) {
-      $arr[$i] = [Convert]::ToByte($binhex.substring($i*2,2), 16)
-   }
-   return $arr
-}
-
-function Get-Hash($value, $hashalgo = 'MD5') {
-   $tohash = $value
-   if ( $value -is [string] ) {
-      $tohash = [text.encoding]::UTF8.GetBytes($value)
-   }
-   $hash = [security.cryptography.hashalgorithm]::Create($hashalgo)
-   return convert-tobinhex($hash.ComputeHash($tohash));
-}
-
-function Test-Administrator {
-    ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
-}
-
-<#
-.DESCRIPTION Builds a Basic header-authenticaion string from a PSCredential instance
-#>
-function New-HttpBasicAuthValue([PSCredential]$credential)
-{
-    $pair = "$($credential.UserName):$($credential.GetnetworkCredential().Password)"
-    $bytes = [System.Text.Encoding]::ASCII.GetBytes($pair)
-    $base64 = [System.Convert]::ToBase64String($bytes)
-
-    return "Basic $base64"
-}
-
-<#
-.DESCRIPTION Builds a header dictionary with a basic auth value using the supplied credential
-#>
-function New-HttpBasicAuthHeader([PSCredential]$credential)
-{
-    $basicAuthValue = New-HttpBasicAuthValue $credential
-    return @{ Authorization = $basicAuthValue }
-}
-
-################################################################################
 # Aliases
 ################################################################################
 New-Alias -Name grep -Value rg
@@ -215,3 +123,4 @@ function Prompt {
     Return ' '
 }
 
+Import-Module JunkDrawer
