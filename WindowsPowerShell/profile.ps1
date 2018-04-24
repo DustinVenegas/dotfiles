@@ -13,10 +13,6 @@ if (($env:PSModulePath -Split ';') -NotContains $PSScriptRoot)
     $env:PSModulePath += ";$(Join-Path -Path $PSScriptRoot -ChildPath Modules/)"
 }
 
-Write-Figlet -f='small' "$env:Username@" | Write-Host -ForegroundColor yellow
-Write-Figlet -f='smslant' $env:COMPUTERNAME | Write-Host -ForegroundColor Green
-Write-Host "I'd like to see you move up to the emu class, where I think you belong."
-
 if ((Get-Module -ListAvailable -Name posh-git) -ne $null)
 {
     Import-Module posh-git
