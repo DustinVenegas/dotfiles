@@ -210,7 +210,8 @@ Related Preferences
 # Plugins
 ################################################################################
 # Set the fzf (Fuzzy Finder) default to use rg (RipGrep)
-$env:FZF_DEFAULT_COMMAND = 'rg --files --vimgrep'
+# Include (u) .gitignore masks, (uu) and hidden; NOT (uuu) binary
+$env:FZF_DEFAULT_COMMAND = 'rg -uu --files --vimgrep'
 
 ################################################################################
 # Customize Prompt

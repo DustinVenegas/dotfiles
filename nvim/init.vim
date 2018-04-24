@@ -61,7 +61,8 @@ if executable('rg')
                   " + Filename
 
     " Use rg as the default fzf command (fuzzy finder) for listing files
-    let $FZF_DEFAULT_COMMAND='rg --files --vimgrep'
+    " Include (u) .gitignore masks, (uu) and hidden; NOT (uuu) binary
+    let $FZF_DEFAULT_COMMAND='rg -uu --files --vimgrep'
 endif
 
 " }}}
