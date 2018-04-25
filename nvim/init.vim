@@ -125,22 +125,22 @@ endif
 
 " Plugin: vim-fugitive {{{
 
-    " (:Gstatus based)
+    " Mappings
     nnoremap <Leader>g?     :help fugitive<CR>
-    nnoremap <Leader>g<CR>  :Gedit<CR>
 
-    " git commit (:Gstatus based)
+    " commit (:Gcommit based)
     nnoremap <Leader>gcA    :Gcommit --amend --reuse-message=HEAD
     nnoremap <Leader>gca    :Gcommit --amend
     nnoremap <Leader>gcva   :Gcommit --amend --verbose
     nnoremap <Leader>gcc    :Gcommit
     nnoremap <Leader>gcvc   :Gcommit --verbose
 
-    " git diff (:Gstatus based)
+    " diff (:Gdiff based)
     nnoremap <Leader>gD     :Gdiff<CR>
     nnoremap <Leader>gds    :Gsdiff<CR>
     nnoremap <Leader>gdv    :Gvdiff<CR>
 
+    " patch (add/reset)
     nnoremap <Leader>gpa    :Git add --patch
     nnoremap <Leader>gpr    :Git reset --patch
 
