@@ -47,12 +47,18 @@ function SetWindowTitle() {
 ################################################################################
 # Map PSDrives
 ################################################################################
-# Scripts Drive
-if (Test-Path "$PSScriptRoot\scripts") {
-    New-PSDrive -name 'Scripts' `
-        -psProvider FileSystem `
-        -root "$PSScriptRoot\Scripts" `
-        -description "Powershell Scripts from $PSScriptRoot" | Out-Null
+function Set-DotfilesDrives
+{
+    @(
+        ('Dotfiles',(Resolve-Path(Join-Path $PSScriptRoot '..')),"Personal Dotfiles Repository from $PSScriptRoot"),
+        ('Scripts',(Resolve-Path(Join-Path $PSScriptRoot '\Scripts')),"Powershell Scripts from $PSScriptRoot\Scripts")
+    ) | Foreach-Object {
+            New-PSDrive `
+                -Name $_[0] `
+                -PSProvider FileSystem `
+                -Root $_[1] `
+                -Description $_[2] | Out-Null
+        }
 }
 
 ################################################################################
@@ -124,3 +130,5 @@ function Prompt {
 }
 
 Import-Module JunkDrawer
+
+Set-DotfilesDrives
