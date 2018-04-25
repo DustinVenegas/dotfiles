@@ -241,6 +241,8 @@ Windows would need to take on additional dependencies to perform the same instal
 #### Customizations
 
   * `:Fzf<command>`: Prefix for all commands. Custom, in order to locate fzf specific functions easily.
+  * `<Leader>ff` find files from cwd
+  * `<Leader>fF` find files from current buffer's directory
 
 #### Other
 

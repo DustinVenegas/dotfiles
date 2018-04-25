@@ -59,10 +59,6 @@ if executable('rg')
                   " |  |  + Column Number
                   " |  + Line Number
                   " + Filename
-
-    " Use rg as the default fzf command (fuzzy finder) for listing files
-    " Include (u) .gitignore masks, (uu) and hidden; NOT (uuu) binary
-    let $FZF_DEFAULT_COMMAND='rg -uu --files --vimgrep'
 endif
 
 " }}}
@@ -108,8 +104,11 @@ set wrap! " Line wrapping off
 " Plugin: fzf.vim {{{
 
 let g:fzf_command_prefix = 'Fzf' " Prefixes all fzf commands with Fzf
-                                 " Allows tab to easily locate commands
+
 if executable('rg')
+    " Use rg as the default fzf command (fuzzy finder) for listing files
+    " Include (u) .gitignore masks, (uu) and hidden; NOT (uuu) binary
+    let $FZF_DEFAULT_COMMAND='rg -uu --files --vimgrep'
 
     " Rg (RipGrep) for Fzf
     command! -bang -nargs=* FzfRg
@@ -119,6 +118,20 @@ if executable('rg')
       \           : fzf#vim#grep('right:50%:hidden', '?'),
       \   <bang>0)
 
+    " Mappings
+    nnoremap <Leader>f?     :help fzf-vim<CR>
+
+    " Files, cwd
+    nnoremap <Leader>ff     :FzfFiles<CR>
+
+    " Files, buffer's directory
+    nnoremap <Leader>fF     :FzfFiles <C-R>=expand('%:p:h')<CR><CR>
+
+    " Buffers
+    nnoremap <Leader>fb     :FzfBuffers<CR>
+
+    " Windows and Tabs
+    nnoremap <Leader>fw     :FzfWindows<CR>
 endif
 
 " }}}
