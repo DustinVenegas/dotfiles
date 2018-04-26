@@ -4,12 +4,11 @@ Dotfiles for Windows PowerShell.
 
 ## Prerequisites
 
-```ps1
-# Update HelpFiles (as Admin)
-Update-Help
+Using an **Administrator** PowerShell instance, execute the `bootstrap.ps1` script.
 
-Install-Module -Name PSFzf
-Install-Module -Name posh-git
+```ps1
+# Run the script, confirming prompts
+.\bootstrap.ps1 -Confirm
 ```
 
 ## Modules
