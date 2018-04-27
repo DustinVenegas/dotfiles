@@ -20,6 +20,14 @@ if ((Get-Module -ListAvailable -Name posh-git) -ne $null)
     # Removes extra space
     $global:GitPromptSettings.AfterText = ']'
 }
+else
+{
+    Write-Verbose @"
+PSModule posh-git is missing! Git prompts will be disabled.
+
+Either run .\bootstrap.ps1 or install the module manually.
+"@
+}
 
 
 if (Test-Path C:\ProgramData\Chocolatey\lib\ripgrep\tools\_rg.ps1)
@@ -64,7 +72,15 @@ function Set-DotfilesDrives
 ################################################################################
 # Aliases
 ################################################################################
-New-Alias -Name grep -Value rg
+if (Get-Alias grep -ErrorAction SilentlyContinue)
+{
+    Write-Verbose "Alias: 'grep' was an alias bound to $((Get-Alias Grep).DisplayName). Updated!"
+    Set-Alias -Name grep -Value rg
+}
+else
+{
+    New-Alias -Name grep -Value rg | Out-Null
+}
 
 ################################################################################
 # Plugins
