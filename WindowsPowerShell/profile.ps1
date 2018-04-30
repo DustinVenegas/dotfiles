@@ -7,10 +7,11 @@ $MaximumHistoryCount=1024
 ################################################################################
 # Welcome Message
 ################################################################################
-if (($env:PSModulePath -Split ';') -NotContains $PSScriptRoot)
+$dotfilesLocalPath = Join-Path "$PSScriptRoot" 'Modules-Dotfiles/'
+if (($env:PSmodulePath -Split ';' | %{ Join-Path $_ '' }) -NotContains ($dotfilesLocalPath))
 {
-    Write-Verbose "Added $PSScriptRoot/Modules to $PSModulePath"
-    $env:PSModulePath += ";$(Join-Path -Path $PSScriptRoot -ChildPath Modules/)"
+    Write-Verbose "Adding $dotfilesLocalPath to $PSModulePath"
+    $env:PSModulePath += ";$dotfilesLocalPath"
 }
 
 if ((Get-Module -ListAvailable -Name posh-git) -ne $null)
