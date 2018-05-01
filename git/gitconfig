@@ -16,6 +16,11 @@
 	guitool = kdiff3
 [push]
 	default = simple # Push a branch, assuming remote/local names match, to "origin"
+[rerere]
+    # Record, replay, resolve. Store manual resolutions
+    enabled = true
+    # Update the index after performing rerere actions
+    autoUpdate = true
 [remote "origin"]
 	prune = true # Removes origin remotes that were deleted
 [alias]
@@ -93,6 +98,24 @@
 	# Show commits that are branch heads or tagged
 	branch-head-layout = "!git log --graph --all --decorate --simplify-by-decoration"
 
+[color]
+    # On for consoles, off for pipes and piping
+    ui = auto
+
+#git log --pretty=format:'
+#    %C(yellow)%h
+#    %C(white)-
+#    %C(red)%an
+#    %C(white)-
+#    %C(cyan)%d%Creset
+#    %s
+#    %C(white)-
+#    %ar%Creset'
+#    ..$(git branch-name-upstream))"
+[color "branch"]
+    current = yellow bold
+    local = green bold
+    remote = cyan bold
 
 [include]
     # Git configuration for Operating System specific configuration
