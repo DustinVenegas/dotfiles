@@ -95,7 +95,11 @@
 
 
 [include]
+    # Git configuration for Operating System specific configuration
 	path = .gitconfig_os
+
+    # Local git configuration, to be created by the user on each machine, as desired
+    path = .gitconfig_local
 
 # Modeline or non-standard named .gitconfig
 # vim:fileformat=unix filetype=.gitconfig
