@@ -51,6 +51,9 @@
 	# Undo the last commit, adding the edits back to unstaged files
 	uncommit = reset HEAD^ --mixed
 
+	# Push to an upstream with some safety (upstream ref is expected)
+	please = push --force-with-lease
+
 	###################
 	# Function aliases
 	###################
