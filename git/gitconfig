@@ -42,14 +42,17 @@
 	# Branch Management
 	####################
 	# Incoming and outgoing changesets
-	incoming = "!(git fetch --quiet && git log --pretty=format:'%C(yellow)%h %C(white)- %C(red)%an %C(white)- %C(cyan)%d%Creset %s %C(white)- %ar%Creset' ..$(git rev-parse --abbrev-ref --symbolic-full-name @{u}))"
-	outgoing = "!(git fetch --quiet && git log --pretty=format:'%C(yellow)%h %C(white)- %C(red)%an %C(white)- %C(cyan)%d%Creset %s %C(white)- %ar%Creset' $(git rev-parse --abbrev-ref --symbolic-full-name @{u})..)"
+	incoming = "!(git fetch --quiet && git log --pretty=format:'%C(yellow)%h %C(white)- %C(red)%an %C(white)- %C(cyan)%d%Creset %s %C(white)- %ar%Creset' ..$(git branch-name-upstream))"
+	outgoing = "!(git fetch --quiet && git log --pretty=format:'%C(yellow)%h %C(white)- %C(red)%an %C(white)- %C(cyan)%d%Creset %s %C(white)- %ar%Creset' $(git branch-name-upstream)..)"
 
 	# Merge the current branch into master
 	merge-into-master = !git checkout master && git merge @{-1}
 
 	# Get the current branch name (not so useful in itself, but used in other aliases)
 	branch-name = "!git rev-parse --abbrev-ref HEAD"
+
+    # Upstream branch name, using the refs/remotes/origin/master format (--symbolic-full-name)
+    branch-name-upstream = "!git rev-parse --abbrev-ref --symbolic-full-name @{upstream}"
 
 	# Push the current branch to the remote "origin", and set it to track
 	# the upstream branch
