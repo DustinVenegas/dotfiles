@@ -26,13 +26,13 @@
 	prune = true
 [log]
 	# Displays dates in ISO 8601 like format, for readability
-	#	 YYYY-MM-DD hh:mm:ss -0700
+	#    YYYY-MM-DD hh:mm:ss -0700
 	date = iso-strict
 [format]
 	# Default git log format
 	# https://stackoverflow.com/a/9463536
-	#	 Original: pretty = format:%C(auto,yellow)%h%C(auto,magenta)% G? %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(7,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D
-    pretty = format:%C(auto,yellow)%h%C(auto,magenta)%  %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(7,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D
+	#    Original: pretty = format:%C(auto,yellow)%h%C(auto,magenta)% G? %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(7,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D
+	pretty = format:%C(auto,yellow)%h%C(auto,magenta)%  %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(7,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D
 [pretty]
 	# Named git log formats
 	dotfiles = format:%C(auto,yellow)%h%C(auto,magenta)%  %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(7,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D
@@ -70,8 +70,8 @@
 	# Branch Management
 	####################
 	# Incoming and outgoing changesets
-    incoming = "!(git fetch --quiet && git log ..$(git branch-name-upstream))"
-    outgoing = "!(git fetch --quiet && git log $(git branch-name-upstream)..)"
+	incoming = "!(git fetch --quiet && git log ..$(git branch-name-upstream))"
+	outgoing = "!(git fetch --quiet && git log $(git branch-name-upstream)..)"
 
 	# Merge the current branch into master
 	merge-into-master = !git checkout master && git merge @{-1}
