@@ -17,12 +17,25 @@
 [push]
 	default = simple # Push a branch, assuming remote/local names match, to "origin"
 [rerere]
-    # Record, replay, resolve. Store manual resolutions
-    enabled = true
-    # Update the index after performing rerere actions
-    autoUpdate = true
+	# Record, replay, resolve. Store manual resolutions
+	enabled = true
+	# Update the index after performing rerere actions
+	autoUpdate = true
 [remote "origin"]
-	prune = true # Removes origin remotes that were deleted
+	# Removes origin remotes that were deleted
+	prune = true
+[log]
+	# Displays dates in ISO 8601 like format, for readability
+	#	 YYYY-MM-DD hh:mm:ss -0700
+	date = iso-strict
+[format]
+	# Default git log format
+	# https://stackoverflow.com/a/9463536
+	#	 Original: pretty = format:%C(auto,yellow)%h%C(auto,magenta)% G? %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(7,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D
+    pretty = format:%C(auto,yellow)%h%C(auto,magenta)%  %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(7,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D
+[pretty]
+	# Named git log formats
+	dotfiles = format:%C(auto,yellow)%h%C(auto,magenta)%  %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(7,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D
 [alias]
 	list-aliases = "!git config -l | grep alias | cut -c 7-"
 
@@ -38,14 +51,14 @@
 	# Undo the last commit, adding the edits back to unstaged files
 	uncommit = reset HEAD^ --mixed
 
-    ###################
-    # Function aliases
-    ###################
+	###################
+	# Function aliases
+	###################
 	# Current branch name
 	branch-name = "!git rev-parse --abbrev-ref HEAD"
 
-    # Upstream branch name, using the refs/remotes/origin/master format (--symbolic-full-name)
-    branch-name-upstream = "!git rev-parse --abbrev-ref --symbolic-full-name @{upstream}"
+	# Upstream branch name, using the refs/remotes/origin/master format (--symbolic-full-name)
+	branch-name-upstream = "!git rev-parse --abbrev-ref --symbolic-full-name @{upstream}"
 
 	# Given a merge commit, find the span of commits that exist(ed) on that branch
 	merge-span = "!f() { echo $(git log -1 $2 --merges --pretty=format:%P | cut -d' ' -f1)$1$(git log -1 $2 --merges --pretty=format:%P | cut -d' ' -f2); }; f"
@@ -54,8 +67,8 @@
 	# Branch Management
 	####################
 	# Incoming and outgoing changesets
-	incoming = "!(git fetch --quiet && git log --pretty=format:'%C(yellow)%h %C(white)- %C(red)%an %C(white)- %C(cyan)%d%Creset %s %C(white)- %ar%Creset' ..$(git branch-name-upstream))"
-	outgoing = "!(git fetch --quiet && git log --pretty=format:'%C(yellow)%h %C(white)- %C(red)%an %C(white)- %C(cyan)%d%Creset %s %C(white)- %ar%Creset' $(git branch-name-upstream)..)"
+    incoming = "!(git fetch --quiet && git log ..$(git branch-name-upstream))"
+    outgoing = "!(git fetch --quiet && git log $(git branch-name-upstream)..)"
 
 	# Merge the current branch into master
 	merge-into-master = !git checkout master && git merge @{-1}
@@ -103,31 +116,12 @@
 	# Show commits that are branch heads or tagged
 	branch-head-layout = "!git log --graph --all --decorate --simplify-by-decoration"
 
-[color]
-    # On for consoles, off for pipes and piping
-    ui = auto
-
-#git log --pretty=format:'
-#    %C(yellow)%h
-#    %C(white)-
-#    %C(red)%an
-#    %C(white)-
-#    %C(cyan)%d%Creset
-#    %s
-#    %C(white)-
-#    %ar%Creset'
-#    ..$(git branch-name-upstream))"
-[color "branch"]
-    current = yellow bold
-    local = green bold
-    remote = cyan bold
-
 [include]
-    # Git configuration for Operating System specific configuration
+	# Git configuration for Operating System specific configuration
 	path = .gitconfig_os
 
-    # Local git configuration, to be created by the user on each machine, as desired
-    path = .gitconfig_local
+	# Local git configuration, to be created by the user on each machine, as desired
+	path = .gitconfig_local
 
 # Modeline or non-standard named .gitconfig
 # vim:fileformat=unix filetype=.gitconfig
