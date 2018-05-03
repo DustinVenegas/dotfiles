@@ -1,79 +1,115 @@
-Set-StrictMode -Version latest
-$ErrorActionPreference = "Stop"
+<#
+    .Synopsis
+        Configure Git for this Dotfiles configuration
 
-function Test-HardLinkTo($path, $target)
+    .Description
+        Bootstraps the Git portion of the Dotfiles repository
+
+    .Parameter Uninstall
+        Removes appropriate installed files outside of the Dotfiles repository.
+
+    .Parameter Confirm
+        Approves all prompts
+
+    .Example
+        # Run bootstrapper, approving everything
+        .\bootstrap.ps1 -Confirm
+
+    .Example
+        # Uninstall
+        .\bootstrap.ps1 -Uninstall
+
+    .Notes
+        Files from the dotfiles git/ directory are Symlinked into $HOME/.git*
+
+        For example, $HOME/.gitconfig should be symlinked to dotfiles/git/gitconfig
+#>
+#Requires -Version 5
+#Requires -RunAsAdministrator
+[CmdletBinding()]
+param(
+    [switch]$confirm,
+    [switch]$uninstall
+)
+Begin
 {
-    if (Test-Path $path)
+    Set-StrictMode -Version latest
+    $ErrorActionPreference = "Stop"
+
+    function Test-LinkTarget
     {
-        $pathFileInfo = Get-Item $path
+        param ($path, $target)
 
-        if ($pathFileInfo.LinkType -eq 'HardLink')
-        {
-            $hardLinkTargetPath = Resolve-Path $pathFileInfo.Target;
-            $targetPath = Resolve-Path $target;
+        $resolvedTarget = Resolve-Path $target -ErrorAction SilentlyContinue
 
-            return $hardLinkTargetpath.Path -eq $targetpath.Path
-        }
+        $found = Get-Item $path |
+            Where-Object -Property LinkType |
+            Where-Object {
+                $resolvedLinkTarget = (Resolve-Path $_.Target -ErrorAction SilentlyContinue)
+                ($resolvedTarget.Path -eq $resolvedLinkTarget.Path)
+            }
+
+        return ($found -ne $null)
     }
 
-    return $false
-}
-
-function Ensure-HardLinkTo($path, $target)
-{
-    if (-Not (Test-Path $target))
+    function Set-SymbolicLink
     {
-        Write-Error "Expected HardLink target ($target) to exist, but it's misssing!"
-    }
+        param
+        (
+            $path,
+            $target
+        )
 
-    # Does anything already exist?
-    if (Test-Path $path)
-    {
-        if (Test-HardLinkTo -Path $path -Target $target)
+        if (-Not (Test-Path $target)) { Write-Error "Expected target ($target) to exist, but was missing!" }
+
+        if (Test-Path $path)
         {
-            Write-Verbose "OK $path is a HardLink pointed to $target"
+            if (-Not (Test-LinkTarget $path $target))
+            {
+                Write-Error "Set-SymbolicLink failed. File already exists at $path, but may not be a symbolic link pointed to $target"
+            }
         }
         else
         {
-            Write-Warning @"
-Expected $path to be a HardLink pointed at $target.
-   Backup and delete, or move, $path then re-run this script.
-"@
+            New-Item -Type SymbolicLink -Path $path -Value $target | Out-Null
         }
+    }
+
+    function Ensure-PoshGit
+    {
+        if ((Get-Module -Name posh-git -ListAvailable) -eq $null)
+        {
+            Write-Host "Installing posh-git"
+            Install-Module -Name 'posh-git' -Scope "CurrentUser" -Confirm
+        } else {
+            Write-Host "Updating posh-git"
+            Update-Module -Name 'posh-git' -Confirm
+        }
+    }
+}
+Process
+{
+    # Ensures $DOTFILES_BASE/git
+    #    $HOME/.gitconfig -> $dotfiles/git/gitconfig
+    #    $HOME/.gitconfig_os -> $dotfiles/git/gitconfig_os_windows
+    #    $HOME/.gitignore -> $dotfiles/git/gitignore
+    #    $HOME/.gitattributes -> $dotfiles/git/gitattributes
+    $symlinks = @{
+        (Join-Path -Path $HOME -ChildPath '.gitconfig') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig');
+        (Join-Path -Path $HOME -ChildPath '.gitconfig_os') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig_os_windows');
+        (Join-Path -Path $HOME -ChildPath '.gitignore') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitignore');
+        (Join-Path -Path $HOME -ChildPath '.gitattributes') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitattributes');
+    }
+
+    if ($uninstall)
+    {
+        $symlinks.Keys | Get-Item -ErrorAction SilentlyContinue | Foreach-Object { $_.Delete() }
     }
     else
     {
-        # Nothing at $path, so just create it!
-        $hardLinkFileInfo = New-Item -Type HardLink -Path $path -Value $target
-        Write-Verbose "CREATED: $($hardLinkFileInfo.Name), a $($hardLinkFileInfo.LinkType), pointed at $($hardLinkFileInfo.Target)"
+        $symlinks.Keys | %{ Set-SymbolicLink -Path $_ -Target $symlinks[$_] }
+
+        # Install or update Posh-Git
+        Ensure-PoshGit
     }
 }
-
-function Ensure-PoshGit
-{
-    if ((Get-Module -Name posh-git -ListAvailable) -eq $null)
-    {
-        Write-Host "Installing posh-git"
-        Install-Module -Name 'posh-git' -Scope "CurrentUser" -Confirm
-    } else {
-        Write-Host "Updating posh-git"
-        Update-Module -Name 'posh-git' -Confirm
-    }
-}
-
-# Ensures $DOTFILES_BASE/git
-#    $HOME/.gitconfig -> $dotfiles/git/gitconfig
-#    $HOME/.gitconfig_os -> $dotfiles/git/gitconfig_os_windows
-#    $HOME/.gitignore -> $dotfiles/git/gitignore
-#    $HOME/.gitattributes -> $dotfiles/git/gitattributes
-$hardLinks = @{
-    (Join-Path -Path $HOME -ChildPath '.gitconfig') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig');
-    (Join-Path -Path $HOME -ChildPath '.gitconfig_os') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig_os_windows');
-    (Join-Path -Path $HOME -ChildPath '.gitignore') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitignore');
-    (Join-Path -Path $HOME -ChildPath '.gitattributes') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitattributes');
-}
-
-$hardLinks.Keys | %{ Ensure-HardLinkTo -Path $_ -Target $hardLinks[$_] }
-
-# Install or update Posh-Git
-Ensure-PoshGit
