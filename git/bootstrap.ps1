@@ -38,15 +38,14 @@ Begin
 
     function Test-LinkTarget
     {
-        param ($path, $target)
+        param ( $path, $target)
 
-        $resolvedTarget = Resolve-Path $target -ErrorAction SilentlyContinue
+        $resolvedTargetPath = Resolve-Path $target -ErrorAction SilentlyContinue
 
         $found = Get-Item $path |
             Where-Object -Property LinkType |
             Where-Object {
-                $resolvedLinkTarget = (Resolve-Path $_.Target -ErrorAction SilentlyContinue)
-                ($resolvedTarget.Path -eq $resolvedLinkTarget.Path)
+                (Resolve-Path $_.Target -ErrorAction SilentlyContinue) -eq $resolvedTargetPath
             }
 
         return ($found -ne $null)
