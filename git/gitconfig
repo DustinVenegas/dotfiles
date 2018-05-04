@@ -52,7 +52,7 @@
 	uncommit = reset HEAD^ --mixed
 
 	# Push to an upstream with some safety (upstream ref is expected)
-	please = push --force-with-lease
+	push-please = push --force-with-lease
 
 	###################
 	# Function aliases
@@ -60,18 +60,12 @@
 	# Current branch name
 	branch-name = "!git rev-parse --abbrev-ref HEAD"
 
-	# Upstream branch name, using the refs/remotes/origin/master format (--symbolic-full-name)
-	branch-name-upstream = "!git rev-parse --abbrev-ref --symbolic-full-name @{upstream}"
-
-	# Given a merge commit, find the span of commits that exist(ed) on that branch
-	merge-span = "!f() { echo $(git log -1 $2 --merges --pretty=format:%P | cut -d' ' -f1)$1$(git log -1 $2 --merges --pretty=format:%P | cut -d' ' -f2); }; f"
-
 	####################
 	# Branch Management
 	####################
 	# Incoming and outgoing changesets
-	incoming = "!(git fetch --quiet && git log ..$(git branch-name-upstream))"
-	outgoing = "!(git fetch --quiet && git log $(git branch-name-upstream)..)"
+	incoming = "!(git fetch --quiet && git log ..@{upstream})"
+	outgoing = "!(git fetch --quiet && git log @{upstream}..)"
 
 	# Merge the current branch into master
 	merge-into-master = !git checkout master && git merge @{-1}
@@ -90,34 +84,32 @@
 	# See also: https://gist.github.com/robmiller/5133264
 	delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 
-	# List remote branches by owner (last commiter)
+	# Branches/refs/heads with owner (last commiter)
 	branch-owners = "!(git for-each-ref --format='%(committerdate) %09 %(authorname) %09 %(refname)' | sort -k5n -k2M -k3n -k4n)"
 
 	#############
-	# Spleunking
+	# Logs
 	#############
-	# Find the commits that were introduced by a merge
-	merge-log = "!git log `git merge-span .. $1`"
-
-	# Show the changes that were introduced by a merge
-	merge-diff = "!git diff `git merge-span ... $1`"
-
-	# As above, but in your difftool
-	merge-difftool = "!git difftool `git merge-span ... $1`"
-
-	# History inspection
-	news = log -p HEAD@{1}..HEAD@{0}
-
-	# Show commit log using graph notation. Use --all to see all branches contextually
-	log-graph = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+	# Show commit log using graph notation; consider params --all, -20, etc
+	log-graph = log --graph --oneline --abbrev-commit
 
 	# List commits showing changed files
-	ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+	log-numstat = log --numstat
 
-	ra = log --graph --abbrev-commit --date=relative -20 --all --pretty='format:%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset'
+	# Log with statistics
+	log-stat = log --stat
 
-	# Show commits that are branch heads or tagged
-	branch-head-layout = "!git log --graph --all --decorate --simplify-by-decoration"
+	# Remote branch heads or tagged
+	log-relative-branches = "!git log --graph --all --decorate --simplify-by-decoration"
+
+	#############
+	# Aliases
+	#############
+
+	lg = !git log-graph
+	ln = !git log-numstat
+	ls = !git log-stat
+	lrb = !git log-relative-branches
 
 [include]
 	# Git configuration for Operating System specific configuration
