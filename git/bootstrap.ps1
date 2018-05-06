@@ -33,46 +33,10 @@ param(
 )
 Begin
 {
+    $dotfilesModulePath = Resolve-Path (Join-Path $PSScriptRoot ../WindowsPowerShell/Modules-Dotfiles/Dotfiles/Dotfiles.psm1)
+    Import-Module -Name $dotfilesModulePath
     Set-StrictMode -Version latest
     $ErrorActionPreference = "Stop"
-
-    function Test-LinkTarget
-    {
-        param ( $path, $target)
-
-        $resolvedTargetPath = Resolve-Path $target -ErrorAction SilentlyContinue
-
-        $found = Get-Item $path |
-            Where-Object -Property LinkType |
-            Where-Object {
-                (Resolve-Path $_.Target -ErrorAction SilentlyContinue) -eq $resolvedTargetPath
-            }
-
-        return ($found -ne $null)
-    }
-
-    function Set-SymbolicLink
-    {
-        param
-        (
-            $path,
-            $target
-        )
-
-        if (-Not (Test-Path $target)) { Write-Error "Expected target ($target) to exist, but was missing!" }
-
-        if (Test-Path $path)
-        {
-            if (-Not (Test-LinkTarget $path $target))
-            {
-                Write-Error "Set-SymbolicLink failed. File already exists at $path, but may not be a symbolic link pointed to $target"
-            }
-        }
-        else
-        {
-            New-Item -Type SymbolicLink -Path $path -Value $target | Out-Null
-        }
-    }
 
     function Ensure-PoshGit
     {
@@ -102,11 +66,13 @@ Process
 
     if ($uninstall)
     {
-        $symlinks.Keys | Get-Item -ErrorAction SilentlyContinue | Foreach-Object { $_.Delete() }
+        # Delete the symlinks that exist
+        $symlinks.Keys | Where-Object { Test-DotfilesSymlink -Path $_ -Target $symlinks[$_] } | Foreach-Object { $_.Delete() }
     }
     else
     {
-        $symlinks.Keys | %{ Set-SymbolicLink -Path $_ -Target $symlinks[$_] }
+        # Create symlinks
+        $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] }
 
         # Install or update Posh-Git
         Ensure-PoshGit

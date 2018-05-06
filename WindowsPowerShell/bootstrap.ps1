@@ -36,6 +36,8 @@ param(
 )
 Begin
 {
+    $dotfilesModulePath = Resolve-Path (Join-Path $PSScriptRoot ../WindowsPowerShell/Modules-Dotfiles/Dotfiles/Dotfiles.psm1)
+    Import-Module -Name $dotfilesModulePath
     Set-StrictMode -Version Latest
     $ErrorActionPreference = "Stop"
 
@@ -101,98 +103,22 @@ Begin
             Update-Module
         }
     }
-
-    function Test-LinkTarget
-    {
-        param
-        (
-            $path,
-            $expectedTarget
-        )
-
-        $pathFileInfo = Get-Item $path -ErrorAction SilentlyContinue
-
-        # 'HardLink', 'SymbolicLink', or 'Junction'
-        if ($pathFileInfo.LinkType)
-        {
-            $linkTargetPath = Resolve-Path $pathFileInfo.Target;
-            $targetPath = Resolve-Path $target;
-
-            return $linkTargetpath.Path -eq $targetpath.Path
-        }
-        else
-        {
-            Write-Verbose @"
-Test-LinkTarget failed on $path!
-    Expected -Not `$Null
-    Received $($pathFileInfo.LinkType)
-"@
-
-            return $false
-        }
-    }
-
-    function Confirm-LinkTo
-    {
-        param($path, $target)
-
-        <#
-        Note, SymbolicLinks require admin to create but are flexibly across drives/files/folders
-              Author assumes links are symbolic links or known/managed outside this script.
-        #>
-
-        if (-Not (Test-Path $target))
-        {
-            Write-Error "Expected target ($target) to exist, but was misssing!"
-            return $false
-        }
-
-        if (Test-Path $path)
-        {
-            if (Test-LinkTarget -Path $path -Target $target)
-            {
-                Write-Verbose "OK! $path is already pointed to $target"
-                return $true
-            }
-            else
-            {
-                Write-Error @"
-Confirm-LinkTo failed!
-    Path: $path
-    Target: $target
-
-Expected Path to be a SymbolicLink or Junction to Target.
-
-    a) Is Path a SymbolicLink or Junction? Check the target!
-    b) Is Path a regular folder? Backup, then rename/move Path!
-
-Re-run this script after resolving Path to continue.
-"@
-            }
-        }
-        else
-        {
-            # Nothing at $path, so just create it!
-            $createdFileInfo = New-Item -Type SymbolicLink -Path $path -Value $target
-            Write-Verbose "CREATED: $($createdFileInfo.Name), a $($createdFileInfo.LinkType), pointed at $($createdFileInfo.Target)"
-            return $true
-        }
-    }
 }
 Process
 {
     # Maps: HOME/Documents/WindowsPowerShell/ -> $dotfiles/WindowsPowerShell/
-    $hardLinks = @{ (Join-Path -Path "$HOME/Documents/" -ChildPath 'WindowsPowerShell/') = $PSScriptRoot; }
+    $symlinks = @{ (Join-Path -Path "$HOME/Documents/" -ChildPath 'WindowsPowerShell/') = $PSScriptRoot; }
     $expectedPsGalleryModules = 'posh-git','PSFzf','PSScriptAnalyzer'
 
     if ($uninstall)
     {
-        # Remove HardLinks
-        $hardLinks.Keys | Get-Item -ErrorAction SilentlyContinue | Foreach-Object { $_.Delete() }
+        # Delete the symlinks that exist
+        $symlinks.Keys | Where-Object { Test-DotfilesSymlink -Path $_ -Target $symlinks[$_] } | Foreach-Object { $_.Delete() }
     }
     else
     {
-        $hardLinks.Keys | Foreach-Object { Confirm-LinkTo -Path $_ -Target $hardLinks[$_] } | Out-Null
+        # Create symlinks
+        $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] }
 
         # Confirm PSGallery is trusted so we're not prompted
         Confirm-PSRepositoryTrusted 'PSGallery' | Out-Null
