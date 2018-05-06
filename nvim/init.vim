@@ -54,6 +54,7 @@ if executable('rg')
     let g:ackprg='rg --vimgrep --no-heading'
     let g:gitgutter_grep='rg'
     set grepprg=rg\ --vimgrep\ --no-heading
+
     set grepformat=%f:%l:%c:%m,%f:%l:%m
                   " |  |  |  + Message
                   " |  |  + Column Number
@@ -106,9 +107,14 @@ set wrap! " Line wrapping off
 let g:fzf_command_prefix = 'Fzf' " Prefixes all fzf commands with Fzf
 
 if executable('rg')
-    " Use rg as the default fzf command (fuzzy finder) for listing files
-    " Include (u) .gitignore masks, (uu) and hidden; NOT (uuu) binary
-    let $FZF_DEFAULT_COMMAND='rg -uu --files --vimgrep'
+    " fzf (Fuzzy Finder)
+    "   - Use rg (RipGrep) if available
+    "   - Filename list
+    "   - Greedy file listing with hidden and .gitignore included
+    " NOTE: Should be same as ../WindowsPowerShell/profile.ps1
+    "   !!EXCEPT FOR!! the --vimdiff should not be used in PowerShell
+    "   Consider RIPGREP_CONFIG_PATH if this becomes a PITA
+    let $FZF_DEFAULT_COMMAND='rg --hidden --ignore --files --glob "!.git/" --glob "!.git\"'
 
     " Rg (RipGrep) for Fzf
     command! -bang -nargs=* FzfRg

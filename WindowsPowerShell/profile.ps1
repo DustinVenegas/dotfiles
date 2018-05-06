@@ -30,7 +30,6 @@ Either run .\bootstrap.ps1 or install the module manually.
 "@
 }
 
-
 if (Test-Path C:\ProgramData\Chocolatey\lib\ripgrep\tools\_rg.ps1)
 {
     # Source the ripgrep configuration
@@ -86,9 +85,21 @@ else
 ################################################################################
 # Plugins
 ################################################################################
-# Set the fzf (Fuzzy Finder) default to use rg (RipGrep)
-# Include (u) .gitignore masks, (uu) and hidden; NOT (uuu) binary
-$env:FZF_DEFAULT_COMMAND = 'rg -uu --files --vimgrep'
+if (Get-Command fzf -ErrorAction SilentlyContinue)
+{
+    # fzf (Fuzzy Finder)
+    #   - Use rg (RipGrep) if available
+    #   - Filename list
+    #   - Greedy file listing with hidden and .gitignore included
+    # NOTE: Should be same as ../nvim/init.vim
+    #   !!EXCEPT FOR!! the --vimdiff parameter; it will cause fzf errors
+    #   Consider RIPGREP_CONFIG_PATH if this becomes a PITA
+    $env:FZF_DEFAULT_COMMAND = 'rg --hidden --ignore --files --glob "!.git/" --glob "!.git\"'
+}
+else
+{
+    Write-Verbose "fzf, a file search helper, was not found on this system."
+}
 
 ################################################################################
 # Customize Prompt
