@@ -25,19 +25,42 @@
 	# Removes origin remotes that were deleted
 	prune = true
 [log]
-	# Displays dates in ISO 8601 like format, for readability
-	#    YYYY-MM-DD hh:mm:ss -0700
-	date = iso-strict
+	# Normalize dates to local machine time zone
+	date = local
 [format]
-	# Default git log format
-	# https://stackoverflow.com/a/9463536
-	#    Original: pretty = format:%C(auto,yellow)%h%C(auto,magenta)% G? %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(7,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D
-	pretty = format:%C(auto,yellow)%h%C(auto,magenta)%  %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(7,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D
-[pretty]
-	# Named git log formats
-	dotfiles = format:%C(auto,yellow)%h%C(auto,magenta)%  %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(7,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D
+	# Default git log format:
+	#
+	#     |- Commit hash
+	#     |       |- Commit message (short)
+	#     2d8c3e1 Region storage account should be in multiple regions
+	#     [Dustin Venegas] (Tue Oct 31 10:56:03 2017) (HEAD -> saRegionFix, origin/saRegionFix) {4906b57}
+	#     |                |                          |                                         |- Parents
+	#     |                |                          |- Reflog selector
+	#     |                |- Date (--date=utc,short,relative,etc works)
+	#     |- Author name
+	#
+	# %s, subject (first comment line)
+	# %n, newline
+	# C(auto), reset and automatically color text
+	# %h, short commit hash
+	# %aN, author name (supports .mailmap)
+	# %ad, author date
+	# %gd, reflog selector (master, origin/master, etc format)
+	# %d, decorates reflog selector with colors
+	# %p, parent commit hashes
+	pretty = format:%C(auto)%h%C(auto) %s%n  [%C(auto)%aN] (%C(auto)%ad)%gd%d {%p}%n
+[color "decorate"]
+	branch = green
+	remoteBranch = red
+	tag = white reverse
+	stash = cyan
+	HEAD = green reverse
+[color "branch"]
+	current = green reverse
+	local = green
+	remote = red
 [alias]
-	list-aliases = "!git config -l | grep alias | cut -c 7-"
+	list-aliases = "!git config --list | grep alias | cut -c 7-"
 
 	############
 	# Utilities
@@ -91,16 +114,21 @@
 	# Logs
 	#############
 	# Show commit log using graph notation; consider params --all, -20, etc
-	log-graph = log --graph --oneline --abbrev-commit
+	log- = log --abbrev-commit --decorate
+	log-graph = "!git log- --graph --topo-order"
+	log-graph-oneline = "!git log-graph --pretty=oneline"
 
 	# List commits showing changed files
-	log-numstat = log --numstat
+	log-numstat = "!git log- --numstat"
 
 	# Log with statistics
-	log-stat = log --stat
+	log-stat = "!git log- --stat"
 
 	# Remote branch heads or tagged
-	log-relative-branches = "!git log --graph --all --decorate --simplify-by-decoration"
+	# --all, includes all branches, tags, stashes, etc
+	# --simplify-by-decoration, simple ref names; ref/heads/master -> master
+	# --boundary, includes bounding commits so parents are displayed
+	log-branch = log --graph --decorate --boundary --all --simplify-by-decoration
 
 	#############
 	# Aliases
@@ -109,7 +137,7 @@
 	lg = !git log-graph
 	ln = !git log-numstat
 	ls = !git log-stat
-	lrb = !git log-relative-branches
+	lb = !git log-branch
 
 [include]
 	# Git configuration for Operating System specific configuration
