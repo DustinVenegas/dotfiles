@@ -124,6 +124,9 @@
 	# List commits showing changed files
 	log-numstat = "!git log- --numstat"
 
+	log-outgoing = log @{upstream}..
+	log-incoming = log ..@{upstream}
+
 	# Log with statistics
 	log-stat = "!git log- --stat"
 
