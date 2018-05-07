@@ -66,7 +66,17 @@ Related Preferences
 "@ -InformationAction Continue
 }
 
+function Import-DotfilesUserModules
+{
+    # Chocolatey tab expansion
+    $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+    if (Test-Path($ChocolateyProfile)) {
+        Import-Module "$ChocolateyProfile"
+    }
+}
+
 Write-MessageOfTheDay
 Set-PowerShellHostCustomColor
+Import-DotfilesUserModules
 
 Set-StrictMode -Off
