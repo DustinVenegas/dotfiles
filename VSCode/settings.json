@@ -1,0 +1,9 @@
+// Place your settings in this file to overwrite the default settings
+{
+    "vim.enableNeovim": true,
+    "vim.hlsearch": true,
+    "vim.neovimPath": "nvim",
+    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "workbench.iconTheme": "vscode-icons",
+    "team.showWelcomeMessage": false
+}

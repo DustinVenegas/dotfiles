@@ -3,6 +3,8 @@
 
 # Files I want normalized
 *.sh text eol=lf
+*.json text eol=lf
+*.js text eol=lf
 *.ps1 text eol=clrf
 
 # All git* files shuld be basic lf
