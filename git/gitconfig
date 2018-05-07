@@ -107,6 +107,9 @@
 	# See also: https://gist.github.com/robmiller/5133264
 	delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 
+	# Ran filter-branches? AFTER YOU VERIFY, run this. It deletes the backups from filter-branches at refs/original
+	delete-refs-original-backup = "!git for-each-ref --format='%(refname)' refs/original/ | xargs -n 1 git update-ref -d"
+
 	# Branches/refs/heads with owner (last commiter)
 	branch-owners = "!(git for-each-ref --format='%(committerdate) %09 %(authorname) %09 %(refname)' | sort -k5n -k2M -k3n -k4n)"
 
