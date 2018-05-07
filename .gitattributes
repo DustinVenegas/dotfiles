@@ -7,3 +7,6 @@
 
 # All git* files shuld be basic lf
 git/git* text eol=lf
+
+# ConEmu prefers lf by default
+ConEmu.xml text eol=lf
