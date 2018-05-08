@@ -8,3 +8,6 @@ _viminfo
 #   - We are running x-platform, which causes *.lock churn
 #   - We're not shipping a binary
 nvim/python-venvs/**/Pipfile.lock
+
+# VSCode
+VSCode/workspaceStorage/**

@@ -35,15 +35,14 @@ Begin
     $dotfilesModulePath = Resolve-Path (Join-Path $PSScriptRoot ../WindowsPowerShell/Modules-Dotfiles/Dotfiles/Dotfiles.psm1)
     Import-Module -Name $dotfilesModulePath
     Set-StrictMode -Version Latest
-    $ErrorActionPreference = "Stop"
 }
 Process
 {
+    $ErrorActionPreference = "Stop"
+
     # Maps: AppData/Roaming/Code/User/* -> $dotfiles/VSCode/*
     $symlinks = @{
-        (Join-Path "$env:APPDATA\Code\User\" "settings.json") = (Join-Path $PSScriptRoot settings.json);
-        (Join-Path "$env:APPDATA\Code\User\" "keybindings.json") = (Join-Path $PSScriptRoot keybindings.json);
-        (Join-Path "$env:APPDATA\Code\User\" "snippets") = (Join-Path $PSScriptRoot snippets\);
+        (Join-Path "$env:APPDATA\Code\" "User\") = (Join-Path $PSScriptRoot '');
     }
 
     $vscodeExtensions = @(
@@ -64,7 +63,7 @@ Process
     else
     {
         # Create symlinks
-        $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] }
+        $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] -ErrorAction Stop }
 
         $vscodeExtensions | Foreach-Object {
             Write-Verbose "having VSCode install $_"
