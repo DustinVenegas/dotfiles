@@ -4,3 +4,6 @@
 # Files I want normalized
 *.sh text eol=lf
 *.ps1 text eol=clrf
+
+# All git* files shuld be basic lf
+git/git* text eol=lf
