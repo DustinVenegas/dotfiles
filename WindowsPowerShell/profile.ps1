@@ -83,9 +83,12 @@ else
     New-Alias -Name grep -Value rg | Out-Null
 }
 
-################################################################################
-# Plugins
-################################################################################
+if (Get-Command nvim -ErrorAction SilentlyContinue)
+{
+    Set-Alias -Name nvi -Value nvim
+    Set-Alias -Name nvq -Value nvim-qt
+}
+
 if (Get-Command fzf -ErrorAction SilentlyContinue)
 {
     # fzf (Fuzzy Finder)
@@ -96,10 +99,6 @@ if (Get-Command fzf -ErrorAction SilentlyContinue)
     #   !!EXCEPT FOR!! the --vimdiff parameter; it will cause fzf errors
     #   Consider RIPGREP_CONFIG_PATH if this becomes a PITA
     $env:FZF_DEFAULT_COMMAND = 'rg --hidden --ignore --files --glob "!.git/" --glob "!.git\"'
-}
-else
-{
-    Write-Verbose "fzf, a file search helper, was not found on this system."
 }
 
 ################################################################################
