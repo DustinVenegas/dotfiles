@@ -73,6 +73,15 @@ function Import-DotfilesUserModules
     if (Test-Path($ChocolateyProfile)) {
         Import-Module "$ChocolateyProfile"
     }
+
+    if (Get-Module -ListAvailable PSFzf)
+    {
+        # Remove default binding for previous history
+        Remove-PSReadlineKeyHandler 'CTRL+R'
+
+        # PSFzf should bind CTRL+T (Set-Location), CTRL+R (history)
+        Import-Module PSFzf
+    }
 }
 
 Write-MessageOfTheDay
