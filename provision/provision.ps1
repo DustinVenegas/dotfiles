@@ -80,28 +80,3 @@ if (Test-Application gvim.exe) {
 } else {
     Write-Warning "vim not found"
 }
-
-# PS All Hosts Profile
-if (Test-Path $PROFILE.CurrentUserAllHosts) {
-    Write-Warning "Profile already exists at $($PROFILE.CurrentUserAllHosts)"
-} else {
-    Write-Host "Creating PS profile at $($PROFILE.CurrentUserAllHosts)"
-
-    New-Item -type file -force $PROFILE.CurrentUserAllHosts | Out-Null
-
-    ". $dotfilesPath\WindowsPowershell\profile.ps1" |
-        Out-File -FilePath $PROFILE.CurrentUserAllHosts -Encoding utf8 -Force
-}
-
-# PS Windows Powershell Profile
-if (Test-Path $PROFILE.CurrentUserCurrentHost) {
-    Write-Warning "Profile already exists at $($PROFILE.CurrentUserCurrentHost)"
-} else {
-    Write-Host "Creating PS profile at $($PROFILE.CurrentUserCurrentHost)"
-
-    New-Item -type file -force $PROFILE.CurrentUserCurrentHost | Out-Null
-
-    ". $dotfilesPath\WindowsPowershell\Microsoft.PowerShell_profile.ps1" |
-        Out-File -FilePath $PROFILE.CurrentUserCurrentHost -Encoding utf8 -Force
-}
-
