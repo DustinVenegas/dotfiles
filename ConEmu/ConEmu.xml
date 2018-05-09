@@ -619,7 +619,7 @@
 					<value name="GuiArgs" type="string" data=""/>
 					<value name="Active" type="long" data="0"/>
 					<value name="Count" type="long" data="1"/>
-					<value name="Cmd1" type="string" data="powershell.exe"/>
+					<value name="Cmd1" type="string" data="powershell.exe -new_console:h9999"/>
 				</key>
 				<key name="Task5" modified="2018-05-07 23:56:59" build="180503">
 					<value name="Name" type="string" data="{PowerShell::PowerShell (Admin)}"/>
@@ -628,7 +628,7 @@
 					<value name="GuiArgs" type="string" data=""/>
 					<value name="Active" type="long" data="0"/>
 					<value name="Count" type="long" data="1"/>
-					<value name="Cmd1" type="string" data="powershell.exe -new_console:a"/>
+					<value name="Cmd1" type="string" data="powershell.exe -new_console:a:h9999"/>
 				</key>
 				<key name="Task6" modified="2018-05-07 23:56:59" build="180503">
 					<value name="Name" type="string" data="{Other::Show ANSI colors}"/>
