@@ -65,7 +65,8 @@ function Set-DotfilesDrives
                 -Name $_[0] `
                 -PSProvider FileSystem `
                 -Root $_[1] `
-                -Description $_[2] | Out-Null
+                -Description $_[2] `
+                -Scope 'Global' | Out-Null
         }
 }
 
