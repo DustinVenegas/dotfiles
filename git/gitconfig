@@ -113,6 +113,12 @@
 	# Branches/refs/heads with owner (last commiter)
 	branch-owners = "!(git for-each-ref --format='%(committerdate) %09 %(authorname) %09 %(refname)' | sort -k5n -k2M -k3n -k4n)"
 
+	# Remote branch heads or tagged
+	# --all, includes all branches, tags, stashes, etc
+	# --simplify-by-decoration, simple ref names; ref/heads/master -> master
+	# --boundary, includes bounding commits so parents are displayed
+    branch-graph = log --graph --decorate --boundary --all --simplify-by-decoration
+
 	#############
 	# Logs
 	#############
@@ -129,12 +135,6 @@
 
 	# Log with statistics
 	log-stat = "!git log- --stat"
-
-	# Remote branch heads or tagged
-	# --all, includes all branches, tags, stashes, etc
-	# --simplify-by-decoration, simple ref names; ref/heads/master -> master
-	# --boundary, includes bounding commits so parents are displayed
-	log-branch = log --graph --decorate --boundary --all --simplify-by-decoration
 
 	#############
 	# Aliases
