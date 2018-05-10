@@ -1,5 +1,7 @@
 " vim:foldmethod=marker:foldlevel=100
 
+runtime 'variables.local.vim'
+
 " Plugins {{{
 call plug#begin()
 
