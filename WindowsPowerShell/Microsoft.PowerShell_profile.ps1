@@ -76,7 +76,7 @@ function Import-DotfilesUserModules
 
     if (Get-Module -ListAvailable PSFzf)
     {
-        # Remove default binding for previous history
+        # Allows PSFzf to hook keybindings for Invoke-FuzzyHistory to CTRL+R
         Remove-PSReadlineKeyHandler 'CTRL+R'
 
         # PSFzf should bind CTRL+T (Set-Location), CTRL+R (history)
