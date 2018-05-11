@@ -40,7 +40,7 @@ call plug#end()
 
 " mileszs/ack.vim {{{
 
-" Avoid errosr on Windows by turning off gitgutter grep by default
+" Avoid errors on Windows by turning off gitgutter grep by default
 let g:gitgutter_grep=''
 
 if executable('grep')
