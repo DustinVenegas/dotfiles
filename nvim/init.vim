@@ -1,5 +1,39 @@
 " vim:foldmethod=marker:foldlevel=100
 
+" Local settings files {{{
+function! s:IncludeDotfilesVim()
+    " Includes the local.dotfiles.vim from the rtp
+    if !empty(globpath(&rtp, 'local.dotfiles.vim'))
+        " Source all instances of local.settings.vim in the &rtp
+        " TODO: Keep or ditch? I like the idea of json if
+        runtime! 'local.dotfiles.vim'
+    endif
+endfunction
+
+function! s:IncludeDotfilesJson()
+    " Includes (sets) settings from local.dotfiles.json from the rtp
+    let localDfSettings = globpath(&rtp, 'local.dotfiles.json')
+    if !empty(localDfSettings)
+        "echomsg 'DF: Using local configuration variables at $localDfSettings'
+        let json = json_decode(readfile(localDfSettings))
+
+        " Supported settings
+        for key in keys(json)
+            let value = get(json, key, '')
+
+            "echom '  - Let ' . key . ' equal ' . value
+            let letText = "let " . key . " = '" . value . "'"
+
+            exec(letText)
+        endfor
+    endif
+endfunction
+
+call s:IncludeDotfilesVim()
+call s:IncludeDotfilesJson()
+" }}}
+
+
 " Plugins {{{
 call plug#begin()
 
