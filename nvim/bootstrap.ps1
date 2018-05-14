@@ -147,6 +147,14 @@ Begin
             Write-Warning "Chocolatey is missing! Uh, that means the packages couldn't be installed. You'll need to look into this."
         }
     }
+
+    function Install-NeovimForNodejs
+    {
+        # Install node.js neovim plugin to GLOBAL packages
+        # NOTE: Consider using a virtualenv instead of the global path.
+        &npm install -g neovim
+        &npm upgrade -g neovim
+    }
 }
 Process
 {
@@ -179,6 +187,9 @@ Process
 
         # Set EDITOR to nvim-qt
         Set-UserEnvVar -Name EDITOR -Value 'nvim-qt'
+
+        # Install Node.js Neovim plugin for direct neovim->nodejs integration
+        Install-NeovimForNodejs
 
         # Python VEnvs
         Install-Pipenv
