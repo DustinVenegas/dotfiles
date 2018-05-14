@@ -129,7 +129,8 @@ function Prompt {
 
     Write-Host "$([char]0x0A7) " -NoNewLine -ForegroundColor $colorStatus
 
-    if ($PSSenderInfo)
+    #if ($PSSenderInfo)
+    if (Get-Variable -Name 'PSSenderInfo' -ErrorAction SilentlyContinue)
     {
         # Display the computer name if this is a remote session
         # $PSSenderInfo is only available in PSSession to detect remoting.
