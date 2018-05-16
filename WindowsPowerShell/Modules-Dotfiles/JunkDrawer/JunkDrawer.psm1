@@ -44,19 +44,6 @@ function Convert-FromBinHex([string]$binhex) {
     return $arr
 }
 
-function Get-Hash($value, $hashalgo = 'MD5') {
-    <#
-    .SYNOPSIS Converts the incoming value into a Hashcode
-    #>
-    $tohash = $value
-    if ( $value -is [string] ) {
-        $tohash = [text.encoding]::UTF8.GetBytes($value)
-    }
-
-    $hash = [Security.Cryptography.HashAlgorithm]::Create($hashalgo)
-    return Convert-ToBinHex($hash.ComputeHash($tohash));
-}
-
 function Edit-HostsFile{
     <#
     .SYNOPSIS Edits the machine host file
@@ -103,7 +90,6 @@ function New-HttpBasicAuthHeader([PSCredential]$credential)
 $exportModuleMemberParams = @{
     Function = @(
         'Edit-HostsFile',
-        'Get-Hash',
         'New-Guid',
         'New-HttpBasicAuthValue',
         'New-HttpBasicAuthHeader',
