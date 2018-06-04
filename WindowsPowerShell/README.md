@@ -11,6 +11,10 @@ Using an **Administrator** PowerShell instance, execute the `bootstrap.ps1` scri
 .\bootstrap.ps1 -Confirm
 ```
 
+## Configuration
+
+For Local, or machine-specific configurations, use `./WindowsPowerShell/local.profile.ps1` and start editing.
+
 ## Modules
 
 PSModulePath (`$env:PSModulePath`) should contain two dotfiles-related entries.

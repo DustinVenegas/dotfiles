@@ -1,0 +1,8 @@
+################################################
+# Localhost PowerShell Profile Commands
+################################################
+
+<#
+ Great for things like
+   - Environment Variables: $env:FOO = 'BAR'
+#>

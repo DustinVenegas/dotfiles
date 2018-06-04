@@ -9,3 +9,7 @@ A collection of configurations, customizations, settings, etc known as a [dotfil
   * [`nvim`](./nvim/README.md) - [Neovim](https://www.neovim.io/) modal editor configuration. Expects to be [source](https://neovim.io/doc/user/repeat.html#:source) loaded from the appropriate [`XGD_BASE_DIR`](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
   * [`provision`](./provision/README.md) - Provisioning scripts for this dotfiles repository
   * [`WindowsPowershell`](./WindowsPowerShell/README.md) - Windows Powershell configuration files and scripts.
+
+### Templates
+
+Templates should be named similar to `local.<origin name>.template`.Templates should be committed to the Git repository.

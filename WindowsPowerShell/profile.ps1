@@ -166,5 +166,10 @@ function Prompt {
 }
 
 Import-Module JunkDrawer
+$localProfilePath = Join-Path $PSScriptRoot 'local.profile.ps1'
+if (Test-Path (Join-Path $PSScriptRoot 'local.profile.ps1'))
+{
+    . $localProfilePath
+}
 
 Set-DotfilesDrives
