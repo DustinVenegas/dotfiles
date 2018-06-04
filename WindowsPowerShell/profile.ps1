@@ -85,8 +85,15 @@ else
 
 if (Get-Command nvim -ErrorAction SilentlyContinue)
 {
-    Set-Alias -Name nvi -Value nvim
-    Set-Alias -Name nvq -Value nvim-qt
+    Set-Alias -Name nvi -Value nvim | Out-Null
+    Set-Alias -Name nvq -Value nvim-qt | Out-Null
+}
+
+if (Get-Command rg -ErrorAction SilentlyContinue)
+{
+    New-Alias -Name rgu -Value 'rg -u' | Out-Null
+    New-Alias -Name rguu -Value 'rg -uu' | Out-Null
+    New-Alias -Name rguuu -Value 'rg -uuu' | Out-Null
 }
 
 if (Get-Command fzf -ErrorAction SilentlyContinue)
