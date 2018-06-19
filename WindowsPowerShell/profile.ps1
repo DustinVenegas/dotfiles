@@ -30,11 +30,7 @@ Either run .\bootstrap.ps1 or install the module manually.
 "@
 }
 
-if (Test-Path C:\ProgramData\Chocolatey\lib\ripgrep\tools\_rg.ps1)
-{
-    # Source the ripgrep configuration
-. "$($env:ChocolateyInstall)\lib\ripgrep\tools\_rg.ps1"
-}
+Import-Module RipGrep
 
 ################################################################################
 # Set Window Properties
@@ -73,16 +69,6 @@ function Set-DotfilesDrives
 ################################################################################
 # Aliases
 ################################################################################
-if (Get-Alias grep -ErrorAction SilentlyContinue)
-{
-    Write-Verbose "Alias: 'grep' was an alias bound to $((Get-Alias Grep).DisplayName). Updated!"
-    Set-Alias -Name grep -Value rg
-}
-else
-{
-    New-Alias -Name grep -Value rg | Out-Null
-}
-
 if (Get-Command nvim -ErrorAction SilentlyContinue)
 {
     Set-Alias -Name nvi -Value nvim | Out-Null
@@ -91,21 +77,21 @@ if (Get-Command nvim -ErrorAction SilentlyContinue)
 
 if (Get-Command rg -ErrorAction SilentlyContinue)
 {
-    New-Alias -Name rgu -Value 'rg -u' | Out-Null
-    New-Alias -Name rguu -Value 'rg -uu' | Out-Null
-    New-Alias -Name rguuu -Value 'rg -uuu' | Out-Null
-}
+    # If no ripgrep path is set, but a configuration exists, use it.
+    if (($env:RIPGREP_CONFIG_PATH -eq '') -and (Test-Path "$HOME/.ripgreprc"))
+    {
+        $env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
+    }
 
-if (Get-Command fzf -ErrorAction SilentlyContinue)
-{
-    # fzf (Fuzzy Finder)
-    #   - Use rg (RipGrep) if available
-    #   - Filename list
-    #   - Greedy file listing with hidden and .gitignore included
-    # NOTE: Should be same as ../nvim/init.vim
-    #   !!EXCEPT FOR!! the --vimdiff parameter; it will cause fzf errors
-    #   Consider RIPGREP_CONFIG_PATH if this becomes a PITA
-    $env:FZF_DEFAULT_COMMAND = 'rg --hidden --ignore --files --glob "!.git/" --glob "!.git\"'
+    if (Get-Command fzf -ErrorAction SilentlyContinue)
+    {
+        # fzf (Fuzzy Finder)
+        #   - Use rg (RipGrep) if available
+        #   - Filename list
+        # NOTE: Should be same as ../nvim/init.vim
+        #   !!EXCEPT FOR!! the --vimdiff parameter; it will cause fzf errors
+        $env:FZF_DEFAULT_COMMAND = 'rg --files'
+    }
 }
 
 ################################################################################
