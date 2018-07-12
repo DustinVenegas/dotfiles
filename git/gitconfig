@@ -87,8 +87,8 @@
 	# Branch Management
 	####################
 	# Incoming and outgoing changesets
-	incoming = "!(git fetch --quiet && git log ..@{upstream})"
-	outgoing = "!(git fetch --quiet && git log @{upstream}..)"
+	incoming = "!git fetch --quiet && git log ..@{upstream}"
+	outgoing = "!git fetch --quiet && git log @{upstream}.."
 
 	# Merge the current branch into master
 	merge-into-master = !git checkout master && git merge @{-1}
