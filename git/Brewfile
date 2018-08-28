@@ -1,0 +1,4 @@
+brew "git"
+brew "git-lfs"
+cask "kdiff3"
+cask "macvim"
