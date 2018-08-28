@@ -2,4 +2,4 @@
 	helper = osxkeychain
 
 [core]
-	editor "mvim -f"
+	editor = "mvim -f"
