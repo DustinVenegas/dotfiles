@@ -11,5 +11,6 @@
         "**/concourse*.yaml": "concourse-pipeline-yaml",
         "**/tasks/**/*.yaml": "concourse-task-yaml",
         "**/bitbucket-pipelines.yml": "yaml"
-    }
+    },
+    "editor.formatOnSave": true
 }
