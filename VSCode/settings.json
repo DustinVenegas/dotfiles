@@ -6,5 +6,10 @@
     "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
     "workbench.iconTheme": "vscode-icons",
     "team.showWelcomeMessage": false,
-    "editor.tabSize": "2"
+    "editor.tabSize": "2",
+    "files.associations": {
+        "**/concourse*.yaml": "concourse-pipeline-yaml",
+        "**/tasks/**/*.yaml": "concourse-task-yaml",
+        "**/bitbucket-pipelines.yml": "yaml"
+    }
 }
