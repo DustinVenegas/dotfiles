@@ -1,0 +1,5 @@
+# vscodevim.vim dependencies
+brew "neovim"
+
+# timonwong.shellcheck dependencies
+brew "shellcheck"
