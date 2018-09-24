@@ -1,4 +1,12 @@
+# Newer than the built-in
 brew "git"
+
+# Git - Large File Support
 brew "git-lfs"
+
+# Visual Diff Tool
 cask "kdiff3"
+
+# Visual Vim
+# TODO: Consider deprecation in favor of nvim
 cask "macvim"
