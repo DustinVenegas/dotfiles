@@ -20,7 +20,7 @@ install_macos_homebrew_deps()
 }
 
 # TODO: Support XDG_CONFIG_HOME
-SCRIPT_DIR="$(dirname "${0}")"
+SCRIPT_DIR="$(cd "$(dirname "${0}")"; pwd)"
 
 # Symlink configurations, if they don't already exist
 symlink_if_missing "$SCRIPT_DIR/bashrc" "$HOME/.bashrc"

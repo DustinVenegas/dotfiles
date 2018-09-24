@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
+# bash
 HISTCONTROL=ignoreboth  # Ignore duplicate commands, or ones prefixed with a space
 HISTSIZE=65535 # Keep lots of history. Default, 500
 
+# golang
 export GOPATH=$HOME/go
 export GOROOT=/usr/local/opt/go/libexec
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
@@ -17,6 +19,7 @@ if type brew 2&>/dev/null; then
   done
 fi
 
+# node-version-manager
 export NVM_DIR="$HOME/.nvm"
 . "$(brew --prefix nvm)/nvm.sh"
 
@@ -24,4 +27,9 @@ export NVM_DIR="$HOME/.nvm"
 if [ -f "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh" ]; then
   __GIT_PROMPT_DIR=$(brew --prefix)/opt/bash-git-prompt/share
   source "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh"
+fi
+
+# .bashrc.local support, for local-only bash commands
+if [ -f "$HOME/.bashrc.local" ]; then
+    source $HOME/.bashrc.local
 fi
