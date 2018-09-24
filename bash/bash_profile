@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [ -f "$HOME/.bashrc" ]; then
+    # dot-source .bashrc, which contains the meat
+    source "$HOME/.bashrc"
+fi

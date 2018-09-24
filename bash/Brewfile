@@ -1,0 +1,2 @@
+# Git prompt for BASH (Similar to PS1)
+brew "bash-git-prompt"
