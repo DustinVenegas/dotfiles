@@ -1,0 +1,2 @@
+# dash documentation viewer - https://kapeli.com/dash
+brew cask "dash"
