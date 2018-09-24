@@ -41,9 +41,12 @@ VSCODE_EXTENSIONS="$VSCODE_EXTENSIONS timonwong.shellcheck"
 VSCODE_EXTENSIONS="$VSCODE_EXTENSIONS ms-vscode.go"
 VSCODE_EXTENSIONS="$VSCODE_EXTENSIONS davidanson.vscode-markdownlint"
 VSCODE_EXTENSIONS="$VSCODE_EXTENSIONS yzhang.markdown-all-in-one"
+VSCODE_EXTENSIONS="$VSCODE_EXTENSIONS flowtype.flow-for-vscode"
 #VSCODE_EXTENSIONS="$VSCODE_EXTENSIONS fcrespo82.markdown-table-formatter"
 
 
 for ext in $VSCODE_EXTENSIONS; do
     code --install-extension "$ext"
 done;
+
+npm install flow-bin -g
