@@ -12,5 +12,14 @@
         "**/tasks/**/*.yaml": "concourse-task-yaml",
         "**/bitbucket-pipelines.yml": "yaml"
     },
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "csharp.suppressDotnetInstallWarning": true,
+    "shellcheck.customArgs": [
+        "--external-sources"
+    ],
+    "markdownlint.ignore": [
+        "vendor/**/*.md"
+    ],
+    "markdownlint.run": "onSave",
+    "markdown.extension.showExplorer": true
 }
