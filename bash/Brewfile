@@ -1,2 +1,4 @@
 # Git prompt for BASH (Similar to PS1)
 brew "bash-git-prompt"
+tap "homebrew/cask-fonts"
+cask "font-hack"
