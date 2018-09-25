@@ -117,6 +117,10 @@ if globpath(&runtimepath, 'colors/lucius.vim', 1) != ''
         " ConEmu should use LuciusBlack to get around terminal color issues
         LuciusBlack
     endif
+
+    if has('macunix')
+        LuciusDarkHighContrast
+    endif
 endif
 " }}}
 
