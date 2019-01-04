@@ -1,3 +1,15 @@
+# Vim
 *~
 *.swp
+
+# VSCode
+.vscode
+
+# macOS
 .DS_Store
+
+# Security
+*.pem
+
+# Misc
+*.orig
