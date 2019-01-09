@@ -21,5 +21,18 @@
         "vendor/**/*.md"
     ],
     "markdownlint.run": "onSave",
-    "markdown.extension.showExplorer": true
+    "markdown.extension.showExplorer": true,
+    "editor.fontFamily": "Fira Code,Menlo, Monaco, 'Courier New', monospace",
+    "go.buildOnSave": "package",
+    "todo-tree.defaultHighlight": {
+        "foreground": "green",
+        "type": "none"
+    },
+    "todo-tree.customHighlight": {
+        "TODO": {},
+        "FIXME": {}
+    },
+    "git.autofetch": true,
+    "git.enableSmartCommit": true,
+    "vim.disableExtension": false
 }
