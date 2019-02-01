@@ -9,6 +9,9 @@ export GOPATH=$HOME/go
 export GOROOT=/usr/local/opt/go/libexec
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
+# Set editor to nvim
+export EDITOR=nvim
+
 # Hook for desk activation
 [ -n "$DESK_ENV" ] && source "$DESK_ENV" || true
 
@@ -52,5 +55,3 @@ if [ -f "$HOME/.bashrc.local" ]; then
     source $HOME/.bashrc.local
 fi
 
-# Set editor to nvim
-EDITOR=nvim
