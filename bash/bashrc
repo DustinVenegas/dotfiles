@@ -29,6 +29,24 @@ if [ -f "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh" ]; then
   source "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh"
 fi
 
+# fzf - Fuzzy Finder for Bash
+# NOTE: fzf contains an install script that sets up these functions and
+# similar paths. The script may have updated functionallity since run on
+# 2019/01/31 on a MacOS machine for bash.
+# fzf - Setup pathing
+# ---------
+if [[ ! "$PATH" == */usr/local/opt/fzf/bin* ]]; then
+  export PATH="$PATH:/usr/local/opt/fzf/bin"
+fi
+
+# fzf - Auto-completion
+# ---------------
+[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
+
+# fzf - Key bindings
+# ------------
+source "/usr/local/opt/fzf/shell/key-bindings.bash"
+
 # .bashrc.local support, for local-only bash commands
 if [ -f "$HOME/.bashrc.local" ]; then
     source $HOME/.bashrc.local
