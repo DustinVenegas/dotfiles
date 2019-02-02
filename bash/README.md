@@ -4,8 +4,7 @@ Bash profiles, aliases, etc.
 
 ## Installation
 
-  - MacOS (POSIX/Brew): `./git/bootstrap.sh`
-  - Windows Subsystem for Linux (WSL): `// TODO: How?`
+  - MacOS (POSIX/Brew): `./bash/bootstrap.sh`
 
 ## Configuration
 
