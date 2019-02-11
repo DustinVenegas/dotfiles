@@ -34,6 +34,69 @@ if type brew 2&>/dev/null; then
     fi
 fi
 
+PROMPT_COMMAND=__prompt_command
+
+__prompt_command() {
+    # Record the last exit first, otherwise another binary call would overwrite it.
+    local EXIT="$?"
+
+    # Reset the PS1 entry to a blank string to manipulate.
+    PS1=""
+
+    # Sets options for git's built-in __git_ps1 script.
+    GIT_PS1_SHOWDIRTYSTATE=true
+    GIT_PS1_SHOWUPSTREAM=true
+    GIT_PS1_SHOWCOLORHINTS=1
+
+    # Define some color.
+    local Red='\[\e[0;31m\]'
+    local Gre='\[\e[0;32m\]'
+    local Yel='\[\e[0;33m\]'
+    local Blu='\[\e[0;34m\]'
+    local BBlu='\[\e[1;34m\]'
+    local BPur='\[\e[1;35m\]'
+    local Pur='\[\e[0;35m\]'
+    local Cya='\[\e[0;36m\]';
+    local RCol='\[\e[0m\]'      # Reset the color
+
+    local last_exit_color=''
+    local last_exit_character=''
+    if [ $EXIT != 0 ]; then
+        last_exit_color="${Red}"
+        last_exit_character='X'
+    else
+        last_exit_color="${Gre}"
+        last_exit_character='O'
+    fi
+    PS1+="${last_exit_color}${last_exit_character}${RCol} "
+
+    # user@host
+    PS1+="${Blu}\u${RCol}${BBlu}@\h${RCol} "
+
+    # Current AWS Account
+    if [ ! -z "${AWS_PROFILE}" ]; then
+        PS1+="${Cya}☁${AWS_PROFILE}${RCol} "
+    fi
+
+    # Currently enabled desk
+    if [ ! -z "${DESK_NAME}" ]; then
+        PS1+="┳━┳${DESK_NAME} "
+    fi
+
+    # Current directory
+    PS1+="${Yel}\w${RCol}"
+
+    if [ $EXIT != 0 ]; then
+        # Add the exit code when not zero.
+        PS1+=" ${last_exit_color}[${EXIT}]${RCol}"
+    fi
+
+    # Adds __git_ps1 to prompt.
+    PS1+="$(__git_ps1)"
+
+    PS1+="\n${Pur}\A${RCol}${BPur}>${RCol} "
+}
+
 # fzf - Fuzzy Finder for Bash
 # NOTE: fzf contains an install script that sets up these functions and
 # similar paths. The script may have updated functionallity since run on
