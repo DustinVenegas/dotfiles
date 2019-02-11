@@ -80,7 +80,7 @@ __prompt_command() {
 
     # Currently enabled desk
     if [ ! -z "${DESK_NAME}" ]; then
-        PS1+="┳━┳${DESK_NAME} "
+        PS1+="░${DESK_NAME} "
     fi
 
     # Current directory
