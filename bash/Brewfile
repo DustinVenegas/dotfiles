@@ -1,6 +1,3 @@
-# bash-git-prompt provides a git prompt for BASH.
-brew "bash-git-prompt"
-
 # Enable the cask-fonts Homebrew repository.
 tap "homebrew/cask-fonts"
 
