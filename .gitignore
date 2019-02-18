@@ -13,3 +13,4 @@ nvim/python-venvs/**/Pipfile.lock
 
 # VSCode
 VSCode/workspaceStorage/**
+VSCode/globalStorage/**
