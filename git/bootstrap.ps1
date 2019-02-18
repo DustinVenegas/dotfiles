@@ -74,6 +74,13 @@ Process
         # Create symlinks
         $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] }
 
+        # Template out some os-specific attributes once.
+        $gitConfigLocal = (Join-Path -Path $HOME -ChildPath '.gitconfig_local')
+        if (-Not (Test-Path -Path $gitConfigLocal)) {
+            Write-Host "Writing local git config at $gitConfigLocal"
+            Copy-Item -Path (Join-Path $PSScriptRoot -ChildPath 'gitconfig_local.template') -Destination $gitConfigLocal
+        }
+
         # Install or update Posh-Git
         Ensure-PoshGit
     }
