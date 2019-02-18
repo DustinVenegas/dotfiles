@@ -34,6 +34,10 @@ if type brew 2&>/dev/null; then
     fi
 fi
 
+if [ type __git_ps1 > /dev/null 2>&1 ]; then
+    echo "WARN: Looks like __git_ps1 isn't available for the prompt. Should be included with git."
+fi
+
 PROMPT_COMMAND=__prompt_command
 
 __prompt_command() {
@@ -91,8 +95,10 @@ __prompt_command() {
         PS1+=" ${last_exit_color}[${EXIT}]${RCol}"
     fi
 
-    # Adds __git_ps1 to prompt.
-    PS1+="$(__git_ps1)"
+    if type __git_ps1 > /dev/null 2>&1; then
+	# Adds __git_ps1 to prompt.
+	PS1+="$(__git_ps1)"
+    fi
 
     PS1+="\n${Pur}\A${RCol}${BPur}>${RCol} "
 }
@@ -108,12 +114,12 @@ if [[ ! "$PATH" == */usr/local/opt/fzf/bin* ]]; then
 fi
 
 # fzf - Auto-completion
-# ---------------
-[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
-
 # fzf - Key bindings
-# ------------
+# ---------------
+if [ -d /usr/local/opt/fzf/shell ]; then
+    [[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
 source "/usr/local/opt/fzf/shell/key-bindings.bash"
+fi
 
 # .bashrc.local support, for local-only bash commands
 if [ -f "$HOME/.bashrc.local" ]; then

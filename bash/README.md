@@ -4,7 +4,8 @@ Bash profiles, aliases, etc.
 
 ## Installation
 
-  - MacOS (POSIX/Brew): `./bash/bootstrap.sh`
+  - MacOS (POSIX/Brew): `./bash/bootstrap.sh && brew bundle`
+  - Linux             : `./bash/bootstrap.sh && sed 's/#.*//' ubuntu-installs.txt | xargs sudo apt-get install`
 
 ## Configuration
 
