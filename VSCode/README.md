@@ -13,7 +13,17 @@ Plugins are poorly managed by lists in the `bootstrap.*` scripts.
 
 A list of optional extensions that might be recommended depending on the situation are below:
 
-- Visual Studio Team Services integration through `ms-vsts.team`
+- `ms-vsts.team`, Visual Studio Team Services integration
+- `vscoss.vscode-ansible`, Ansible Integration
+- `ms-vscode.csharp`, official C# Extension
+- `peterjausovec.vscode-docker`
+- `editorconfig.editorconfig`, auto-formatting and checking for EditorConfig
+- `dbaeumer.vscode-eslint`
+- `haaaad.ansible`
+- `fknop.vscode-npm`
+- `ms-vscode.powershell`, PowerShell Syntax, Debugging
+- `vscodevim.vim`, vim, neovmim, and nvim emulation and integration via pipes.
+- `robertohuertasm.vscode-icons`, Icons in the VSCode Explorer
 
 ## Configuration
 
