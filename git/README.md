@@ -6,8 +6,8 @@ You might start with `git list-alises`!
 
   - Windows: `./git/bootstrap.ps1`
     - Depends on PowerShell and Chocolatey
-  - MacOS (POSIX/Brew): `./git/bootstrap.sh`
-    - Depends on POSIX and Homebrew
+  - MacOS (POSIX/Brew): `./bash/bootstrap.sh && brew bundle`
+  - Linux             : `./bash/bootstrap.sh && sed 's/#.*//' ubuntu-installs.txt | xargs sudo apt-get install`
 
 ## Configuration
 
