@@ -13,6 +13,8 @@ Plugins are poorly managed by lists in the `bootstrap.*` scripts.
 
 A list of optional extensions that might be recommended depending on the situation are below:
 
+- [`jebbs.plantuml`](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml), PlantUML Diagram rendering
+  - Install PlantUML. `choco install plantuml`, `apt-get install plantuml`, `brew install plantuml`
 - `ms-vsts.team`, Visual Studio Team Services integration
 - `vscoss.vscode-ansible`, Ansible Integration
 - `ms-vscode.csharp`, official C# Extension

@@ -209,7 +209,17 @@ This plugin depends on the `fzf` binary in your PATH. It adds the `FZF` ex-mode 
 
   * `:FZF`: Open fzf to the current directory (default)
 
+### aklt/plantuml-syntax
 
+[aklt/plantuml-syntax](https://github.com/aklt/plantuml-syntax) adds syntax highlighting and a `make` command for PlantUML diagrams that end in `.uml`.
+
+### tyru/open-browser.vim
+
+Installed as a depndency of `weirongxu/plantuml-previewer.vim`.
+
+### weirongxu/plantuml-previewer.vim
+
+Depends on `tyru/open-browser.vim` and `aklt/plantuml-syntax`. Provides `:PlantumlOpen` to start a web site watching the output from the current file.
 
 #### External Dependencies
 
@@ -329,6 +339,11 @@ Behind the scenes the tool to search in file contents may be one of many includi
 
 Uses the `:help quicklist` and `:help locationlist` for search results. See `:help ack.txt` for more information.
 
+### 'aklt/plantuml-syntax'
+
+[aklt/plantuml-syntax](https://github.com/aklt/plantuml-syntax) adds syntax for `*.puml files, or buffers with `:set filetype=plantuml`
+  - Sets `makeprg=plantuml` for calls for `:make`
+  - No help available
 
 ### Syntax Plugins
 

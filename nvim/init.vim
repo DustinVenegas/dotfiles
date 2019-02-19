@@ -57,7 +57,12 @@ call plug#begin()
 
     " Syntax and Language Support {{{
     Plug 'PProvost/vim-ps1' " PowerShell
+    " }}}
 
+    " PlantUML {{{
+    Plug 'aklt/plantuml-syntax' " PlantUml Syntax. Configures :make with default plantuml in PATH.
+    Plug 'tyru/open-browser.vim' " Depndency for weirongxu/plantuml-previewer.vim
+    Plug 'weirongxu/plantuml-previewer.vim' " PlantUML Previewer. Adds  :PlantumlOpen command.
     " }}}
 
 call plug#end()
