@@ -2,15 +2,14 @@
 
 [Neovim](https://www.neovim.io/) editor configuration for Dustin Venegas.
 
-
 ## Useful Shortcuts
 
-  * With `spell` on you can...
-    *  `]s` and `[s` motions for next and previous mistakes.
-    * `zg`, `zG` add **good** word spellings to spellfile, internal-wordlist
-    * `zw`, `zW` add **wrong** word spellings to spellfile, internal-wordlist
-    * `zu`, `zU` clears good and wrong word spellings from spellfile, internal-wordlist
+Turning `spell` on means the following commands will work...
 
+* `]s` and `[s` motions for next and previous mistakes.
+* `zg`, `zG` add **good** word spellings to spellfile, internal-wordlist
+* `zw`, `zW` add **wrong** word spellings to spellfile, internal-wordlist
+* `zu`, `zU` clears good and wrong word spellings from spellfile, internal-wordlist
 
 ## Install
 
@@ -44,13 +43,11 @@ $userEnvVars -Split ';' | Where-Object { $_ -like '*Neovim\bin*' }
 # set a variable pointing at your neovim directory
 $neovimPath = 'C:\tools\neovim\Neovim\bin'
 
-
 # AS ADMIN, appends $neovimPath variable contents to system PATH variable
 [Environment]::SetEnvironmentVariable("PATH", "$($userEnvVars);$neovimPath", "User")
 ```
 
 Confirm by opening up a *new* shell, typing `nvim-qt.exe`, and pressing enter.
-
 
 ### Python Support
 
@@ -69,7 +66,6 @@ $neovimPath = 'C:\tools\neovim\Neovim\bin'
 # AS ADMIN, appends $neovimPath variable contents to system PATH variable
 [Environment]::SetEnvironmentVariable("PATH", "$($userEnvVars);$neovimPath", "User")
 ```
-
 
 #### Virtual Environment
 
@@ -118,15 +114,13 @@ set runtimepath^=~/dotfiles/nvim/
 source ~/dotfiles/nvim/init.vim
 ```
 
-
-
 ##### Creating and Modifying Virtual Environments
 
 Keep these in mind when creating or modifying the python `virtualenv`, `pipfile`, or `pipenv` components:
-  * Each folder under `python-venvs` should represent an environment and contain a `Pipfile`
-  * Each `Pipfile` contains the python dependencies, specifically for neovim, for the virtual environment
-  * Each python environment must include the `neovim` module
 
+* Each folder under `python-venvs` should represent an environment and contain a `Pipfile`
+* Each `Pipfile` contains the python dependencies, specifically for neovim, for the virtual environment
+* Each python environment must include the `neovim` module
 
 ```ps1
 # Uncomment to create a new virtualenv directory, if adding an entirely new virtualenv
@@ -143,19 +137,18 @@ pipenv --python 2.7
 pip2 install --upgrade neovim
 ```
 
-
 Check your neovim python health with the following Ex command:
 
 ```viml
 :CheckHealth
 ```
 
-
 ### Source from `init.vim`
 
 This dotfiles configuration expects to be [source](https://neovim.io/doc/user/repeat.html#:source) loaded from the appropriate [`XGD_BASE_DIR`](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html):
-  * Windows: `~/AppData/Local/nvim/init.vim`
-  * Linux: `~/.config/nvim/init.vim`
+
+* Windows: `~/AppData/Local/nvim/init.vim`
+* Linux: `~/.config/nvim/init.vim`
 
 Below is an example `init.vim` file which uses the default checkout location on a Windows machine.
 
@@ -169,8 +162,6 @@ source ~/dotfiles/nvim/init.vim
 
 _Note,_ Source loading the dotfiles configuration has pros and cons. Some operating systems don't posses full symlinking capabilities. Consistently source loading across all operating systems just makes things easier.
 
-
-
 ## Plugins
 
 This configuration is intended to gracefully handle missing plugins, themes, and fonts. vim-plug is a hard dependency and is therefore committed directly to the repository. You'll need to run `:PlugInstall` in short order to load plugins, themes, etc.
@@ -179,27 +170,21 @@ Why do we take a hard dependency on vim-plug, but ignore the plugin submodules? 
 
 **Note,** if you try to execute `nvim-qt.exe` and a window opens but never really loads then there might be a missing configuration issue. Run `nvim.exe` to ensure there are no configuration errors. You may have to run `:PlugInstall` using the command-line version, `nvim.exe`.
 
-
-
 ### vim-plug
 
 [junegunn/vim-plug](https://github.com/junegunn/vim-plug) is used to manage neovim plugins. It was selected for its simplicity.
 
-  * `:PlugInstall` installs defined plugins
-  * `:PlugDiff` shows a diff of incoming changes
-  * `:PlugUpdate` updates all plugins
-  * `:PlugUpgrade` updates [`~/dotfiles/nvim/autoload/plug.vim`](./autoload/plug.vim) to the latest vim-plug version. Verify changes, then commit updates to this repository.
-
-
+* `:PlugInstall` installs defined plugins
+* `:PlugDiff` shows a diff of incoming changes
+* `:PlugUpdate` updates all plugins
+* `:PlugUpgrade` updates [`~/dotfiles/nvim/autoload/plug.vim`](./autoload/plug.vim) to the latest vim-plug version. Verify changes, then commit updates to this repository.
 
 ### vim-gitgutter
 
 [airblade/vim-gitgutter](https://github.com/airblade/vim-gitgutter) adds markers to the gutter that indicate if lines were added, modified, or removed in git.
 
-  * `:GitGutterToggle` toggles the feature on/off
-  * `]c`, `[c`, goes to next and previous hunks
-
-
+* `:GitGutterToggle` toggles the feature on/off
+* `]c`, `[c`, goes to next and previous hunks
 
 ### junegunn/fzf
 
@@ -207,7 +192,7 @@ Why do we take a hard dependency on vim-plug, but ignore the plugin submodules? 
 
 This plugin depends on the `fzf` binary in your PATH. It adds the `FZF` ex-mode command to vim.
 
-  * `:FZF`: Open fzf to the current directory (default)
+* `:FZF`: Open fzf to the current directory (default)
 
 ### aklt/plantuml-syntax
 
@@ -217,16 +202,20 @@ This plugin depends on the `fzf` binary in your PATH. It adds the `FZF` ex-mode 
 
 Installed as a depndency of `weirongxu/plantuml-previewer.vim`.
 
+* `:openbrowser#*` commands, such as `:openbrowswer#open()` to open in the default browser.
+
 ### weirongxu/plantuml-previewer.vim
 
-Depends on `tyru/open-browser.vim` and `aklt/plantuml-syntax`. Provides `:PlantumlOpen` to start a web site watching the output from the current file.
+Depends on `tyru/open-browser.vim` and `aklt/plantuml-syntax`.
+
+* `:PlantumlOpen` to start a web site watching the output from the current file
 
 #### External Dependencies
 
 You can install `fzf` using a package manager.
 
-  * Windows: `choco install fzf -y`
-  * macOS: `brew install fzf`
+* Windows: `choco install fzf -y`
+* macOS: `brew install fzf`
 
 Alternatively, the `junegun/fzf` plugin directory *is* the `fzf` source code. The `/bin` directory is already included in the search path. On a POSIX system, you could use a vim-plug "after" command to build `fzf`.
 
@@ -236,40 +225,33 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 
 Windows would need to take on additional dependencies to perform the same installation style. This dotfiles repository prefers a manual installation due to differing commands on Windows and Linux.
 
-
-
 ### junegunn/fzf.vim
 
 [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim) contains vim-specific `fzf` bindings. This is the thing we customize in vim.
 
-#### Bindings
-
-  * `CTRL-T`/`CTRL-X`/`CTRL-V`: Open in new tab/split/vsplit
-  * `:FzfSomeCommand!`: Full screen version of Fzf commands
-  * `<C-x><C-k>`: Dictionary word complete
-
-#### Customizations
-
-  * `:Fzf<command>`: Prefix for all commands. Custom, in order to locate fzf specific functions easily.
-  * `<Leader>ff` find files from cwd
-  * `<Leader>fF` find files from current buffer's directory
-
-#### Other
-
 An `g:fzf_action` exists to configure bindings in addition to the default `CTRL-T`, `CTRL-X`, and `CTRL-V` versions.
 
-#### Issues
+#### junegunn/fzf.vim Bindings
 
-  * (Windows) `fzf#vim#with_preview` uses a Ruby script that requires additional tools to function on Windows. The script is located at `dotfiles\nvim\plugged\fzf.vim\bin\preview.rb`.
+* `CTRL-T`/`CTRL-X`/`CTRL-V`: Open in new tab/split/vsplit
+* `:FzfSomeCommand!`: Full screen version of Fzf commands
+* `<C-x><C-k>`: Dictionary word complete
 
+#### junegunn/fzf.vim Customizations
+
+* `:Fzf<command>`: Prefix for all commands. Custom, in order to locate fzf specific functions easily.
+* `<Leader>ff` find files from cwd
+* `<Leader>fF` find files from current buffer's directory
+
+#### junegunn/fzf.vim Issues
+
+* (Windows) `fzf#vim#with_preview` uses a Ruby script that requires additional tools to function on Windows. The script is located at `dotfiles\nvim\plugged\fzf.vim\bin\preview.rb`.
 
 ### editorconfig/editorconfig-vim
 
 [editorconfig/editorconfig-vim](https://github.com/editorconfig/editorconfig-vim) provides validation and auto-formatting for [EditorConfig](http://editorconfig.org/) styles.
 
-  * `:EditorConfigReload`: reload `.editorconfig` files for the current file edited
-
-
+* `:EditorConfigReload`: reload `.editorconfig` files for the current file edited
 
 ### tpope/vim-fugitive
 
@@ -277,35 +259,33 @@ An `g:fzf_action` exists to configure bindings in addition to the default `CTRL-
 
 fugitive, and Tim Pope in general, don't make drawer-style plugins. Instead of creating fixed Windows and Viewports the user is expected to manage the vim-fugitive windows.
 
-
 Opening new buffers for commands is the first methodology. Manually manage them using `<C-W>*` bindings, such as `<C-W><C-C>` to close a window. Get creative with buffers! Tim Pope recommends `<C-W><C-O>` to close all buffers except the currently active one.
 
 Changing the active buffer and returning with ':Gedit' is the other methodology. Commands like `glog` will open a RO buffer in your active window. You'll have to use a `:Gedit` variation in order to return to actually editing the file.
 
-#### Bindings
+#### vim-fugitive Bindings
 
-  * `Gedit`, `Gsplit`, `Gvsplit` edits a revision, splits a revision, virt-splits a version
-  * `:Git [args]` runs a `git` command (w/params) relative to the repository root
-  * `:Glcd`, `:Gcd` changes directory of the local buffer, or project directory, relative to the repository root
-  * `:Glog` loads previous revisions of the active buffer file as RO buffers, replacing the active buffer. Use `:cnext` and `:cprev` to navigate revisions. Afterward, use a `Gedit` variation to continue editing the original buffer.
-  * `:Gstatus` displays `git status` output
-    * `-` adds and resets (stages/un-stages) files
-    * `ca` performs `Gcommit --amend` on the file selected
-    * `<C-N>`, `<C-P>` next and previous file
-    * `D` performs a `Gdiff` against the file selected
-    * `p` performs `:Git add --patch`
-    * `q` closes status
-    * `r` reload status
-    * `U` checkout
-    * `C` switches the buffer to a commit dialog
-  * `:Gcommit` opens a buffer asking for a commit message at `.git/COMMIT_EDITMSG`
-    * `:Gwrite` will commit files with the log message specified
-  * `:G<git-command>` invokes the git command specified. For example, pull, push, fetch, log, llog, etc
+* `Gedit`, `Gsplit`, `Gvsplit` edits a revision, splits a revision, virt-splits a version
+* `:Git [args]` runs a `git` command (w/params) relative to the repository root
+* `:Glcd`, `:Gcd` changes directory of the local buffer, or project directory, relative to the repository root
+* `:Glog` loads previous revisions of the active buffer file as RO buffers, replacing the active buffer. Use `:cnext` and `:cprev` to navigate revisions. Afterward, use a `Gedit` variation to continue editing the original buffer.
+* `:Gstatus` displays `git status` output
+  * `-` adds and resets (stages/un-stages) files
+  * `ca` performs `Gcommit --amend` on the file selected
+  * `<C-N>`, `<C-P>` next and previous file
+  * `D` performs a `Gdiff` against the file selected
+  * `p` performs `:Git add --patch`
+  * `q` closes status
+  * `r` reload status
+  * `U` checkout
+  * `C` switches the buffer to a commit dialog
+* `:Gcommit` opens a buffer asking for a commit message at `.git/COMMIT_EDITMSG`
+* `:Gwrite` will commit files with the log message specified
+* `:G<git-command>` invokes the git command specified. For example, pull, push, fetch, log, llog, etc
 
-#### Customizations
+#### vim-fugitive Customizations
 
 // TODO: Determine how to sync bindings.
-
 
 ### 'ripgrep'
 
@@ -319,17 +299,16 @@ Run `choco install chocolatey-packages.config` or `choco install ripgrep -y` dir
 
 Configurations attempt to detect the existence of RipGrep and use it as the default where appropriate. For example, below are some of the items that prefer Ripgrep if it's available:
 
-  * Sets `grepprg` for `:grep` searches in vim
-  * Configures `mileszs/ack.vim` for `:Ack` searches
-  * `fzf` should use rg by default
-  * `fzf` in PowerShell should prefer Ripgrep
-  * Probably others
+* Sets `grepprg` for `:grep` searches in vim
+* Configures `mileszs/ack.vim` for `:Ack` searches
+* `fzf` should use rg by default
+* `fzf` in PowerShell should prefer Ripgrep
+* Probably others
 
-#### Bindings
+#### ripgrep Bindings
 
-  * `-uuu` removes search restrictions, up to 3. One includes `.gitignore` entries, two searches hidden, three locates binaries
-  * `rg -S SmartCaseSearch` performs a smart case search
-
+* `-uuu` removes search restrictions, up to 3. One includes `.gitignore` entries, two searches hidden, three locates binaries
+* `rg -S SmartCaseSearch` performs a smart case search
 
 ### 'mileszs/ack.vim'
 
@@ -341,11 +320,11 @@ Uses the `:help quicklist` and `:help locationlist` for search results. See `:he
 
 ### 'aklt/plantuml-syntax'
 
-[aklt/plantuml-syntax](https://github.com/aklt/plantuml-syntax) adds syntax for `*.puml files, or buffers with `:set filetype=plantuml`
-  - Sets `makeprg=plantuml` for calls for `:make`
-  - No help available
+[aklt/plantuml-syntax](https://github.com/aklt/plantuml-syntax) adds syntax for `*.puml` files, or buffers with `:set filetype=plantuml`
+
+* Sets `makeprg=plantuml` for calls for `:make`
+* No help available
 
 ### Syntax Plugins
 
-  * [PProvost/vim-ps1](https://github.com/PProvost/vim-ps1) adds support for PowerShell syntax.
-
+* [PProvost/vim-ps1](https://github.com/PProvost/vim-ps1) adds support for PowerShell syntax.
