@@ -21,15 +21,11 @@ if type brew 2&>/dev/null; then
         source "$completion_file"
     done
 
-    # git-prompt from git's built-in bash completion
-    if [ -f "$(brew --prefix nvm)" ]; then
-        export NVM_DIR="$HOME/.nvm"
-        source "$(brew --prefix nvm)/nvm.sh"
-    fi
-
     # node-version-manager
-    if [ -f "$(brew --prefix nvm)" ]; then
+    if [ -d "$(brew --prefix nvm)" ]; then
         export NVM_DIR="$HOME/.nvm"
+        [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+        [ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
         source "$(brew --prefix nvm)/nvm.sh"
     fi
 fi
