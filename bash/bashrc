@@ -100,6 +100,13 @@ __prompt_command() {
     PS1+="\n${Pur}\A${RCol}${BPur}>${RCol} "
 }
 
+# ripgrep - Setup $HOME/.ripgreprc configuration. This configuraiton
+# should act as the default configuration.
+if [ -f "$HOME/.ripgreprc" ]; then
+    # RIPGREP_CONFIG_PATH is required for ripgrep to respect the config.
+    export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+fi
+
 # fzf - Fuzzy Finder for Bash
 # NOTE: fzf contains an install script that sets up these functions and
 # similar paths. The script may have updated functionallity since run on
