@@ -1,0 +1,14 @@
+# Configuration for RipGrep https://github.com/BurntSushi/ripgrep/
+# Part of https://github.com/DustinVenegas/dotfiles/
+
+# Truncate what can be vomited out
+--max-columns=160
+
+# Ignore .git folders
+--glob=!.git/*
+
+# Ignore .git folders (Windows)
+--glob=!.git\*
+
+# Ignore case, unless the input contains cased characters
+--smart-case
