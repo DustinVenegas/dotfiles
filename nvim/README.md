@@ -331,6 +331,13 @@ Uses the `:help quicklist` and `:help locationlist` for search results. See `:he
 * Sets `makeprg=plantuml` for calls for `:make`
 * No help available
 
+### 'hashivim/vim-terraform'
+
+[hashivim/vim-terraform](https://github.com/hashivim/vim-terraform) adds file-type and basic syntax support for [Terraform](http://terraform.io/).
+
+* Adds `:Terraform` command.
+* Format on save is turned ON.
+
 ### Syntax Plugins
 
 * [PProvost/vim-ps1](https://github.com/PProvost/vim-ps1) adds support for PowerShell syntax.

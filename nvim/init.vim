@@ -57,6 +57,7 @@ call plug#begin()
 
     " Syntax and Language Support {{{
     Plug 'PProvost/vim-ps1' " PowerShell
+    Plug 'hashivim/vim-terraform' " Terraform
     " }}}
 
     " PlantUML {{{
@@ -73,6 +74,18 @@ call plug#end()
     " 'PProvost/vim-ps1' {{{
     " Unfold script blocks. Used when `foldmethod` is `syntax`
     let g:ps1_nofold_blocks=1
+    " }}}
+
+    " 'hashivim/vim-terraform' {{{
+        let g:terraform_align=1 " Override indentation syntax for matching files.
+        let g:terraform_fold_sections=1 " Automatically fold sections of terraform code.
+		let g:terraform_remap_spacebar=1 " Allow vim-terraform to re-map the spacebar to fold/unfold.
+            " This works in conjunction with let g:terraform_fold_sections=1 which should be enabled
+            " if you plan to use this feature.
+		let g:terraform_commentstring='#%s' " Override the Vim's commentstring setting with a custom
+            " value. Defaults to '#%s', but consider '//%s'.
+		let g:terraform_fmt_on_save=1 " Allow vim-terraform to automatically format *.tf and *.tfvars
+            " files with terraform fmt. You can also do this manually with the :TerraformFmt command.
     " }}}
 " }}}
 
