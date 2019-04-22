@@ -157,7 +157,7 @@ if executable('rg')
     " NOTE: Should be same as ../WindowsPowerShell/profile.ps1
     "   !!EXCEPT FOR!! the --vimdiff should not be used in PowerShell
     "   Consider RIPGREP_CONFIG_PATH if this becomes a PITA
-    let $FZF_DEFAULT_COMMAND='rg --hidden --ignore --files --glob "!.git/" --glob "!.git\"'
+    let $FZF_DEFAULT_COMMAND='rg --hidden --ignore --files --glob ''!.git/'' --glob ''!.git\\'''
 
     " Rg (RipGrep) for Fzf
     command! -bang -nargs=* FzfRg
