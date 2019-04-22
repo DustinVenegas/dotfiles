@@ -35,9 +35,10 @@ symlink_if_missing "$SCRIPT_DIR/ripgreprc" "$HOME/.ripgreprc"
 OS="`uname`"
 case $OS in
     'Linux')
-	sed 's/#.*//' ubuntu-installs.txt | xargs sudo apt-get install
+        sed 's/#.*//' ubuntu-installs.txt | xargs sudo apt-get install
         ;;
     'Darwin')
+        brew bundle
         ;;
     *)
         echo "WARNNG: gitconfig_os type is missing, $OSTYPE"
