@@ -68,6 +68,7 @@ __prompt_command() {
         last_exit_color="${Gre}"
         last_exit_character='O'
     fi
+    PS1+="\n"
     PS1+="${last_exit_color}${last_exit_character}${RCol} "
 
     # user@host
