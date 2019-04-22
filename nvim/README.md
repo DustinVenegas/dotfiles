@@ -359,3 +359,4 @@ to the PATH by using `npm install -g eslint`, or available to the node.js virtua
 ### Syntax Plugins
 
 * [PProvost/vim-ps1](https://github.com/PProvost/vim-ps1) adds support for PowerShell syntax.
+* [docker/docker](https://github.com/docker/docker) is the Docker Moby project and includes syntax support for Dockerfiles.

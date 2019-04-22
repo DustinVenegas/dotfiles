@@ -59,6 +59,7 @@ call plug#begin()
     Plug 'PProvost/vim-ps1' " PowerShell
     Plug 'hashivim/vim-terraform' " Terraform
     Plug 'w0rp/ale' " Asynchronous Lint Engine
+    Plug 'docker/docker', {'for': 'dockerfile'}
     " }}}
 
     " PlantUML {{{
