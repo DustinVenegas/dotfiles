@@ -243,6 +243,15 @@ nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 " }}}
 
+function! ToggleTargetingComputer()
+    if &cursorcolumn
+        setlocal nocursorcolumn
+        setlocal nocursorline
+    else
+        setlocal cursorcolumn
+        setlocal cursorline
+    endif
+endfunction
 
 augroup filetype_markdown
     autocmd!
