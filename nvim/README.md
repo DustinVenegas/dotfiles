@@ -338,6 +338,24 @@ Uses the `:help quicklist` and `:help locationlist` for search results. See `:he
 * Adds `:Terraform` command.
 * Format on save is turned ON.
 
+### 'w0rp/ale'
+
+[w0rp/ale](https://github.com/w0rp/ale) is an Asynchronous Lint Engine for Vim. This extension provides syntax checking
+without blocking Vim by acting as a Language Server Protocol client.
+
+
+#### Configuration
+
+The ale extension can use external linters, fixers, etc. These tools need to be installed and available to Vim via the configured
+virtual environments. For example, in order to use eslint as a fixer, the application must have already been installed and available
+to the PATH by using `npm install -g eslint`, or available to the node.js virtual environment configured for Vim.
+
+##### Linters
+
+- JavaScript
+  - [Flow](https://flow.org/)
+
+
 ### Syntax Plugins
 
 * [PProvost/vim-ps1](https://github.com/PProvost/vim-ps1) adds support for PowerShell syntax.

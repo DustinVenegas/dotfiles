@@ -58,6 +58,7 @@ call plug#begin()
     " Syntax and Language Support {{{
     Plug 'PProvost/vim-ps1' " PowerShell
     Plug 'hashivim/vim-terraform' " Terraform
+    Plug 'w0rp/ale' " Asynchronous Lint Engine
     " }}}
 
     " PlantUML {{{
@@ -73,7 +74,7 @@ call plug#end()
 
     " 'PProvost/vim-ps1' {{{
     " Unfold script blocks. Used when `foldmethod` is `syntax`
-    let g:ps1_nofold_blocks=1
+        let g:ps1_nofold_blocks=1
     " }}}
 
     " 'hashivim/vim-terraform' {{{
@@ -86,6 +87,20 @@ call plug#end()
             " value. Defaults to '#%s', but consider '//%s'.
 		let g:terraform_fmt_on_save=1 " Allow vim-terraform to automatically format *.tf and *.tfvars
             " files with terraform fmt. You can also do this manually with the :TerraformFmt command.
+    " }}}
+
+    " 'w0rp/ale' {{{
+        let g:ale_linters = {
+        \   'javascript': ['flow'],
+        \}
+
+        let g:ale_fixers = {
+        \   '*': ['remove_trailing_lines', 'trim_whitespace'],
+        \   'javascript': ['eslint'],
+        \}
+
+        " Set this variable to 1 to fix files when you save them.
+        let g:ale_fix_on_save = 1
     " }}}
 " }}}
 
@@ -272,4 +287,3 @@ augroup filetype_markdown
     autocmd BufNewFile,BufRead *.md setlocal spell
     autocmd BufNewFile,BufRead *.rdoc setlocal spell
 augroup END
-
