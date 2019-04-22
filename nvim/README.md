@@ -305,6 +305,12 @@ Configurations attempt to detect the existence of RipGrep and use it as the defa
 * `fzf` in PowerShell should prefer Ripgrep
 * Probably others
 
+#### ripgrep Configuration
+
+Always use a specific ripgrep configuration file?
+
+`local.dotfiles.json` can specify `g:ripgrep_config` to the fully-expanded `~/.ripgreprc` path.
+
 #### ripgrep Bindings
 
 * `-uuu` removes search restrictions, up to 3. One includes `.gitignore` entries, two searches hidden, three locates binaries

@@ -195,7 +195,8 @@ Process
 
         $neovimSettings = @{
             'g:python3_host_prog'=$pipenvExeLocationByVersion[3];
-            'g:python_host_prog'=$pipenvExeLocationByVersion[2]
+            'g:python_host_prog'=$pipenvExeLocationByVersion[2];
+            'g:ripgrep_config'="$HOME/.ripgreprc";
         }
 
         $localhostNeovimSettings = Join-Path $PSScriptRoot 'local.dotfiles.json'

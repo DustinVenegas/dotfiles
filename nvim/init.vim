@@ -94,6 +94,13 @@ if executable('rg')
     let g:gitgutter_grep='rg'
     set grepprg=rg\ --vimgrep\ --no-heading
 
+    " Use the ripgrep_config_override in local.dotfiles.json.
+    " Why not just use the shell? This is more consitent for
+    " vim than relying only on the shell.
+    if exists("g:ripgrep_config") && !empty(g:ripgrep_config)
+        let $RIPGREP_CONFIG_PATH = g:ripgrep_config
+    endif
+
     set grepformat=%f:%l:%c:%m,%f:%l:%m
                   " |  |  |  + Message
                   " |  |  + Column Number
@@ -157,7 +164,7 @@ if executable('rg')
     " NOTE: Should be same as ../WindowsPowerShell/profile.ps1
     "   !!EXCEPT FOR!! the --vimdiff should not be used in PowerShell
     "   Consider RIPGREP_CONFIG_PATH if this becomes a PITA
-    let $FZF_DEFAULT_COMMAND='rg --hidden --ignore --files --glob ''!.git/'' --glob ''!.git\\'''
+    let $FZF_DEFAULT_COMMAND='rg --files '
 
     " Rg (RipGrep) for Fzf
     command! -bang -nargs=* FzfRg
