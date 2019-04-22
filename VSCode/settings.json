@@ -23,7 +23,13 @@
     "markdownlint.run": "onSave",
     "markdown.extension.showExplorer": true,
     "editor.fontFamily": "Fira Code,Menlo, Monaco, 'Courier New', monospace",
-    "go.buildOnSave": "package",
+    "go.buildOnSave": "workspace",
+    "go.formatTool": "gofmt",
+    "go.lintTool": "golint",
+    // -s is for simplify",
+    "go.formatFlags": [
+        "-s"
+    ],
     "todo-tree.defaultHighlight": {
         "foreground": "green",
         "type": "none"
