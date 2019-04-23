@@ -71,6 +71,11 @@ call plug#begin()
     Plug 'weirongxu/plantuml-previewer.vim' " PlantUML Previewer. Adds  :PlantumlOpen command.
     " }}}
 
+    " Terraform {{{
+    Plug 'hashivim/vim-terraform', {'for': ['tf', 'terraform', 'tfvars']}
+    " }}}
+
+
 call plug#end()
 " }}}
 
@@ -110,6 +115,11 @@ call plug#end()
         " Set this variable to 1 to fix files when you save them.
         let g:ale_fix_on_save = 1
     " }}}
+" }}}
+
+" hashivim/vim-terraform {{{
+let g:terraform_align=1 " Terraform should auto-align variables.
+let g:terraform_fmt_on_save = 1 " Automatically run fmt when saving.
 " }}}
 
 

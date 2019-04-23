@@ -368,6 +368,10 @@ to the PATH by using `npm install -g eslint`, or available to the node.js virtua
 
 * `]f`, `[f` jumps to the next, previous Git file.
 
+### 'hashivim/vim-terraform'
+
+[hashivim/vim-terraform](https://github.com/hashivim/vim-terraform) adds Terraform syntax highlighting to Vim.
+
 ### Syntax Plugins
 
 * [PProvost/vim-ps1](https://github.com/PProvost/vim-ps1) adds support for PowerShell syntax.
