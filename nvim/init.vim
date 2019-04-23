@@ -271,9 +271,9 @@ endif
     nnoremap <Leader>gM     :Gmove<Space>
 " }}}
 
-
 " Key Mappings and Shortcuts {{{
 tnoremap <Esc> <C-\><C-n> 		" Ensure ESC also escapes in :terminal mode
+nnoremap <Leader>cd :cd %:p:h<CR>:pwd<CR> " Set vim's working directory to the current file.
 
 " alt+(hjkl): Maps A+hjkl in terminal/insert/normal
 tnoremap <A-h> <C-\><C-N><C-w>h
