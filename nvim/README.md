@@ -355,6 +355,18 @@ to the PATH by using `npm install -g eslint`, or available to the node.js virtua
 - JavaScript
   - [Flow](https://flow.org/)
 
+### 'justinml/vim-dirvish'
+
+[vim/dirvish](https://github.com/justinmk/vim-dirvish) is a file browser written in VimL. Netrw, vim's built-in file browser, is slow and buggy.
+
+* Adds `:Dirvish` command.
+* Buffers set environment variables, yank, etc so that `@%` and `@#` are the  directory and filename in many cases.
+
+### 'kristijanhusak/vim-dirvish-git'
+
+[kristijanhusak/vim-dirvish-git](https://github.com/kristijanhusak/vim-dirvish-git) extends the `justinml/vim-dirvish` file browser with Git status icons.
+
+* `]f`, `[f` jumps to the next, previous Git file.
 
 ### Syntax Plugins
 

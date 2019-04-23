@@ -62,6 +62,9 @@ call plug#begin()
     Plug 'docker/docker', {'for': 'dockerfile'}
     " }}}
 
+    Plug 'justinmk/vim-dirvish'
+    Plug 'kristijanhusak/vim-dirvish-git'
+
     " PlantUML {{{
     Plug 'aklt/plantuml-syntax' " PlantUml Syntax. Configures :make with default plantuml in PATH.
     Plug 'tyru/open-browser.vim' " Depndency for weirongxu/plantuml-previewer.vim
@@ -88,6 +91,10 @@ call plug#end()
             " value. Defaults to '#%s', but consider '//%s'.
 		let g:terraform_fmt_on_save=1 " Allow vim-terraform to automatically format *.tf and *.tfvars
             " files with terraform fmt. You can also do this manually with the :TerraformFmt command.
+    " }}}
+
+    " 'kristijanhusak/vim-dirvish-git' {{{
+        let g:dirvish_git_show_ignored = 1 " Show ignored Git files by default in Dirvish.
     " }}}
 
     " 'w0rp/ale' {{{
