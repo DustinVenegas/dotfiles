@@ -105,6 +105,7 @@ call plug#end()
     " 'w0rp/ale' {{{
         let g:ale_linters = {
         \   'javascript': ['flow'],
+        \   'markdown': ['markdownlint'],
         \   'terraform': ['fmt', 'tflint'],
         \}
 

@@ -363,7 +363,9 @@ to the PATH by using `npm install -g eslint`, or available to the node.js virtua
 ##### Linters
 
 - JavaScript
-  - [Flow](https://flow.org/)
+  - [Flow](https://flow.org/) `npm install -g flow`
+- Markdown
+  - markdownlint via [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli) `npm install -g markdownlint-cli`
 
 ### 'justinml/vim-dirvish'
 
