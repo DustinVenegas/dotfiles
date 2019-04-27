@@ -7,3 +7,6 @@ let g:python3_host_prog='$PYTHON3_VRITUALENV_PATH'
 
 " Python 2x VirtualEnv Python Path
 let g:python_host_prog='$PYTHON2_VIRTUALENV_PATH'
+
+" node.js uses the neovim-node-host binary from the neovim node.js package.
+let g:node_host_prog='$NODEJS_VIRTUALENV_PATH'

@@ -49,6 +49,16 @@ $neovimPath = 'C:\tools\neovim\Neovim\bin'
 
 Confirm by opening up a *new* shell, typing `nvim-qt.exe`, and pressing enter.
 
+### node.js Support
+
+Install node.js project dependencies. These dependencies sit in the `node_modules` folder next to this project.
+
+```sh
+# Install the dependencies
+cd ~/dotfiles/nvim/
+npm install
+```
+
 ### Python Support
 
 The [`chocolatey-packages`](chocolatey-packages.config) bundle should include `python2` and `python3`. You can install them directly using `choco install 'python2;python3' -y`.

@@ -1,0 +1,19 @@
+{
+  "name": "dustinvenegas-dotfiles-nvim",
+  "version": "1.0.0",
+  "description": "Package for neovim (nvim) containing node.js dependencies.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nvim",
+    "neovim"
+  ],
+  "author": "Dustin Venegas",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "markdownlint-cli": "^0.15.0",
+    "neovim": "^4.5.0"
+  }
+}
