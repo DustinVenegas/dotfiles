@@ -13,14 +13,17 @@ Using an **Administrator** PowerShell instance, execute the `bootstrap.ps1` scri
 
 ## Configuration
 
-For Local, or machine-specific configurations, use `./WindowsPowerShell/local.profile.ps1` and start editing.
+For Local, or machine-specific configurations, use `./WindowsPowerShell/local.profile.ps1`
+and start editing.
 
 ## Modules
 
 PSModulePath (`$env:PSModulePath`) should contain two dotfiles-related entries.
-  * `$HOME/Documents/WindowsPowerShell/Modules` contains system-specific PSModules (_git-ignored_)
-  * `$HOME/Documents/WindowsPowerShell/Modules-Dotfiles` contains dotfiles-specific PSModules
 
+* `$HOME/Documents/WindowsPowerShell/Modules` contains system-specific
+  PSModules (_git-ignored_)
+* `$HOME/Documents/WindowsPowerShell/Modules-Dotfiles` contains dotfiles-specific
+  PSModules
 
 ### Dotfiles-Specific `Modules-Dotfiles/`
 
@@ -38,16 +41,19 @@ Stores dotfiles-specific functions, POC CmdLets, and other "misc" code."
 
 #### PSFzf
 
-[PSFzf](https://github.com/kelleyma49/PSFzf) is a PowerShell Module that contains extensions for [fzf](https://github.com/junegunn/fzf), aka June Gunn's Fuzzy Finder.
+[PSFzf](https://github.com/kelleyma49/PSFzf) is a PowerShell Module that
+contains extensions for [fzf](https://github.com/junegunn/fzf), aka June Gunn's
+Fuzzy Finder.
 
 ##### Bindings
 
-  * `CTRL+T` Files or directories
-  * `CTRL+R` History
-  * `ALT-C` Directories
-  * `ALT-A` Historical Arguments
-  * `Invoke-Fzf` PowerShell CmdLet
+* `CTRL+T` Files or directories
+* `CTRL+R` History
+* `ALT-C` Directories
+* `ALT-A` Historical Arguments
+* `Invoke-Fzf` PowerShell CmdLet
 
 #### posh-git
 
-[Posh-Git](https://github.com/dahlbyk/posh-git) adds Git bindings and prompts to PowerShell.
+[Posh-Git](https://github.com/dahlbyk/posh-git) adds Git bindings and prompts to
+PowerShell.

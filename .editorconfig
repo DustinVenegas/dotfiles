@@ -11,3 +11,7 @@ insert_final_newline = true
 [git/{gitignore*,gitattributes*,gitconfig*}]
 # Git uses tabs by default; let's not fight
 indent_style = tab
+
+[Makefile]
+# Git uses tabs by default; let's not fight
+indent_style = tab

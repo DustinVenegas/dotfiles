@@ -1,15 +1,35 @@
 # Dustin Venegas's dotfiles
 
-A collection of configurations, customizations, settings, etc known as a [dotfiles](https://dotfiles.github.io/) repository, by [Dustin Venegas](https://www.dustinvenegas.com/). This repository should be cloned to `~/dotfiles/`. There's some old setup scripts lying around, but they're a bit crusty.
-
+A collection of configurations, customizations, and settings known as a
+[dotfiles](https://dotfiles.github.io/) repository, by [Dustin
+Venegas](https://www.dustinvenegas.com/).
 
 ## Layout
 
-  * [`.vim`](./.vim/README.md) - [Vim](http://www.vim.org/) modal editor configuration. Expects to be [source](http://vimdoc.sourceforge.net/htmldoc/repeat.html#:source) loaded from `~/.vimrc`
-  * [`nvim`](./nvim/README.md) - [Neovim](https://www.neovim.io/) modal editor configuration. Expects to be [source](https://neovim.io/doc/user/repeat.html#:source) loaded from the appropriate [`XGD_BASE_DIR`](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
-  * [`provision`](./provision/README.md) - Provisioning scripts for this dotfiles repository
-  * [`WindowsPowershell`](./WindowsPowerShell/README.md) - Windows Powershell configuration files and scripts.
+* `bash/`, terminal shell. [`README.md`](./bash/README.md)
+* `ConEmu/`, a console emulator and terminal multiplexer for Windows.
+  [`README.md`](./ConEmu/README.md)
+* `git/`, distributed source control. [`README.md`](./git/README.md)
+* `hyper.js/`, terminal emulator based on web technologies.
+* `iTerm2/`, a macOS terminal emulator.
+* `kitty/`, a cross-platform, GPU-enabled terminal emulator.
+* `MacOS/`, Apple macOS. [`README.md`](./MacOS/README.md)
+* `nvim/`, a modern and extendible Vim.
+* `powershell/`, PowerShellCore or PSCore shell.
+* `provision` - Provisioning scripts for this dotfiles repository
+* `ripgrep/`, a fast and flexible file searcher.
+* `.vim/`, modal editor configuration.
+* `VSCode/`, code editor and semi-IDE. [`README.md`](./VSCode/README.md)
+* `WindowsPowerShell` - Windows PowerShell configuration files and scripts.
 
-### Templates
 
-Templates should be named similar to `local.<origin name>.template`.Templates should be committed to the Git repository.
+## Configuration
+
+Templates should be named similar to `local.<origin name>.template`. Templates
+should be committed to the Git repository.
+
+## Related Projects
+
+* [dotfiles](https://dotfiles.github.io/), your unofficial guide to dotfiles on GitHub.
+* [smkent/dotfiles](https://github.com/smkent/dotfiles), dotfiles repository of
+  Stephen Kent.

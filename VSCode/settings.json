@@ -2,9 +2,8 @@
 {
     "vim.enableNeovim": true,
     "vim.hlsearch": true,
-    "vim.neovimPath": "nvim",
+    "vim.neovimPath": "/usr/local/bin/nvim",
     "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-    "workbench.iconTheme": "vscode-icons",
     "team.showWelcomeMessage": false,
     "editor.tabSize": "2",
     "files.associations": {
@@ -30,6 +29,16 @@
     "go.formatFlags": [
         "-s"
     ],
+    "terraform.indexing": {
+        "enabled": true,
+        "liveIndexing": true,
+        "delay": 500,
+        "exclude": [
+            ".terraform/**/*",
+            "**/.terraform/**/*",
+            "dist/**/*"
+        ]
+    },
     "todo-tree.defaultHighlight": {
         "foreground": "green",
         "type": "none"
