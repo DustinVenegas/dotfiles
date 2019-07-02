@@ -114,7 +114,7 @@
 	# --all, includes all branches, tags, stashes, etc
 	# --simplify-by-decoration, simple ref names; ref/heads/master -> master
 	# --boundary, includes bounding commits so parents are displayed
-    branch-graph = log --graph --decorate --boundary --all --simplify-by-decoration
+	branch-graph = log --graph --decorate --boundary --all --simplify-by-decoration
 
 	#############
 	# Logs
@@ -127,7 +127,10 @@
 	# List commits showing changed files
 	log-numstat = "!git log- --numstat"
 
+	# Differences, current branch to upstream.
 	log-outgoing = log @{upstream}..
+
+	# Differences, upstream branch to current.
 	log-incoming = log ..@{upstream}
 
 	# Log with statistics
