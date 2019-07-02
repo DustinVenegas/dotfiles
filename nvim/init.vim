@@ -57,7 +57,6 @@ call plug#begin()
 
     " Syntax and Language Support {{{
     Plug 'PProvost/vim-ps1' " PowerShell
-    Plug 'hashivim/vim-terraform' " Terraform
     Plug 'w0rp/ale' " Asynchronous Lint Engine
     Plug 'docker/docker', {'for': 'dockerfile'}
     " }}}
@@ -75,7 +74,6 @@ call plug#begin()
     Plug 'hashivim/vim-terraform', {'for': ['tf', 'terraform', 'tfvars']}
     " }}}
 
-
 call plug#end()
 " }}}
 
@@ -88,12 +86,6 @@ call plug#end()
 
     " 'hashivim/vim-terraform' {{{
         let g:terraform_align=1 " Override indentation syntax for matching files.
-        let g:terraform_fold_sections=1 " Automatically fold sections of terraform code.
-		let g:terraform_remap_spacebar=1 " Allow vim-terraform to re-map the spacebar to fold/unfold.
-            " This works in conjunction with let g:terraform_fold_sections=1 which should be enabled
-            " if you plan to use this feature.
-		let g:terraform_commentstring='#%s' " Override the Vim's commentstring setting with a custom
-            " value. Defaults to '#%s', but consider '//%s'.
 		let g:terraform_fmt_on_save=1 " Allow vim-terraform to automatically format *.tf and *.tfvars
             " files with terraform fmt. You can also do this manually with the :TerraformFmt command.
     " }}}
@@ -117,11 +109,6 @@ call plug#end()
         " Set this variable to 1 to fix files when you save them.
         let g:ale_fix_on_save = 1
     " }}}
-" }}}
-
-" hashivim/vim-terraform {{{
-let g:terraform_align=1 " Terraform should auto-align variables.
-let g:terraform_fmt_on_save = 1 " Automatically run fmt when saving.
 " }}}
 
 
