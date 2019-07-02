@@ -1,1 +1,5 @@
+# Plant UML installation for generating pretty graphs.
 brew "plantuml"
+
+# Grip allows for rendering Github flavored Markdown
+brew "grip"

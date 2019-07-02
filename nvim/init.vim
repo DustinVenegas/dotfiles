@@ -58,7 +58,8 @@ call plug#begin()
     " Syntax and Language Support {{{
     Plug 'PProvost/vim-ps1' " PowerShell
     Plug 'w0rp/ale' " Asynchronous Lint Engine
-    Plug 'docker/docker', {'for': 'dockerfile'}
+    Plug 'docker/docker', {'for': 'dockerfile'} " For Dockerfiles
+    Plug 'JamshedVesuna/vim-markdown-preview' " Markdown previewing
     " }}}
 
     Plug 'justinmk/vim-dirvish'
@@ -92,6 +93,10 @@ call plug#end()
 
     " 'kristijanhusak/vim-dirvish-git' {{{
         let g:dirvish_git_show_ignored = 1 " Show ignored Git files by default in Dirvish.
+    " }}}
+
+    " 'JamshedVesuna/vim-markdown-preview' {{{
+        let g:vim_markdown_preview_hotkey='<Leader>p' " Opens preview
     " }}}
 
     " 'w0rp/ale' {{{
