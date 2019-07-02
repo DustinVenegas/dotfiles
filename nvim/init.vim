@@ -276,6 +276,12 @@ endif
 tnoremap <Esc> <C-\><C-n> 		" Ensure ESC also escapes in :terminal mode
 nnoremap <Leader>cd :cd %:p:h<CR>:pwd<CR> " Set vim's working directory to the current file.
 
+" Location List - Local file linting, errors, etc.
+nnoremap <Leader>lo :lopen<CR>     " Opens the local list.
+nnoremap <Leader>lc :lclose<CR>    " Closes the local list.
+nnoremap <Leader>ln :lnext<CR>     " Open the next item in the local list.
+nnoremap <Leader>lp :lprevious<CR> " Open the previous item in the local list.
+
 " alt+(hjkl): Maps A+hjkl in terminal/insert/normal
 tnoremap <A-h> <C-\><C-N><C-w>h
 tnoremap <A-j> <C-\><C-N><C-w>j
