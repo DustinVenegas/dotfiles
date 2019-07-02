@@ -116,6 +116,12 @@
 	# --boundary, includes bounding commits so parents are displayed
 	branch-graph = log --graph --decorate --boundary --all --simplify-by-decoration
 
+	# Rebase the current branch on top of another branch. Takes in a branch or commit.
+	rebase-on = "!git fetch --all && git rebase -i "
+	rebase-on-origin = "!git fetch --all && git rebase -i origin/"
+	rebase-on-origin-development = "!git fetch --all && git rebase -i origin/development"
+	rebase-on-origin-master = "!git fetch --all && git rebase -i origin/master"
+
 	#############
 	# Logs
 	#############
