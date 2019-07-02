@@ -3,3 +3,9 @@ brew "plantuml"
 
 # Grip allows for rendering Github flavored Markdown
 brew "grip"
+
+# Eslint provides linting for EMCAScript/JavaScript.
+brew "eslint"
+
+# Yamllint provides yaml file linting.
+brew "yamllint"
