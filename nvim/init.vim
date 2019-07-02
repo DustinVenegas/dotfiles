@@ -198,49 +198,40 @@ set number " Turn on line numbers
 set wrap! " Line wrapping off
 " }}}
 
-
 " Plugin: fzf.vim {{{
+    let g:fzf_command_prefix = 'Fzf' " Prefixes all fzf commands with Fzf
 
-let g:fzf_command_prefix = 'Fzf' " Prefixes all fzf commands with Fzf
+    if executable('rg')
+        " fzf (Fuzzy Finder)
+        "   - Use rg (RipGrep) if available
+        "   - Filename list
+        "   - Greedy file listing with hidden and .gitignore included
+        " NOTE: Should be same as ../WindowsPowerShell/profile.ps1
+        "   !!EXCEPT FOR!! the --vimdiff should not be used in PowerShell
+        "   Consider RIPGREP_CONFIG_PATH if this becomes a PITA
+        let $FZF_DEFAULT_COMMAND='rg --files -u -u '
 
-if executable('rg')
-    " fzf (Fuzzy Finder)
-    "   - Use rg (RipGrep) if available
-    "   - Filename list
-    "   - Greedy file listing with hidden and .gitignore included
-    " NOTE: Should be same as ../WindowsPowerShell/profile.ps1
-    "   !!EXCEPT FOR!! the --vimdiff should not be used in PowerShell
-    "   Consider RIPGREP_CONFIG_PATH if this becomes a PITA
-    let $FZF_DEFAULT_COMMAND='rg --files '
+        " Mappings
+        nnoremap <Leader>f?     :FzfHelptags<CR>
 
-    " Rg (RipGrep) for Fzf
-    command! -bang -nargs=* FzfRg
-      \ call fzf#vim#grep(
-      \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
-      \   <bang>0 ? fzf#vim#grep('up:60%')
-      \           : fzf#vim#grep('right:50%:hidden', '?'),
-      \   <bang>0)
+        " Files, cwd
+        nnoremap <Leader>ff     :FzfFiles<CR>
 
-    " Mappings
-    nnoremap <Leader>f?     :help fzf-vim<CR>
+        " Files, buffer's directory
+        nnoremap <Leader>fF     :FzfFiles <C-R>=expand('%:p:h')<CR><CR>
 
-    " Files, cwd
-    nnoremap <Leader>ff     :FzfFiles<CR>
+        " Buffers
+        nnoremap <Leader>fb     :FzfBuffers<CR>
 
-    " Files, buffer's directory
-    nnoremap <Leader>fF     :FzfFiles <C-R>=expand('%:p:h')<CR><CR>
+        " Windows and Tabs
+        nnoremap <Leader>fw     :FzfWindows<CR>
 
-    " Buffers
-    nnoremap <Leader>fb     :FzfBuffers<CR>
-
-    " Windows and Tabs
-    nnoremap <Leader>fw     :FzfWindows<CR>
-endif
-
+        " Commands
+        nnoremap <Leader>fc     :FzfCommands<CR>
+    endif
 " }}}
 
 " Plugin: vim-fugitive {{{
-
     " Mappings
     nnoremap <Leader>g?     :help fugitive<CR>
 
