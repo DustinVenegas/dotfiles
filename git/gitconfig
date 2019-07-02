@@ -143,6 +143,31 @@
 	log-stat = "!git log- --stat"
 
 	#############
+	# fzf Enabled Shortcuts
+	#############
+
+	# fzf list of branches
+	fbranch = "!echo \"$(git --no-pager branch -vv | fzf +m | awk '{print $1}' | sed \"s/.* //\")\""
+
+	# fzf delete a branch
+	fdbranch = "!git branch -d \"$(git fbranch)\""
+
+	# fzf checkout
+	fcheckout = "!git checkout \"$(git fbranch)\""
+
+	# Select files. Use print0 to ensure a NUL(0) is printed and xargs can handle "no files selected".
+	flsfiles = "!git ls-files -m -o --exclude-standard | fzf -m --print0 | xargs -0 -o"
+
+	# fzf status files
+	fstatus = "!git status --short | fzf -m --print0 | awk '{ print $2 }' | xargs -0 -o"
+
+	# Add files. Use print0 to ensure a NUL(0) is printed and xargs can handle "no files selected".
+	fadd = "!git flsfiles | xargs -t git add --verbose"
+
+	# Reset files, allowing --hard, --soft, --mixed, etc.
+	freset = "!git fstatus | xargs -t git reset"
+
+	#############
 	# Aliases
 	#############
 
