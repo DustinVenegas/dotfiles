@@ -102,7 +102,7 @@
 
 	# Delete any branches that have been merged into master
 	# See also: https://gist.github.com/robmiller/5133264
-	delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+	delete-merged-branches = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 
 	# Ran filter-branches? AFTER YOU VERIFY, run this. It deletes the backups from filter-branches at refs/original
 	delete-refs-original-backup = "!git for-each-ref --format='%(refname)' refs/original/ | xargs -n 1 git update-ref -d"
