@@ -60,6 +60,7 @@ call plug#begin()
     Plug 'w0rp/ale' " Asynchronous Lint Engine
     Plug 'docker/docker', {'for': 'dockerfile'} " For Dockerfiles
     Plug 'JamshedVesuna/vim-markdown-preview' " Markdown previewing
+    Plug 'pangloss/vim-javascript', {'for': 'javascript'} " For Javascript
     " }}}
 
     Plug 'justinmk/vim-dirvish'
@@ -97,6 +98,11 @@ call plug#end()
 
     " 'JamshedVesuna/vim-markdown-preview' {{{
         let g:vim_markdown_preview_hotkey='<Leader>p' " Opens preview
+    " }}}
+
+    " 'pangloss/vim-javascript' {{{
+        let g:javascript_plugin_jsdoc = 1 " Allow highlighting of JSDoc Files
+        let g:javascript_plugin_flow = 1  " Enable Flow syntax
     " }}}
 
     " 'w0rp/ale' {{{
