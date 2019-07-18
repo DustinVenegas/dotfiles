@@ -52,7 +52,7 @@ call plug#begin()
 
     Plug 'junegunn/fzf' " Required for fzf.vim
     Plug 'junegunn/fzf.vim' " fzf fuzzy finder, or way to quickly filter
-
+    Plug 'mhinz/vim-startify' " Friendly vim start screen, or Dashboard.
     Plug 'editorconfig/editorconfig-vim' " Respect .editorconfig files - http://editorconfig.org/
 
     " Syntax and Language Support {{{
@@ -121,6 +121,22 @@ call plug#end()
         " Set this variable to 1 to fix files when you save them.
         let g:ale_fix_on_save = 1
     " }}}
+" }}}
+
+" mhinz/vim-startify {{{
+" Adds explicit bookmarks to display in startify.
+let g:startify_bookmarks = [ '~/Source/mlcloud/', '~/go/src/bitbucket.org/mlcloud/' ]
+let g:startify_custom_header = [
+    \ '                                          _   _     _                 ',
+    \ '                                         | | | |   (_)                ',
+    \ '  __   _____ _ __   ___  __ _  __ _ ___  | |_| |__  _ _ __   __ _ ___ ',
+    \ '  \ \ / / _ \ ''_ \ / _ \/ _` |/ _` / __| | __| ''_ \| | ''_ \ / _` / __|',
+    \ '   \ V /  __/ | | |  __/ (_| | (_| \__ \ | |_| | | | | | | | (_| \__ \',
+    \ '    \_/ \___|_| |_|\___|\__, |\__,_|___/  \__|_| |_|_|_| |_|\__, |___/',
+    \ '                         __/ |                               __/ |    ',
+    \ '                        |___/                               |___/     ',
+    \ ''
+    \ ]
 " }}}
 
 
