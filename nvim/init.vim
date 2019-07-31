@@ -61,6 +61,7 @@ call plug#begin()
     Plug 'docker/docker', {'for': 'dockerfile'} " For Dockerfiles
     Plug 'JamshedVesuna/vim-markdown-preview' " Markdown previewing
     Plug 'pangloss/vim-javascript', {'for': 'javascript'} " For Javascript
+    Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
     " }}}
 
     Plug 'justinmk/vim-dirvish'
