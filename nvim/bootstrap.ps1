@@ -157,7 +157,7 @@ Process
 
     $pythonVirtualEnvs = @{
         "$PSScriptRoot/python-venvs/2.7/" = 2;
-        "$PSScriptRoot/python-venvs/3.6/" = 3;
+        "$PSScriptRoot/python-venvs/3.7/" = 3;
     }
 
     if ($uninstall)
