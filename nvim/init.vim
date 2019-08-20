@@ -226,7 +226,7 @@ set wrap! " Line wrapping off
         " NOTE: Should be same as ../WindowsPowerShell/profile.ps1
         "   !!EXCEPT FOR!! the --vimdiff should not be used in PowerShell
         "   Consider RIPGREP_CONFIG_PATH if this becomes a PITA
-        let $FZF_DEFAULT_COMMAND='rg --files -u -u '
+        let $FZF_DEFAULT_COMMAND='rg --files -u -u --follow * '
 
         " Mappings
         nnoremap <Leader>f?     :FzfHelptags<CR>
