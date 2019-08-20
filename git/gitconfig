@@ -167,6 +167,15 @@
 	# Reset files, allowing --hard, --soft, --mixed, etc.
 	freset = "!git fstatus | xargs -t git reset"
 
+    # Get the Bitbucket Pull Request URI from the remote origin configured.
+    bitbucket-pr-uri = "!git config remote.origin.url | sed -e 's/git@\\(.*\\):\\(.*\\).git/https:\\/\\/\\1\\/\\2\\/pull-requests/'"
+
+    # Opens the Bitbucket Pull Request URI with the default browser.
+    open-bitbucket-prs = "!git bitbucket-pr-uri | xargs -0 open"
+
+    # Open a Bitbucket Pull Request for the current branch
+    new-bitbucket-pr = "!open \"$(git bitbucket-pr-uri)/new?source=$(git branch-name)\""
+
 	#############
 	# Aliases
 	#############
