@@ -1,2 +1,11 @@
 # Kitty terminal
 cask "kitty"
+
+# Enable the cask-fonts Homebrew repository.
+tap "homebrew/cask-fonts"
+
+# Installs the Hack font.
+cask "font-hack"
+
+# Install the Cascadia Code font.
+cask "font-cascadia"

@@ -5,13 +5,15 @@
     "vim.neovimPath": "/usr/local/bin/nvim",
     "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
     "team.showWelcomeMessage": false,
-    "editor.tabSize": "2",
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "editor.fontFamily": "'Cascadia Code', Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontLigatures": true,
     "files.associations": {
         "**/concourse*.yaml": "concourse-pipeline-yaml",
         "**/tasks/**/*.yaml": "concourse-task-yaml",
         "**/bitbucket-pipelines.yml": "yaml"
     },
-    "editor.formatOnSave": true,
     "csharp.suppressDotnetInstallWarning": true,
     "shellcheck.customArgs": [
         "--external-sources"
@@ -21,7 +23,6 @@
     ],
     "markdownlint.run": "onSave",
     "markdown.extension.showExplorer": true,
-    "editor.fontFamily": "Fira Code,Menlo, Monaco, 'Courier New', monospace",
     "go.buildOnSave": "workspace",
     "go.formatTool": "gofmt",
     "go.lintTool": "golint",

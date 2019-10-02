@@ -3,3 +3,12 @@ brew "neovim"
 
 # timonwong.shellcheck dependencies
 brew "shellcheck"
+
+# Enable the cask-fonts Homebrew repository.
+tap "homebrew/cask-fonts"
+
+# Installs the Hack font.
+cask "font-hack"
+
+# Install the Cascadia Code font.
+cask "font-cascadia"
