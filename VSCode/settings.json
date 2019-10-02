@@ -1,39 +1,18 @@
 // Place your settings in this file to overwrite the default settings
 {
-    "vim.enableNeovim": true,
-    "vim.hlsearch": true,
-    "vim.neovimPath": "/usr/local/bin/nvim",
-    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-    "team.showWelcomeMessage": false,
-    "editor.tabSize": 2,
+    "csharp.suppressDotnetInstallWarning": true,
     "editor.formatOnSave": true,
     "editor.fontFamily": "'Cascadia Code', Menlo, Monaco, 'Courier New', monospace",
     "editor.fontLigatures": true,
+    "editor.tabSize": 2,
     "files.associations": {
         "**/concourse*.yaml": "concourse-pipeline-yaml",
         "**/tasks/**/*.yaml": "concourse-task-yaml",
         "**/bitbucket-pipelines.yml": "yaml"
     },
-    "csharp.suppressDotnetInstallWarning": true,
-    "shellcheck.customArgs": [
-        "--external-sources"
-    ],
-    "markdownlint.ignore": [
-        "vendor/**/*.md"
-    ],
-    "markdownlint.run": "onSave",
-    "markdown.extension.showExplorer": true,
+    "git.autofetch": true,
+    "git.enableSmartCommit": true,
     "go.buildOnSave": "workspace",
-    "go.formatTool": "goimports",
-    "go.formatFlags": [
-        "-s" // -s is for simplify",
-    ],
-    "go.lintFlags": [
-        "--fast"
-    ],
-    "go.lintTool": "golangci-lint",
-    "go.lintOnSave": "file",
-    "go.useLanguageServer": true,
     "go.buildTags": "integration",
     "go.delveConfig": {
         "dlvLoadConfig": {
@@ -46,6 +25,26 @@
         "apiVersion": 2,
         "showGlobalVariables": true
     },
+    "go.formatFlags": [
+        "-s" // -s is for simplify",
+    ],
+    "go.formatTool": "goimports",
+    "go.lintFlags": [
+        "--fast"
+    ],
+    "go.lintOnSave": "file",
+    "go.lintTool": "golangci-lint",
+    "go.useLanguageServer": true,
+    "markdown.extension.showExplorer": true,
+    "markdownlint.ignore": [
+        "vendor/**/*.md"
+    ],
+    "markdownlint.run": "onSave",
+    "shellcheck.customArgs": [
+        "--external-sources"
+    ],
+    "team.showWelcomeMessage": false,
+    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
     "terraform.indexing": {
         "enabled": true,
         "liveIndexing": true,
@@ -56,15 +55,10 @@
             "dist/**/*"
         ]
     },
-    "todo-tree.defaultHighlight": {
-        "foreground": "green",
-        "type": "none"
-    },
-    "todo-tree.customHighlight": {
-        "TODO": {},
-        "FIXME": {}
-    },
-    "git.autofetch": true,
-    "git.enableSmartCommit": true,
-    "vim.disableExtension": false
+    "vim.disableExtension": false,
+    "vim.enableNeovim": true,
+    "vim.hlsearch": true,
+    "vim.neovimPath": "/usr/local/bin/nvim",
+    "window.zoomLevel": 0,
+    "yaml.format.bracketSpacing": false
 }
