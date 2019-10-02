@@ -24,12 +24,28 @@
     "markdownlint.run": "onSave",
     "markdown.extension.showExplorer": true,
     "go.buildOnSave": "workspace",
-    "go.formatTool": "gofmt",
-    "go.lintTool": "golint",
-    // -s is for simplify",
+    "go.formatTool": "goimports",
     "go.formatFlags": [
-        "-s"
+        "-s" // -s is for simplify",
     ],
+    "go.lintFlags": [
+        "--fast"
+    ],
+    "go.lintTool": "golangci-lint",
+    "go.lintOnSave": "file",
+    "go.useLanguageServer": true,
+    "go.buildTags": "integration",
+    "go.delveConfig": {
+        "dlvLoadConfig": {
+            "followPointers": true,
+            "maxVariableRecurse": 1,
+            "maxStringLen": 64,
+            "maxArrayValues": 64,
+            "maxStructFields": -1
+        },
+        "apiVersion": 2,
+        "showGlobalVariables": true
+    },
     "terraform.indexing": {
         "enabled": true,
         "liveIndexing": true,
