@@ -1,0 +1,11 @@
+{
+  "coc.preferences.diagnostic.displayByAle": true,
+  "suggest.autoTrigger": "trigger",
+  "languageserver": {
+    "golang": {
+      "command": "gopls",
+      "rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
+      "filetypes": ["go"]
+    }
+  }
+}

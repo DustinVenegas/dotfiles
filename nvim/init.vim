@@ -62,6 +62,7 @@ call plug#begin()
     Plug 'JamshedVesuna/vim-markdown-preview' " Markdown previewing
     Plug 'pangloss/vim-javascript', {'for': 'javascript'} " For Javascript
     Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+    Plug 'neoclide/coc.nvim', {'branch': 'release'} " For language server support.
     " }}}
 
     Plug 'justinmk/vim-dirvish'
@@ -107,6 +108,10 @@ call plug#end()
     " }}}
 
     " 'w0rp/ale' {{{
+        " Every linter must be specified in g:ale_linters before it will work.
+        "let g:ale_linters_explicit = 1
+
+        "\   'go': ['gofmt', 'golint', 'go vet', 'gopls'],
         let g:ale_linters = {
         \   'javascript': ['flow','eslint'],
         \   'markdown': ['markdownlint'],
@@ -116,11 +121,31 @@ call plug#end()
 
         let g:ale_fixers = {
         \   '*': ['remove_trailing_lines', 'trim_whitespace'],
-        \   'javascript': ['eslint'],
+        \   'go': ['goimports'],
+        \   'javascript': ['eslint']
         \}
 
         " Set this variable to 1 to fix files when you save them.
         let g:ale_fix_on_save = 1
+    " }}}
+
+    " 'fatih/vim-go' {{{
+        " disable vim-go :GoDef short cut (gd)
+        " this is handled by LanguageClient [LC]
+        let g:go_def_mapping_enabled = 1
+    " }}}
+
+    " 'neoclide/coc.nvim' {{{
+        " Problems:
+        " - Which is updating the gutter and status line?
+
+        "   :GoMetaLinterAutoSaveToggle
+        " - How to add delay before opening auto-complete?
+
+        " - How to set ctrl+space to auto-complete?
+        " - Might be coc#refresh().
+        " - Requires \"suggest.autoTrigger\": \"trigger\" in :CocConfig
+        "inoremap <C-Space> coc#refresh()
     " }}}
 " }}}
 
@@ -233,6 +258,7 @@ set wrap! " Line wrapping off
 
         " Files, cwd
         nnoremap <Leader>ff     :FzfFiles<CR>
+        nnoremap <C-p>          :FzfFiles<CR>
 
         " Files, buffer's directory
         nnoremap <Leader>fF     :FzfFiles <C-R>=expand('%:p:h')<CR><CR>
@@ -282,6 +308,13 @@ set wrap! " Line wrapping off
 " Key Mappings and Shortcuts {{{
 tnoremap <Esc> <C-\><C-n> 		" Ensure ESC also escapes in :terminal mode
 nnoremap <Leader>cd :cd %:p:h<CR>:pwd<CR> " Set vim's working directory to the current file.
+nnoremap <Leader>tcd :tcd %:p:h<CR>:pwd<CR> " Set vim's working directory to the current file.
+
+" Quickfix List - Local file linting, errors, etc.
+nnoremap <Leader>co :copen<CR>     " Opens the local list.
+nnoremap <Leader>cc :cclose<CR>    " Closes the local list.
+nnoremap <Leader>cn :cnext<CR>     " Open the next item in the local list.
+nnoremap <Leader>cp :cprevious<CR> " Open the previous item in the local list.
 
 " Location List - Local file linting, errors, etc.
 nnoremap <Leader>lo :lopen<CR>     " Opens the local list.
