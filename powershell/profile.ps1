@@ -38,5 +38,5 @@ if (Test-Path "$HOME/.ripgreprc") {
 }
 
 if (Test-Path "$PSScriptRoot/profile.local.ps1") {
-    &"$PSScriptRoot/profile.local.ps1"
+    . "$PSScriptRoot/profile.local.ps1"
 }
