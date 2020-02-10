@@ -1,0 +1,6 @@
+# Modules/ contains machine-specific PSModules.
+# Use Modules-Dotfiles/ for bundled, dotfiles-specific, modules
+Modules/
+
+# Help files for Modules
+Help/

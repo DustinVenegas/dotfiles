@@ -1,9 +1,9 @@
 <#
     .Synopsis
-        Configure RipGrep (rg) for this Dotfiles configuration
+        Configure PowerShell Core for this Dotfiles configuration
 
     .Description
-        Bootstraps the rg portion of the Dotfiles repository
+        Bootstraps the PowerShell Core (pwsh) portion of the Dotfiles repository
 
     .Parameter Uninstall
         Removes appropriate installed files outside of the Dotfiles repository.
@@ -20,12 +20,10 @@
         .\bootstrap.ps1 -Uninstall
 
     .Notes
-        ./RipGrep/ripgreprc is Symlinked to $HOME/.ripgreprc.
-
-        Environment varibable RIPGREP_CONFIG_PATH is set to $HOME/.ripgreprc
+        ./powershell is Symlinked to $HOME/.config/powershell
+        or $HOME/Documents/PowerShell depending on the OS.
 #>
 #Requires -Version 5
-#Requires -RunAsAdministrator
 [CmdletBinding()]
 param(
     [switch]$confirm,
@@ -57,10 +55,14 @@ Begin
 }
 Process
 {
-    # Ensures $DOTFILES_BASE/git
-    #    $HOME/.ripgreprc -> $dotfiles/RipGrep/ripgreprc
+    # Current User All Hosts config varies by environment.
+    $cuah = '.config/powershell'
+    if ($IsWindows) {
+        $cuah = 'Documents/PowerShell'
+    }
+
     $symlinks = @{
-        (Join-Path -Path $HOME -ChildPath '.config/powershell') = $PSScriptRoot;
+        (Join-Path -Path $HOME -ChildPath "$cuah") = $PSScriptRoot;
     }
 
     if ($uninstall)
@@ -70,13 +72,10 @@ Process
     }
     else
     {
-        # Ensure Chocolatey packages are installed
-        choco install (Join-Path $PSScriptRoot 'chocolatey-packages.config') -y
-
         # Create symlinks
         $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] }
 
-        # Set EDITOR to nvim-qt
-        Set-UserEnvVar -Name RIPGREP_CONFIG_PATH -Value $ripgreprcPath
+        # Install Help Files
+        Update-Help -ErrorAction SilentlyContinue
     }
 }

@@ -6,7 +6,7 @@ function Prompt {
     $colorStatus = if ($? -eq $true) {[ConsoleColor]::DarkCyan} else { [ConsoleColor]::Red }
 
     # Your non-prompt logic here
-    $prompt = Write-Prompt "`n$([char]0x0A7) " -ForegroundColor $colorStatus
+    $prompt = Write-Prompt "$([System.Environment]::NewLine)$([char]0x0A7) " -ForegroundColor $colorStatus
 
     # Conditional bits
     if (Test-Path 'env:\AWS_PROFILE') {
@@ -17,7 +17,7 @@ function Prompt {
     $prompt += & $GitPromptScriptBlock
 
     # Suffix
-    $prompt += "`n"
+    $prompt += Write-Prompt "$([System.Environment]::NewLine)"
     $prompt += Write-Prompt "$([DateTime]::now.ToString("HH:mm:ss")) " -ForegroundColor Blue
     $prompt += Write-Prompt "$((Get-History -Count 1).id + 1)$('>' * ($nestedPromptLevel + 1))" -ForegroundColor DarkGray
     if ($prompt) { "$prompt " } else { " " }
