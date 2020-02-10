@@ -59,24 +59,3 @@ choco list -lo -r | %{
         choco pin add -n="$_" -r
     }
 
-# Provision VIM
-if (Test-Application gvim.exe) {
-    $vimrcPath = "$HOME\.vimrc"
-    if (Test-Path $vimrcPath) {
-        Write-Warning ".vimrc already exists at $vimrcPath"
-    } else {
-        Write-Host "Creating default .vimrc at $vimrcPath"
-
-        $dotfilesPathLinux = $dotfilesPath.Path.Replace("$home",'~')
-        Get-Content "$dotfilesPathLinux\provision\.vimrc.template" | %{
-            $_  -replace '{{date}}',(Get-Date) `
-                -replace '{{vimrtp}}',"$($dotfilesPathLinux.Replace('\','/'))/.vim" `
-                -replace '{{vimrc}}',"$dotfilesPathLinux\.vimrc"
-        } | Out-File -FilePath $vimrcPath -Encoding utf8
-    }
-
-    Write-Host "Updating vim plugins..."
-    vim +PlugInstall +qall
-} else {
-    Write-Warning "vim not found"
-}

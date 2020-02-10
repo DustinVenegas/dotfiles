@@ -13,8 +13,6 @@
     endif
 " }
 
-set runtimepath+=~/dotfiles/.vim/autoload
-
 " Plugged {
     call plug#begin('~/dotfiles/.vim/plugged')
 
