@@ -25,7 +25,6 @@
         For example, $HOME/.gitconfig should be symlinked to dotfiles/git/gitconfig
 #>
 #Requires -Version 5
-#Requires -RunAsAdministrator
 [CmdletBinding()]
 param(
     [switch]$confirm,
@@ -62,6 +61,7 @@ Process
         (Join-Path -Path $HOME -ChildPath '.gitconfig_os') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig_os_windows');
         (Join-Path -Path $HOME -ChildPath '.gitignore') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitignore');
         (Join-Path -Path $HOME -ChildPath '.gitattributes') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitattributes');
+        (Join-Path -Path $HOME -ChildPath '.gitconfig_local') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig_local');
     }
 
     if ($uninstall)
@@ -71,15 +71,18 @@ Process
     }
     else
     {
-        # Create symlinks
-        $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] }
-
-        # Template out some os-specific attributes once.
-        $gitConfigLocal = (Join-Path -Path $HOME -ChildPath '.gitconfig_local')
+        # Create a machine-specific configuration.
+        $gitConfigLocal = (Join-Path $PSScriptRoot -ChildPath 'gitconfig_local')
         if (-Not (Test-Path -Path $gitConfigLocal)) {
             Write-Host "Writing local git config at $gitConfigLocal"
-            Copy-Item -Path (Join-Path $PSScriptRoot -ChildPath 'gitconfig_local.template') -Destination $gitConfigLocal
+            Write-Host "Now go edit that file!!!"
+            Copy-Item `
+                -Path (Join-Path $PSScriptRoot -ChildPath 'gitconfig_local.template') `
+                -Destination $gitConfigLocal
         }
+
+        # Create symlinks
+        $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] }
 
         # Install or update Posh-Git
         Ensure-PoshGit
