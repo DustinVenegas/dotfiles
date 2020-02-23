@@ -24,14 +24,17 @@ write_template_if_missing()
     fi
 }
 
-
 # TODO: Support XDG_CONFIG_HOME
 SCRIPT_DIR="$(cd "$(dirname "${0}")"; pwd)"
+
+# Write the local template if it doesn't exist
+write_template_if_missing "$SCRIPT_DIR/gitconfig_local.template" "$SCRIPT_DIR/gitconfig_local"
 
 # Symlink configurations, if they don't already exist
 symlink_if_missing "$SCRIPT_DIR/gitconfig" "$HOME/.gitconfig"
 symlink_if_missing "$SCRIPT_DIR/gitignore" "$HOME/.gitignore"
 symlink_if_missing "$SCRIPT_DIR/gitattributes" "$HOME/.gitattributes"
+symlink_if_missing "$SCRIPT_DIR/gitconfig_local" "$HOME/.gitconfig_local"
 
 # OF-Specific Smybolic Links
 OS="`uname`"
@@ -46,6 +49,3 @@ case $OS in
         echo "WARNNG: gitconfig_os type is missing, $OSTYPE"
         ;;
 esac
-
-# Write the local template if it doesn't exist
-write_template_if_missing "$SCRIPT_DIR/gitconfig_local.template" "$HOME/.gitconfig_local"

@@ -1,6 +1,6 @@
 [user]
-        name = Default Value in .gitconfig_local
-        email = default_value_in@gitconfig.local
+#        name = Default Value in .gitconfig_local
+#        email = default_value_in@gitconfig.local
 
 # Example: Conditionally include ~/.gitconfig_user_personal if inside the ~/dotfiles/ git repository
 #[includeIf "gitdir:~/dotfiles/"]
