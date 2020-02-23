@@ -7,8 +7,6 @@ Venegas](https://www.dustinvenegas.com/).
 ## Layout
 
 * `bash/`, terminal shell. [`README.md`](./bash/README.md)
-* `ConEmu/`, a console emulator and terminal multiplexer for Windows.
-  [`README.md`](./ConEmu/README.md)
 * `git/`, distributed source control. [`README.md`](./git/README.md)
 * `hyper.js/`, terminal emulator based on web technologies.
 * `iTerm2/`, a macOS terminal emulator.
@@ -18,10 +16,9 @@ Venegas](https://www.dustinvenegas.com/).
 * `powershell/`, PowerShellCore or PSCore shell.
 * `provision` - Provisioning scripts for this dotfiles repository
 * `ripgrep/`, a fast and flexible file searcher.
-* `.vim/`, modal editor configuration.
+* `vim/`, modal editor configuration.
 * `VSCode/`, code editor and semi-IDE. [`README.md`](./VSCode/README.md)
 * `WindowsPowerShell` - Windows PowerShell configuration files and scripts.
-
 
 ## Configuration
 
