@@ -7,7 +7,7 @@ $MaximumHistoryCount=1024
 ################################################################################
 # Welcome Message
 ################################################################################
-$dotfilesLocalPath = Join-Path "$PSScriptRoot" 'Modules-Dotfiles/'
+$dotfilesLocalPath = Join-Path "$PSScriptRoot" '../powershell-modules/'
 if (($env:PSmodulePath -Split ';' | %{ Join-Path $_ '' }) -NotContains ($dotfilesLocalPath))
 {
     Write-Verbose "Adding $dotfilesLocalPath to $PSModulePath"

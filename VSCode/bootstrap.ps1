@@ -32,7 +32,7 @@ param(
 )
 Begin
 {
-    $dotfilesModulePath = Resolve-Path (Join-Path $PSScriptRoot ../WindowsPowerShell/Modules-Dotfiles/Dotfiles/Dotfiles.psm1)
+    $dotfilesModulePath = Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1)
     Import-Module -Name $dotfilesModulePath
     Set-StrictMode -Version Latest
 }
