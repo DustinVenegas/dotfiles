@@ -35,3 +35,21 @@ if (Test-Path "$HOME/.ripgreprc") {
 if (Test-Path "$PSScriptRoot/profile.local.ps1") {
     . "$PSScriptRoot/profile.local.ps1"
 }
+
+if (Get-Command -SilentlyContinue 'fzf') {
+    Write-Verbose "Found fzf executable."
+
+    if (Get-Module -ListAvailable -Name 'psfzf') {
+        Write-Verbose "Found psfzf PowerShell Module."
+
+        Write-Information "Enabling PSFzf"
+
+        # Rebind Ctrl+t, "swap characters", in PSReadLine to Ctrl+t in PSFzf, Fuzzy-Find Current Provider Path.
+        Remove-PSReadlineKeyHandler 'Ctrl+t'
+
+        # Rebind Ctrl+r, "reverse search", in PSReadLine to Ctrl+r in PSFzf, Fuzzy-Find History in Reverse.
+        Remove-PSReadlineKeyHandler 'Ctrl+r'
+
+        Import-Module PSFzf
+    }
+}
