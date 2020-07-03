@@ -11,12 +11,14 @@ Requires node.js.
 macOS, Linux
 
 ```sh
-./bash/bootstrap.sh && npm install
+# Run bootstrapper to install dependencies and perform basic configuration.
+./bootstrap.ps1
+
+# Run `markdownlint` from the markdownlint-cli NPM package.
+npx --package markdownlint-cli markdownlint **/*.md
 ```
 
 ## Configuration
-
-Use `$HOME/.gitconfig_local` for any machine-specific configuration.
 
 Configuration files are symlinked from the dotfiles repository to `$HOME` paths.
 

@@ -14,7 +14,7 @@
 " }
 
 " Plugged {
-    call plug#begin('~/dotfiles/.vim/plugged')
+    call plug#begin('~/.vim/plugged')
 
     " File explorer
     Plug 'scrooloose/nerdtree'

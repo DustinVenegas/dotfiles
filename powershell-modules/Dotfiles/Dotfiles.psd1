@@ -22,10 +22,7 @@
     PowerShellVersion = '5.0'
 
     # Functions to export from this module
-    FunctionsToExport = @(
-        'Test-DotfilesLinkTarget',
-        'Set-DotfilesSymbolicLink'
-    )
+    # FunctionsToExport = @()
 
     # Cmdlets to export from this module
     #CmdletsToExport = @()
