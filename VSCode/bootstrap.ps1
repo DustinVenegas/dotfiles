@@ -1,73 +1,51 @@
 <#
     .Synopsis
         Configure VSCode and necessary modules for Dotfiles
-
     .Description
         Bootstraps the VSCode portion of the Dotfiles Repository
-
-    .Parameter Uninstall
-        Removes appropriate installed files outside of the Dotfiles repository.
-
-    .Parameter Confirm
-        Approves all prompts
-
-    .Example
-        # Run bootstrapper, approving everything
-        .\bootstrap.ps1 -Confirm
-
-    .Example
-        # Uninstall
-        .\bootstrap.ps1 -Uninstall
-
-    .Notes
-        Check symlink map for additional information
-
 #>
 #Requires -Version 5
 #Requires -RunAsAdministrator
-[CmdletBinding()]
-param(
-    [switch]$confirm,
-    [switch]$uninstall
-)
-Begin
+[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+param()
+begin
 {
-    $dotfilesModulePath = Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1)
-    Import-Module -Name $dotfilesModulePath
-    Set-StrictMode -Version Latest
+    Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))
+    Set-StrictMode -Version latest
+
+    function Install-VSCodeExtension {
+        [CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+        param (
+            [Parameter(Mandatory, Position = 0, ValueFromPipeline)]
+            [string]$name
+        )
+        process {
+            if ($PSCmdlet.ShouldProcess("Install VSCode Extension: $name")) {
+                code --install-extension $name
+            }
+
+            [PSCustomObject]@{
+                Name = 'Install-VSCodeExtension'
+                NeedsUpdate = $true
+                Entity = "$name"
+                Properties = @{}
+            }
+        }
+    }
+
+    $optWhatif = $true
+    if ($PSCmdlet.ShouldProcess("Without Option: -whatif ")) {
+        $optWhatif = $false
+    }
 }
 Process
 {
-    $ErrorActionPreference = "Stop"
+    Install-Packages $PSScriptRoot -whatif:$optWhatIf
 
-    # Maps: AppData/Roaming/Code/User/* -> $dotfiles/VSCode/*
-    $symlinks = @{
-        (Join-Path "$env:APPDATA\Code\" "User\") = (Join-Path $PSScriptRoot '');
-    }
-
-    $vscodeExtensions = @(
+    # Install VSCode Extensions
+    @(
         'EditorConfig.EditorConfig',
-        'ms-vscode.csharp',
-        'ms-vscode.PowerShell',
-        'ms-vsts.team',
-        'PeterJausovec.vscode-docker',
-        'robertohuertasm.vscode-icons'
-        'vscodevim.vim'
-    )
-
-    if ($uninstall)
-    {
-        # Delete the symlinks that exist
-        $symlinks.Keys | Where-Object { Test-DotfilesSymlink -Path $_ -Target $symlinks[$_] } | Foreach-Object { $_.Delete() }
-    }
-    else
-    {
-        # Create symlinks
-        $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] -ErrorAction Stop }
-
-        $vscodeExtensions | Foreach-Object {
-            Write-Verbose "having VSCode install $_"
-            code --install-extension $_
-        }
-    }
+        'vscodevim.vim',
+        'Shan.code-settings-sync'
+    ) | Install-VSCodeExtension -whatif:$optWhatIf
 }

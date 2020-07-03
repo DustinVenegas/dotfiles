@@ -32,8 +32,34 @@ if (Test-Path "$HOME/.ripgreprc") {
     $env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
 }
 
-if (Test-Path "$PSScriptRoot/profile.local.ps1") {
-    . "$PSScriptRoot/profile.local.ps1"
+# Support an optional local.profile.ps1.
+$profileLocalPath = Join-Path -Path $PSScriptRoot -ChildPath 'local.profile.ps1'
+if (Test-Path "$profileLocalPath") {
+    Write-Verbose "Located an optional local.profile.ps1"
+    . "$PSScriptRoot/local.profile.ps1"
+}
+
+# Support an optional local.dotfiles.json for machine-specific configuration values.
+$dotfilesJsonPath = Join-Path -Path $PSScriptRoot -ChildPath 'local.dotfiles.json'
+if (Test-Path $dotfilesJsonPath) {
+    Write-Verbose 'Located an optional local.dotfiles.json'
+    $dotfilesJson = Get-Content -Path $dotfilesJsonPath -Raw | ConvertFrom-Json
+
+    foreach($i in $dotfilesJson | Get-Member -MemberType NoteProperty) {
+        $name = $i.Name
+        $value = $dotfilesJson.$name
+        Write-Verbose "Setting variable '$name' = '$value'"
+        Set-Variable -Name $name -Value $value -Scope Script
+    }
+}
+
+if ($dotfilesLocation -and (Test-Path $dotfilesLocation)) {
+    # Setup custom PowerShell Modules path located in the dotfiles folder.
+    Write-Verbose 'Located a dotfiles path'
+    $dotfilesPSModules = Join-Path $dotfilesLocation 'powershell-modules'
+    if ($env:PSModulePath -split ';' | Where-Object {$_ -eq $dotfilesPSModules} -eq $null) {
+        $env:PSModulePath += ";$dotfilesPSModules"
+    }
 }
 
 if (Get-Command -SilentlyContinue 'fzf') {
@@ -41,8 +67,6 @@ if (Get-Command -SilentlyContinue 'fzf') {
 
     if (Get-Module -ListAvailable -Name 'psfzf') {
         Write-Verbose "Found psfzf PowerShell Module."
-
-        Write-Information "Enabling PSFzf"
 
         # Rebind Ctrl+t, "swap characters", in PSReadLine to Ctrl+t in PSFzf, Fuzzy-Find Current Provider Path.
         Remove-PSReadlineKeyHandler 'Ctrl+t'

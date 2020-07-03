@@ -1,227 +1,132 @@
 <#
     .Synopsis
-        Configure Neovim and necessary modules for Dotfiles
-
+    Configure Neovim for this Dotfiles configuration
     .Description
-        Bootstraps the Neovim portion of the Dotfiles Repository by performing
-        actions such as installing plugins, neovim tools, setting up python,
-        etc.
-
-    .Parameter Uninstall
-        Removes appropriate installed files outside of the Dotfiles repository.
-
-
-    .Parameter Confirm
-        Approves all prompts
-
-    .Example
-        # Run bootstrapper, approving everything
-        .\bootstrap.ps1 -Confirm
-
-    .Example
-        # Uninstall
-        .\bootstrap.ps1 -Uninstall
-
-    .Notes
-        Some neovim files are Symlinked into $HOME/AppData/Roaming/nvim.
+    Bootstraps the Neovim portion of the Dotfiles repository
 #>
-#Requires -Version 5
 #Requires -RunAsAdministrator
-[CmdletBinding()]
-param(
-    [switch]$confirm,
-    [switch]$uninstall
-)
-Begin
+#Requires -Version 5
+[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+param()
+begin
 {
-    $dotfilesModulePath = Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1)
-    Import-Module -Name $dotfilesModulePath
-    Set-StrictMode -Version Latest
-    $ErrorActionPreference = "Stop"
+    Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))
+    Set-StrictMode -Version latest
 
-    # ====== Functions ======
-
-    function Get-UserInputYesNo
-    {
-        [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "", Justification="Literally the PowerShell Host", Scope="Function")]
+    function Get-PipEnvPython {
         param
         (
-            $message
+            [Parameter(Mandatory, Position = 0)]
+            [string]$Path
         )
+        Push-Location $Path | Out-Null
+        try {
+            if (Get-Command 'pipenv' -ErrorAction SilentlyContinue) {
+                $result = &pipenv --py --bare | Where-Object { $_ }
 
-        if (($PSCmdlet.MyInvocation.BoundParameters["confirm"]) `
-            -and ($PSCmdlet.MyInvocation.BoundParameters["confirm"].IsPresent -eq $true))
-        {
-            # Confirms all actions
-            return $true
+                if (-Not $result) {
+                    'pipenv-output-empty-or-errored'
+                } else {
+                    $result
+                }
+            } else {
+                'pipenv-missing-or-not-installed'
+            }
+        } catch {
+            Write-Error "Error Getting pipenv Python Version: $_"
+        } finally {
+            Pop-Location | Out-Null
+        }
+    }
+
+    function Install-PipEnv {
+        [CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+        param()
+
+        $pipenvMissing = $null -eq (Get-Command 'pipenv' -ErrorAction SilentlyContinue)
+        if ($pipenvMissing) {
+            if ($PSCmdlet.ShouldProcess("pip", "install pipenv")) {
+                &pip3 install --quiet --upgrade pipenv | Out-Null
+                &pip2 install --quiet --upgrade pipenv | Out-Null
+            }
         }
 
-        while($true)
-        {
-            $input = Read-Host "$message (Y/N)?"
-
-            switch ($input.ToUpper())
-            {
-                'Y' { return $true }
-                ''  { return $false }
-                'N' { return $false }
-
-                default { Write-Host "Invalid input: $input"; continue; }
+        [PSCustomObject] @{
+            Name = 'Install-PipEnv'
+            NeedsUpdate = $pipenvMissing
+            Entity = "pipenv"
+            Properties = @{
+                PipenvMissing = $pipenvMissing
             }
         }
     }
 
-    function Set-UserEnvVar
-    {
+    function Set-PipEnvWorkspace {
+        [CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
         param
         (
-            $name,
-            $value
-        )
-
-        $current = [System.Environment]::GetEnvironmentVariable($name, "User")
-
-        if ($current -ne $value)
-        {
-            Write-Verbose "Setting User Environment variable $name to [$value] from [$current]"
-            [Environment]::SetEnvironmentVariable($name, $value, "User")
-        }
-    }
-
-    function Test-EnvVarPath
-    {
-        param
-        (
+            [Parameter(Mandatory, Position = 0)]
             [string]$Path
         )
 
-        $entries = [System.Environment]::GetEnvironmentVariable("PATH") -Split ';' | `
-            Where-Object { (Join-Path $_ '') -eq (Join-Path $Path '') }
-
-        return $null -ne $entries
-    }
-
-    function Install-PipenvDependencies
-    {
-        param
-        (
-            $virtualEnv,
-            $pythonVersion
-        )
-
-        # Use pip to install/update the virtualenv dependencies
-        Push-Location $virtualEnv
-        &pipenv update
-        Pop-Location
-    }
-
-    function Get-PipenvPythonVersion
-    {
-        param
-        (
-            $virtualEnv
-        )
-
-        Push-Location $virtualEnv
-        $pythonPath = &pipenv --py
-        Pop-Location | Out-Null
-
-        return $pythonPath
-    }
-
-    function Install-Pipenv
-    {
-        &pip3 install --upgrade pipenv | Out-Null
-        &pip2 install --upgrade pipenv | Out-Null
-    }
-
-    function Install-ChocolateyPackages
-    {
-        if (Get-Command choco -ErrorAction SilentlyContinue)
-        {
-            $chocolateyPackages = Join-path $PSScriptRoot 'chocolatey-packages.config'
-            &choco install $chocolateyPackages --Confirm
-        }
-        else
-        {
-            Write-Warning "Chocolatey is missing! Uh, that means the packages couldn't be installed. You'll need to look into this."
-        }
-    }
-}
-Process
-{
-    # Maps: $Home/AppData/Local/nvim/ -> $dotfiles/nvim/
-    $symlinks = @{
-        (Join-Path -Path $env:LOCALAPPDATA -ChildPath 'nvim/') = $PSScriptRoot;
-    }
-
-    $pythonVirtualEnvs = @{
-        "$PSScriptRoot/python-venvs/2.7/" = 2;
-        "$PSScriptRoot/python-venvs/3.8/" = 3;
-    }
-
-    if ($uninstall)
-    {
-        # Delete the symlinks that exist
-        $symlinks.Keys | Where-Object { Test-DotfilesSymlink -Path $_ -Target $symlinks[$_] } | Foreach-Object { $_.Delete() }
-    }
-    else
-    {
-        # Install all our prerequisite applications
-        Install-ChocolateyPackages
-
-        # Create symlinks
-        $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] -ErrorAction Stop }
-
-        # Assert nvim-qt exists in the PATH
-        $nvimqtCommandSource = (Get-Command 'nvim-qt' -ErrorAction Stop).Source
-        if (-Not (Get-Command 'nvim-qt' -ErrorAction SilentlyContinue)) { Write-Error "It seems nvim-qt is missing from the PATH. If you just used Chocolatey to install it, try closing and reopening your shell. If using ConEmu, you'll have to close/reopen the entire multiplexer!" }
-
-        # Set EDITOR to nvim-qt
-        Set-UserEnvVar -Name EDITOR -Value 'nvim-qt'
-
-        # Python VEnvs
-        Install-Pipenv
-        $pipenvExeLocationByVersion = @{}
-        foreach ($venvDir in $pythonVirtualEnvs.Keys)
-        {
-            $pythonVersion = $pythonVirtualEnvs[$venvDir]
-            Write-Output "Installing Pipenv Dependencies for [$venvDir] python [$pythonVersion]"
-            Install-PipenvDependencies $venvDir $pythonVersion
-
-            # Set the python executable location
-            $pipenvExeLocationByVersion[$pythonVersion] = Get-PipenvPythonVersion $venvDir
-        }
-
-        $neovimSettings = @{
-            'g:python3_host_prog'=$pipenvExeLocationByVersion[3];
-            'g:python_host_prog'=$pipenvExeLocationByVersion[2];
-            'g:ripgrep_config'="$HOME/.ripgreprc";
-        }
-
-        $localhostNeovimSettings = Join-Path $PSScriptRoot 'local.dotfiles.json'
-        if (Test-Path $localhostNeovimSettings)
-        {
-            $existingJson = Get-Content $localhostNeovimSettings | ConvertFrom-Json
-
-            foreach ($expectedKey in $neovimSettings.Keys)
-            {
-                $existingValue = $null
-                if (($existingJson | Get-Member -MemberType NoteProperty).Name -Contains $expectedKey)
-                {
-                    $existingValue = $existingJson."$expectedKey"
-                }
-
-                if ($existingValue -ne $neovimSettings[$expectedKey])
-                {
-                    Write-Warning "Expected key ($expectedKey) missing in $localhostNeovimSettings! Expected $($neovimSettings[$expectedKey]) but saw ($existingValue). Manual investigation necessary!"
-                }
+        # Install dependencies into virtual environment.
+        Push-Location $Path
+        $pipenvPythonPath = $null
+        try {
+            if ($PSCmdlet.ShouldProcess('PipEnv', $path)) {
+                Write-Verbose "Running pipenv update in $path"
+                $result = &pipenv install
+                Write-Verbose "pipenv update output: $result"
             }
         }
-        else
-        {
-            $json = $neovimSettings | ConvertTo-Json
-            [System.IO.File]::WriteAllLines($localhostNeovimSettings, $json)
+        catch {
+            Write-Error "Error updating pipenv workspace: $_"
+        }
+        finally {
+            Pop-Location | Out-Null
+        }
+
+        [PSCustomObject] @{
+            Name = 'Invoke-PipEnv'
+            NeedsUpdate = $true
+            Entity = "$Path"
+            Properties = @{
+                Location = $pipenvPythonPath
+            }
         }
     }
+
+    $optWhatif = $true
+    if ($PSCmdlet.ShouldProcess("Without Option: -whatif ")) {
+        $optWhatif = $false
+    }
+
+    $pythonVenvPath = Join-Path -Path $PSScriptRoot -ChildPath 'python-venvs'
+    $pythonVersions = @{
+        '2.7' = Join-Path -Path $pythonVenvPath -ChildPath '2.7'
+        '3.8' = Join-Path -Path $pythonVenvPath -ChildPath '3.8'
+    }
+}
+process
+{
+    Install-Packages $PSScriptRoot -whatif:$optWhatIf
+
+    New-SymbolicLink `
+        -Path $(Join-Path -Path $env:LOCALAPPDATA -ChildPath 'nvim') `
+        -Value $PSScriptRoot `
+        -whatif:$optWhatIf
+
+    Set-UserEnvVar -Name EDITOR -Value 'nvim-qt' -whatif:$optWhatIf
+
+    Install-PipEnv -whatif:$optWhatIf
+    Set-PipEnvWorkspace -Path $pythonVersions['2.7'] -whatif:$optWhatIf
+    Set-PipEnvWorkspace -Path $pythonVersions['3.8'] -whatif:$optWhatIf
+
+    Set-JsonValue -Path (Join-Path -Path $PSScriptRoot -ChildPath 'local.dotfiles.json') -InputObject @{
+        'g:python3_host_prog' = "$(Get-PipEnvPython -Path $pythonVersions['3.8'])"
+        'g:python_host_prog' = "$(Get-PipEnvPython -Path $pythonVersions['2.7'])"
+        'g:ripgrep_config' = "$(Join-Path -Path "$HOME" -ChildPath '.ripgreprc')"
+    } -whatif:$optWhatIf
+
+    Write-Verbose "Done"
 }

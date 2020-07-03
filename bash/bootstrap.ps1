@@ -1,12 +1,8 @@
 <#
     .Synopsis
-        Configure RipGrep (rg) for this Dotfiles configuration
+        Configure Bash for this Dotfiles configuration
     .Description
-        Bootstraps the rg portion of the Dotfiles repository
-    .Notes
-        ./RipGrep/ripgreprc is Symlinked to $HOME/.ripgreprc.
-
-        Environment varibable RIPGREP_CONFIG_PATH is set to $HOME/.ripgreprc
+        Bootstraps the Bash portion of the Dotfiles repository
 #>
 #Requires -Version 5
 #Requires -RunAsAdministrator
@@ -22,16 +18,17 @@ begin
         $optWhatif = $false
     }
 }
-Process
+process
 {
     Install-Packages $PSScriptRoot -whatif:$optWhatIf
 
-    $ripgreprcPath = (Join-Path -Path $HOME -ChildPath '.ripgreprc')
-
     New-SymbolicLink `
-        -Path $ripgreprcPath `
-        -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'ripgreprc') `
+        -Path $(Join-Path -Path $HOME -ChildPath '.bashrc') `
+        -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'bashrc') `
         -whatif:$optWhatIf
 
-    Set-UserEnvVar -Name RIPGREP_CONFIG_PATH -Value $ripgreprcPath
+    New-SymbolicLink `
+        -Path $(Join-Path -Path $HOME -ChildPath '.bash_profile') `
+        -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'bash_profile') `
+        -whatif:$optWhatIf
 }

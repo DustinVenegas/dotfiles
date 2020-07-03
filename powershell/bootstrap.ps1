@@ -1,81 +1,95 @@
 <#
     .Synopsis
-        Configure PowerShell Core for this Dotfiles configuration
-
+    Configure PowerShell Core for this Dotfiles configuration
     .Description
-        Bootstraps the PowerShell Core (pwsh) portion of the Dotfiles repository
-
-    .Parameter Uninstall
-        Removes appropriate installed files outside of the Dotfiles repository.
-
-    .Parameter Confirm
-        Approves all prompts
-
-    .Example
-        # Run bootstrapper, approving everything
-        .\bootstrap.ps1 -Confirm
-
-    .Example
-        # Uninstall
-        .\bootstrap.ps1 -Uninstall
-
-    .Notes
-        ./powershell is Symlinked to $HOME/.config/powershell
-        or $HOME/Documents/PowerShell depending on the OS.
+    Bootstraps the PowerShell Core (pwsh) portion of the Dotfiles repository
 #>
+#Requires -RunAsAdministrator
 #Requires -Version 5
-[CmdletBinding()]
-param(
-    [switch]$confirm,
-    [switch]$uninstall
-)
-Begin
+[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+param()
+begin
 {
-    $dotfilesModulePath = Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1)
-    Import-Module -Name $dotfilesModulePath
+    Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))
     Set-StrictMode -Version latest
-    $ErrorActionPreference = "Stop"
 
-    function Set-UserEnvVar
-    {
-        param
-        (
-            $name,
-            $value
-        )
+    $config = Get-DotfilesConfig
 
-        $current = [System.Environment]::GetEnvironmentVariable($name, "User")
+    function cuahProfileDirectory {
+        # Current User All Hosts config varies by environment.
+        $cuahChildPath = '.config/powershell'
+        if ($config.IsWindows) {
+            $cuahChildPath = 'Documents/PowerShell'
+        }
 
-        if ($current -ne $value)
-        {
-            Write-Verbose "Setting User Environment variable $name to [$value] from [$current]"
-            [Environment]::SetEnvironmentVariable($name, $value, "User")
+        Join-Path -Path $HOME -ChildPath $cuahChildPath
+    }
+
+    function Update-LocalhostHelpfiles {
+        [CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+        param ()
+        process {
+            if ($PSCmdlet.ShouldProcess("Local Cache of PowerShell Helpfiles")) {
+                # TODO: Move into some kind of periodic update. This function takes forever.
+                Write-Verbose "Running Update-Help"
+                Update-Help -ErrorAction SilentlyContinue
+            }
+
+            [PSCustomObject]@{
+                Name = 'Update-LocalhostHelpfiles'
+                NeedsUpdate = $true
+                Entity = 'Helpfile Cache'
+                Properties = @{
+                    Cache = 'Localhost'
+                }
+            }
         }
     }
+
+    function Set-PSModuleInstallation {
+        [CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+        param (
+            [string]$name,
+            [string]$psr = 'PSGallery', # Repository
+            [string]$psrs = 'CurrentUser' # Scope
+        )
+        process {
+            $needsUpdate = $false
+
+            if ($null -eq (Get-Module -Name $name -ErrorAction 'Continue')) {
+                $needsUpdate = $true
+                if ($PSCmdlet.ShouldProcess("Install PowerShell Module: $name")) {
+                    Install-Module -Repository $psr -Name $name -Scope $psrs
+                }
+            }
+
+            [PSCustomObject]@{
+                Name = 'Set-PSModuleInstallation'
+                NeedsUpdate = $needsUpdate
+                Entity = "$name"
+                Properties = @{
+                    Scope = $psrs
+                    Repository = $psr
+                    Name = $name
+                }
+            }
+        }
+    }
+
+    # TODO: Replace -whatif options with ShouldProcess blocks to a switch in order to simplify.
+    $optWhatif = $true
+    if ($PSCmdlet.ShouldProcess("turn OFF -whatif option")) {
+        $optWhatif = $false
+    }
 }
-Process
+process
 {
-    # Current User All Hosts config varies by environment.
-    $cuah = '.config/powershell'
-    if ($IsWindows) {
-        $cuah = 'Documents/PowerShell'
-    }
+    Install-Packages $PSScriptRoot -whatif:$optWhatIf
+    New-SymbolicLink -Path $(cuahProfileDirectory) -Value $(Resolve-Path $PSScriptRoot) -whatif:$optWhatIf
+    Set-JsonValue -Path 'local.dotfiles.json' -InputObject @{ dotfilesLocation = "$($config.Path)" } -whatif:$optWhatIf
+    Update-LocalhostHelpfiles -whatif:$optWhatIf
 
-    $symlinks = @{
-        (Join-Path -Path $HOME -ChildPath "$cuah") = $PSScriptRoot;
-    }
-
-    if ($uninstall)
-    {
-        # Delete the symlinks that exist
-        $symlinks.Keys | Where-Object { Test-DotfilesSymlink -Path $_ -Target $symlinks[$_] } | Foreach-Object { $_.Delete() }
-    }
-    else
-    {
-        # Create symlinks
-        $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] }
-
-        # Install Help Files
-        Update-Help -ErrorAction SilentlyContinue
-    }
+    Set-PSModuleInstallation -Name posh-git
+    Set-PSModuleInstallation -Name PSFzF
+    Set-PSModuleInstallation -Name PSScriptAnalyzer
 }

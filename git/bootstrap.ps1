@@ -1,90 +1,80 @@
 <#
     .Synopsis
         Configure Git for this Dotfiles configuration
-
     .Description
         Bootstraps the Git portion of the Dotfiles repository
-
-    .Parameter Uninstall
-        Removes appropriate installed files outside of the Dotfiles repository.
-
-    .Parameter Confirm
-        Approves all prompts
-
-    .Example
-        # Run bootstrapper, approving everything
-        .\bootstrap.ps1 -Confirm
-
-    .Example
-        # Uninstall
-        .\bootstrap.ps1 -Uninstall
-
     .Notes
         Files from the dotfiles git/ directory are Symlinked into $HOME/.git*
 
         For example, $HOME/.gitconfig should be symlinked to dotfiles/git/gitconfig
 #>
+#Requires -RunAsAdministrator
 #Requires -Version 5
-[CmdletBinding()]
-param(
-    [switch]$confirm,
-    [switch]$uninstall
-)
-Begin
+[CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Medium')]
+param()
+begin
 {
-    $dotfilesModulePath = Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1)
-    Import-Module -Name $dotfilesModulePath
+    Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))
     Set-StrictMode -Version latest
-    $ErrorActionPreference = "Stop"
 
-    function Ensure-PoshGit
-    {
-        if ((Get-Module -Name posh-git -ListAvailable) -eq $null)
-        {
-            Write-Host "Installing posh-git"
-            Install-Module -Name 'posh-git' -Scope "CurrentUser" -Confirm
-        } else {
-            Write-Host "Updating posh-git"
-            Update-Module -Name 'posh-git' -Confirm
+    $OSSpecificGitConfig = 'unspecified'
+    switch -Wildcard ([System.Environment]::OSVersion.Platform.ToString()) {
+        'Win*' {
+            $OSSpecificGitConfig = 'windows'
         }
+        'Unix*' {
+            $OSSpecificGitConfig = 'unix'
+            if ('Darwin' -eq [System.Environment]::OSVersion.OS.ToString()) {
+                $OSSpecificGitConfig = 'macos'
+            }
+        }
+    }
+
+    $optWhatif = $true
+    if ($PSCmdlet.ShouldProcess("Without Option: -whatif ")) {
+        $optWhatif = $false
     }
 }
-Process
+process
 {
-    # Ensures $DOTFILES_BASE/git
-    #    $HOME/.gitconfig -> $dotfiles/git/gitconfig
-    #    $HOME/.gitconfig_os -> $dotfiles/git/gitconfig_os_windows
-    #    $HOME/.gitignore -> $dotfiles/git/gitignore
-    #    $HOME/.gitattributes -> $dotfiles/git/gitattributes
-    $symlinks = @{
-        (Join-Path -Path $HOME -ChildPath '.gitconfig') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig');
-        (Join-Path -Path $HOME -ChildPath '.gitconfig_os') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig_os_windows');
-        (Join-Path -Path $HOME -ChildPath '.gitignore') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitignore');
-        (Join-Path -Path $HOME -ChildPath '.gitattributes') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitattributes');
-        (Join-Path -Path $HOME -ChildPath '.gitconfig_local') = (Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig_local');
-    }
+    Install-Packages $PSScriptRoot -whatif:$optWhatIf
 
-    if ($uninstall)
-    {
-        # Delete the symlinks that exist
-        $symlinks.Keys | Where-Object { Test-DotfilesSymlink -Path $_ -Target $symlinks[$_] } | Foreach-Object { $_.Delete() }
-    }
-    else
-    {
-        # Create a machine-specific configuration.
-        $gitConfigLocal = (Join-Path $PSScriptRoot -ChildPath 'gitconfig_local')
-        if (-Not (Test-Path -Path $gitConfigLocal)) {
-            Write-Host "Writing local git config at $gitConfigLocal"
-            Write-Host "Now go edit that file!!!"
-            Copy-Item `
-                -Path (Join-Path $PSScriptRoot -ChildPath 'gitconfig_local.template') `
-                -Destination $gitConfigLocal
+    New-SymbolicLink `
+        -Path $(Join-Path -Path $HOME -ChildPath '.gitconfig') `
+        -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig') `
+        -whatif:$optWhatIf
+
+    New-SymbolicLink `
+        -Path $(Join-Path -Path $HOME -ChildPath '.gitignore') `
+        -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'gitignore') `
+        -whatif:$optWhatIf
+
+    New-SymbolicLink `
+        -Path $(Join-Path -Path $HOME -ChildPath '.gitattributes') `
+        -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'gitattributes') `
+        -whatif:$optWhatIf
+
+    New-SymbolicLink `
+        -Path $(Join-Path -Path $HOME -ChildPath '.gitconfig_os') `
+        -Value $(Join-Path -Path $PSScriptRoot -ChildPath "gitconfig_os_$OSSpecificGitConfig") `
+        -whatif:$optWhatIf
+
+    # Create gitconfig_local if it does not exist.
+    if (-Not (Test-Path gitconfig_local)) {
+        if ($optWhatif) {
+            Write-Verbose "Would have copied gitconfig_local.template to gitconfig_local"
+        } else {
+            Copy-Item -Path gitconfig_local.template -Destination gitconfig_local
         }
-
-        # Create symlinks
-        $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] }
-
-        # Install or update Posh-Git
-        Ensure-PoshGit
     }
+
+    # Symlink gitconfig_local to $HOME/.gitconfig_local
+    if (Test-Path gitconfig_local) {
+        New-SymbolicLink `
+            -Path $(Join-Path -Path $HOME -ChildPath '.gitconfig_local') `
+            -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'gitconfig_local') `
+            -whatif:$optWhatIf
+    }
+
+    Install-Module -Name 'posh-git' -Scope "CurrentUser" -Confirm -whatif:$optWhatIf
 }
