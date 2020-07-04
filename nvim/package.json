@@ -12,8 +12,8 @@
   ],
   "author": "Dustin Venegas",
   "license": "BSD-2-Clause",
-  "devDependencies": {
-    "markdownlint-cli": "^0.15.0",
-    "neovim": "^4.5.0"
+  "dependencies": {
+    "markdownlint-cli": "^0.23.2",
+    "neovim": "^4.9.0"
   }
 }
