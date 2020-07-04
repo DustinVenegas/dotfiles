@@ -1,7 +1,6 @@
 [core]
 	excludesfile = ~/.gitignore
 	attributesfile = ~/.gitattributes # dotfiles hardlinked
-	editor = vim
 [merge]
 	conflictstyle = diff3
 	tool = kdiff3
