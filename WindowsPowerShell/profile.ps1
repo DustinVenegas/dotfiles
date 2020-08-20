@@ -1,28 +1,40 @@
 ################################################################################
 # Global Variables
 ################################################################################
-$env:EDITOR = 'gvim.exe'
 $MaximumHistoryCount=1024
 
 ################################################################################
 # Welcome Message
 ################################################################################
-$dotfilesLocalPath = Join-Path "$PSScriptRoot" '../powershell-modules/'
-if (($env:PSmodulePath -Split ';' | %{ Join-Path $_ '' }) -NotContains ($dotfilesLocalPath))
-{
-    Write-Verbose "Adding $dotfilesLocalPath to $PSModulePath"
-    $env:PSModulePath += ";$dotfilesLocalPath"
+# When the current directory is a SymbolicLink, resolve the link target and
+$dotfilesPSModules = Get-Item $PSScriptRoot |
+    Where-Object {$_.LinkType -eq 'SymbolicLink'} |
+    ForEach-Object {Join-Path (Join-path ($_.Target) '..') 'powershell-modules'} |
+    Where-Object {Test-Path $_} |
+    Foreach-Object {Resolve-Path $_}
+
+# (optional) Load local.profile.ps1
+$localProfilePath = Join-Path $PSScriptRoot 'local.profile.ps1'
+if (Test-Path $localProfilePath) {
+    . $localProfilePath
 }
 
-if ((Get-Module -ListAvailable -Name posh-git) -ne $null)
-{
+# add the '../powershell-modules' directory to the module search paths.
+if ($dotfilesPSModules) {
+    if (($env:PSModulePath -split ';') -NotContains $dotfilesPSModules) {
+        Write-Verbose "Adding $dotfilesLocalPath to $($env:PSModulePath -Split ';')"
+        $env:PSModulePath += ";$dotfilesPSModules"
+    }
+} else {
+    Write-Warning "Could not find the custom powershell-modules directory. Some features and functions may be unavailable."
+}
+
+if (Get-Module -ListAvailable -Name posh-git) {
     Import-Module posh-git
 
     # Removes extra space
     $global:GitPromptSettings.AfterText = ']'
-}
-else
-{
+} else {
     Write-Verbose @"
 PSModule posh-git is missing! Git prompts will be disabled.
 
@@ -30,7 +42,9 @@ Either run .\bootstrap.ps1 or install the module manually.
 "@
 }
 
-Import-Module RipGrep
+if (Get-Module -ListAvailable -Name RipGrep) {
+    Import-Module RipGrep
+}
 
 ################################################################################
 # Set Window Properties
@@ -41,9 +55,7 @@ function SetWindowTitle() {
 
     # Obtain the last history record and add one to see what our "current"
     # history is going to be after we execute this command.
-    $currentHistoryIndex = (get-history | `
-            Sort-Object 'id' -descending | `
-            Select-Object -First 1).id + 1
+    $currentHistoryIndex = (get-history | Sort-Object 'id' -descending | Select-Object -First 1).id + 1
 
     $host.Ui.RawUi.WindowTitle = "[#$currentHistoryIndex][$(Get-Location)] [$($Host.Name)::$($Host.Version)]"
 }
@@ -69,22 +81,18 @@ function Set-DotfilesDrives
 ################################################################################
 # Aliases
 ################################################################################
-if (Get-Command nvim -ErrorAction SilentlyContinue)
-{
+if (Get-Command nvim -ErrorAction SilentlyContinue) {
     Set-Alias -Name nvi -Value nvim | Out-Null
     Set-Alias -Name nvq -Value nvim-qt | Out-Null
 }
 
-if (Get-Command rg -ErrorAction SilentlyContinue)
-{
+if (Get-Command rg -ErrorAction SilentlyContinue) {
     # If no ripgrep path is set, but a configuration exists, use it.
-    if (($env:RIPGREP_CONFIG_PATH -eq '') -and (Test-Path "$HOME/.ripgreprc"))
-    {
+    if (($env:RIPGREP_CONFIG_PATH -eq '') -and (Test-Path "$HOME/.ripgreprc")) {
         $env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
     }
 
-    if (Get-Command fzf -ErrorAction SilentlyContinue)
-    {
+    if (Get-Command fzf -ErrorAction SilentlyContinue) {
         # fzf (Fuzzy Finder)
         #   - Use rg (RipGrep) if available
         #   - Filename list
@@ -105,8 +113,6 @@ function Shorten-Path([string] $path) {
    # handle paths starting with \\ and . correctly
    return ($loc -Replace '\\(\.?)([^\\])[^\\]*(?=\\)','\$1$2')
 }
-
-$VerbosePreference = 'Continue'
 
 function Prompt {
     # Prompt:
@@ -152,10 +158,4 @@ function Prompt {
 }
 
 Import-Module JunkDrawer
-$localProfilePath = Join-Path $PSScriptRoot 'local.profile.ps1'
-if (Test-Path (Join-Path $PSScriptRoot 'local.profile.ps1'))
-{
-    . $localProfilePath
-}
-
 Set-DotfilesDrives

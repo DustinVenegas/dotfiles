@@ -1,133 +1,68 @@
 <#
     .Synopsis
-        Configure PowerShell and necessary modules for Dotfiles
-
+        Sets the Windows PowerShell configuration.
     .Description
-        Bootstraps the PowerShell portion of the Dotfiles Repository by performing
-        actions such as installing PSModules, updating common items, and adding
-        the necessary file links.
-
-    .Parameter Uninstall
-        Removes appropriate installed files outside of the Dotfiles repository.
-
-
-    .Parameter Confirm
-        Approves all prompts
-
-    .Example
-        # Run bootstrapper, approving everything
-        .\bootstrap.ps1 -Confirm
-
-    .Example
-        # Uninstall
-        .\bootstrap.ps1 -Uninstall
-
-    .Notes
-        The dotfiles WindowsPowerShell directory is Symlinked into $HOME/Documents.
-        Afterward, there is a single PSModules folder at ./Modules. It will contain
-        modules bundled with this Dotfiles repository and installed PSModules.
+        Sets the Windows PowerShell configuration, on Microsoft Windows only.
 #>
 #Requires -Version 5
 #Requires -RunAsAdministrator
-[CmdletBinding()]
-param(
-    [switch]$confirm,
-    [switch]$uninstall
-)
-Begin
+[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+param()
+begin
 {
-    $dotfilesModulePath = Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1)
-    Import-Module -Name $dotfilesModulePath
-    Set-StrictMode -Version Latest
-    $ErrorActionPreference = "Stop"
+    Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))
+    Set-StrictMode -Version latest
 
-    # ====== Functions ======
-
-    function Confirm-PSRepositoryTrusted
-    {
-        param
-        (
-            $name
-        )
-
-        if ((Get-PSRepository -Name $name).InstallationPolicy -ne 'Trusted')
-        {
-            # Trust scripts (remove warnings) when downloading from PSGallery
-            Set-PSRepository -Name $name -InstallationPolicy 'Trusted'
-        }
-    }
-
-    function Get-UserInputYesNo
-    {
-        [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "", Justification="Literally the PowerShell Host", Scope="Function")]
-        param
-        (
-            $message
-        )
-
-        if (($PSCmdlet.MyInvocation.BoundParameters["confirm"]) `
-            -and ($PSCmdlet.MyInvocation.BoundParameters["confirm"].IsPresent -eq $true))
-        {
-            # Confirms all actions
-            return $true
-        }
-
-        while($true)
-        {
-            $input = Read-Host "$message (Y/N)?"
-
-            switch ($input.ToUpper())
-            {
-                'Y' { return $true }
-                ''  { return $false }
-                'N' { return $false }
-
-                default { Write-Host "Invalid input: $input"; continue; }
-            }
-        }
-    }
-
-    function Approve-UpdateHelp
-    {
-        if (Get-UserInputYesNo 'Update all help files')
-        {
-            # HACK: Ignore errors due to 'Failed to update Help for the module(s)' errors
-            Update-Help -ErrorAction SilentlyContinue
-        }
-    }
-
-    function Approve-UpdatePSGalleryModule
-    {
-        if (Get-UserInputYesNo 'Update all PSGalleryModules')
-        {
-            Update-Module
-        }
+    $optWhatif = $true
+    if ($PSCmdlet.ShouldProcess("Without Option: -whatif ")) {
+        $optWhatif = $false
     }
 }
-Process
-{
-    # Maps: HOME/Documents/WindowsPowerShell/ -> $dotfiles/WindowsPowerShell/
-    $symlinks = @{ (Join-Path -Path "$HOME/Documents/" -ChildPath 'WindowsPowerShell/') = $PSScriptRoot; }
-    $expectedPsGalleryModules = 'posh-git','PSFzf','PSScriptAnalyzer'
+Process {
+    Install-Packages $PSScriptRoot -whatif:$optWhatIf
 
-    if ($uninstall)
-    {
-        # Delete the symlinks that exist
-        $symlinks.Keys | Where-Object { Test-DotfilesSymlink -Path $_ -Target $symlinks[$_] } | Foreach-Object { $_.Delete() }
-    }
-    else
-    {
-        # Create symlinks
-        $symlinks.Keys | %{ Set-DotfilesSymbolicLink -Path $_ -Target $symlinks[$_] }
+    # Make this folder the root folder for the PowerShell Profile.
+    New-SymbolicLink `
+        -Path $(Join-Path (Join-path $HOME 'Documents') 'WindowsPowerShell') `
+        -Value $PSScriptRoot `
+        -whatif:$optWhatIf
 
-        # Confirm PSGallery is trusted so we're not prompted
-        Confirm-PSRepositoryTrusted 'PSGallery' | Out-Null
+    # Trust scripts PSRepository locations. Removes warnings when downloading from these locations.
+    @('PSGallery') |
+        Where-Object {(Get-PSRepository -Name $_).InstallationPolicy -ne 'trusted'} |
+        Foreach-Object {
+            if ($PSCmdlet.ShouldProcess("Set InstallationPolicy for PSRepository: $_")) {
+                Set-PSRepository -Name $_ -InstallationPolicy 'Trusted'
+            }
 
-        # Confirm the expected modules are at least installed
-        $expectedPsGalleryModules | Foreach-Object { Install-Module -Repository PSGallery $_ -Scope CurrentUser } | Out-Null
+            [PSCustomObject]@{
+                Name = 'Set-PSRepository'
+                NeedsUpdate = $true
+                Entity = "$_"
+                Properties = @{
+                    InstallationPolicy = 'Trusted'
+                }
+            }
+        }
 
-        # Optional (slow)
-        Approve-UpdateHelp
-        Approve-UpdatePSGalleryModule
-    }
+    $psr = 'PSGallery' # Repository
+    $psrs = 'CurrentUser' # Scope
+    @('posh-git','PSFzf','PSScriptAnalyzer') |
+        Where-Object {$null -eq (Get-Module -Name $_ -ErrorAction 'Continue')} |
+        Foreach-Object {
+            if ($PSCmdlet.ShouldProcess("Install PowerShell Module: $_")) {
+                Install-Module -Repository $psr -Name $_ -Scope $psrs
+            }
+
+            [PSCustomObject]@{
+                Name = 'Install-Module'
+                NeedsUpdate = $true
+                Entity = "$_"
+                Properties = @{
+                    Scope = $psrs
+                    Repository = $psr
+                    Name = $_
+                }
+            }
+        }
 }
