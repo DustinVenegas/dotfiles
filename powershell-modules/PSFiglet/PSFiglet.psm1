@@ -1,7 +1,3 @@
-# Module checks
-if (Get-Module PSFiglet) { return }
-if (Test-Figlet -ne $true) { return }
-
 function Test-Figlet {
     <#
         .SYNOPSIS Returns if figlet.exe exists in $env:PATH
@@ -33,6 +29,12 @@ function List-FigletFonts {
     figlet
 }
 
+if (-Not (Test-Figlet)) {
+    # figlet is a function that takes the place of 'figlet.exe', when figlet is unavailable.
+    function script:figlet {
+        Write-Verbose "Would have executed figlet $($args | Foreach-Object{"$_"})"
+    }
+}
 
 $exportModuleMemberParams = @{
     Function = @(
