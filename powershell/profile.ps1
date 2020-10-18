@@ -77,3 +77,12 @@ if (Get-Command -SilentlyContinue 'fzf') {
         Import-Module PSFzf
     }
 }
+
+if (Get-Module -Name PSReadLine) {
+    if (-Not (Get-PSReadLineKeyHandler -Bound | Where-Object { $_.Function -eq 'ViEditVisually' })) {
+        if (Get-Command "$($env:EDITOR)") {
+            # <C+X><C+E> should open the current command for editing in $env:EDITOR.
+            Set-PSReadLineKeyHandler -Chord 'Ctrl+x,Ctrl+e' -Function ViEditVisually
+        }
+    }
+}
