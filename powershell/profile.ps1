@@ -62,7 +62,7 @@ if ($dotfilesLocation -and (Test-Path $dotfilesLocation)) {
     }
 }
 
-if (Get-Command -SilentlyContinue 'fzf') {
+if (Get-Command -Name 'fzf' -ErrorAction SilentlyContinue) {
     Write-Verbose "Found fzf executable."
 
     if (Get-Module -ListAvailable -Name 'psfzf') {
