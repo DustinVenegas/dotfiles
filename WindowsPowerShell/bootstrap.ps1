@@ -1,68 +1,60 @@
 <#
     .Synopsis
-        Sets the Windows PowerShell configuration.
-    .Description
-        Sets the Windows PowerShell configuration, on Microsoft Windows only.
+        Configure Windows PowerShell for a Dotfiles configuration
 #>
-#Requires -Version 5
 #Requires -RunAsAdministrator
-[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+#Requires -Version 5
+[CmdletBinding()]
 param()
-begin
-{
+begin {
     Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))
     Set-StrictMode -Version latest
 
-    $optWhatif = $true
-    if ($PSCmdlet.ShouldProcess("Without Option: -whatif ")) {
-        $optWhatif = $false
+    function Set-PSRepositoryToTrusted {
+        [CmdletBinding()]
+        param (
+            [string]$Name
+        )
+        process {
+            # If the policy is not already trusted.
+            if ((Get-PSRepository -Name $name).InstallationPolicy -ne 'trusted') {
+                Set-PSRepository -Name $name -InstallationPolicy 'Trusted'
+
+                [PSCustomObject]@{
+                    Name        = 'Set-PSRepository'
+                    NeedsUpdate = $true
+                    Entity      = "$name"
+                    Properties  = @{
+                        InstallationPolicy = 'Trusted'
+                    }
+                }
+            }
+        }
+    }
+
+    $ModuleRepository = 'PSGallery'
+    $ModuleScope = 'CurrentUser'
+
+    $modulesToManage = @('posh-git', 'PSFzf', 'PSScriptAnalyzer')
+    $modulesToInstall = $modulesToManage | Where-Object {
+        $null -eq (Get-Module -Name $PSItem -ListAvailable -ErrorAction 'Continue')
     }
 }
 Process {
-    Install-Packages $PSScriptRoot -whatif:$optWhatIf
+    if (-Not (Test-OSPlatform 'Windows')) {
+        Write-Information "Skipping $($PSScriptRoot) because only Windows is supported."
+        return
+    }
 
-    # Make this folder the root folder for the PowerShell Profile.
+    Install-Packages $PSScriptRoot
+
     New-SymbolicLink `
-        -Path $(Join-Path (Join-path $HOME 'Documents') 'WindowsPowerShell') `
-        -Value $PSScriptRoot `
-        -whatif:$optWhatIf
+        -Path $(Join-Path (Join-Path $HOME 'Documents') 'WindowsPowerShell') `
+        -Value $PSScriptRoot
 
-    # Trust scripts PSRepository locations. Removes warnings when downloading from these locations.
-    @('PSGallery') |
-        Where-Object {(Get-PSRepository -Name $_).InstallationPolicy -ne 'trusted'} |
-        Foreach-Object {
-            if ($PSCmdlet.ShouldProcess("Set InstallationPolicy for PSRepository: $_")) {
-                Set-PSRepository -Name $_ -InstallationPolicy 'Trusted'
-            }
+    Set-PSRepositoryToTrusted -Name $ModuleRepository
 
-            [PSCustomObject]@{
-                Name = 'Set-PSRepository'
-                NeedsUpdate = $true
-                Entity = "$_"
-                Properties = @{
-                    InstallationPolicy = 'Trusted'
-                }
-            }
-        }
-
-    $psr = 'PSGallery' # Repository
-    $psrs = 'CurrentUser' # Scope
-    @('posh-git','PSFzf','PSScriptAnalyzer') |
-        Where-Object {$null -eq (Get-Module -Name $_ -ErrorAction 'Continue')} |
-        Foreach-Object {
-            if ($PSCmdlet.ShouldProcess("Install PowerShell Module: $_")) {
-                Install-Module -Repository $psr -Name $_ -Scope $psrs
-            }
-
-            [PSCustomObject]@{
-                Name = 'Install-Module'
-                NeedsUpdate = $true
-                Entity = "$_"
-                Properties = @{
-                    Scope = $psrs
-                    Repository = $psr
-                    Name = $_
-                }
-            }
-        }
+    foreach ($m in $modulesToInstall) {
+        Install-Module -Name $m -Repository $ModuleRepository -Scope $ModuleScope
+    }
 }

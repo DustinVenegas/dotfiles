@@ -1,15 +1,12 @@
 <#
     .Synopsis
-    Configure Neovim for this Dotfiles configuration
-    .Description
-    Bootstraps the Neovim portion of the Dotfiles repository
+        Configure Neovim for this Dotfiles configuration
 #>
 #Requires -RunAsAdministrator
 #Requires -Version 5
-[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+[CmdletBinding()]
 param()
-begin
-{
+begin {
     Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))
     Set-StrictMode -Version latest
 
@@ -40,7 +37,7 @@ begin
     }
 
     function Install-PipEnv {
-        [CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+        [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
         param()
 
         $pipenvMissing = $null -eq (Get-Command 'pipenv' -ErrorAction SilentlyContinue)
@@ -52,17 +49,17 @@ begin
         }
 
         [PSCustomObject] @{
-            Name = 'Install-PipEnv'
+            Name        = 'Install-PipEnv'
             NeedsUpdate = $pipenvMissing
-            Entity = "pipenv"
-            Properties = @{
+            Entity      = "pipenv"
+            Properties  = @{
                 PipenvMissing = $pipenvMissing
             }
         }
     }
 
     function Set-PipEnvWorkspace {
-        [CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+        [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
         param
         (
             [Parameter(Mandatory, Position = 0)]
@@ -78,27 +75,20 @@ begin
                 $result = &pipenv install
                 Write-Verbose "pipenv update output: $result"
             }
-        }
-        catch {
+        } catch {
             Write-Error "Error updating pipenv workspace: $_"
-        }
-        finally {
+        } finally {
             Pop-Location | Out-Null
         }
 
         [PSCustomObject] @{
-            Name = 'Invoke-PipEnv'
+            Name        = 'Invoke-PipEnv'
             NeedsUpdate = $true
-            Entity = "$Path"
-            Properties = @{
+            Entity      = "$Path"
+            Properties  = @{
                 Location = $pipenvPythonPath
             }
         }
-    }
-
-    $optWhatif = $true
-    if ($PSCmdlet.ShouldProcess("Without Option: -whatif ")) {
-        $optWhatif = $false
     }
 
     $pythonVenvPath = Join-Path -Path $PSScriptRoot -ChildPath 'python-venvs'
@@ -107,26 +97,22 @@ begin
         '3.8' = Join-Path -Path $pythonVenvPath -ChildPath '3.8'
     }
 }
-process
-{
-    Install-Packages $PSScriptRoot -whatif:$optWhatIf
+process {
+    Install-Packages $PSScriptRoot
 
     New-SymbolicLink `
         -Path $(Join-Path -Path $env:LOCALAPPDATA -ChildPath 'nvim') `
-        -Value $PSScriptRoot `
-        -whatif:$optWhatIf
+        -Value $PSScriptRoot
 
-    Set-UserEnvVar -Name EDITOR -Value 'nvim-qt' -whatif:$optWhatIf
+    Set-UserEnvVar -Name EDITOR -Value 'nvim-qt'
 
-    Install-PipEnv -whatif:$optWhatIf
-    Set-PipEnvWorkspace -Path $pythonVersions['2.7'] -whatif:$optWhatIf
-    Set-PipEnvWorkspace -Path $pythonVersions['3.8'] -whatif:$optWhatIf
+    Install-PipEnv
+    Set-PipEnvWorkspace -Path $pythonVersions['2.7']
+    Set-PipEnvWorkspace -Path $pythonVersions['3.8']
 
     Set-JsonValue -Path (Join-Path -Path $PSScriptRoot -ChildPath 'local.dotfiles.json') -InputObject @{
         'g:python3_host_prog' = "$(Get-PipEnvPython -Path $pythonVersions['3.8'])"
-        'g:python_host_prog' = "$(Get-PipEnvPython -Path $pythonVersions['2.7'])"
-        'g:ripgrep_config' = "$(Join-Path -Path "$HOME" -ChildPath '.ripgreprc')"
-    } -whatif:$optWhatIf
-
-    Write-Verbose "Done"
+        'g:python_host_prog'  = "$(Get-PipEnvPython -Path $pythonVersions['2.7'])"
+        'g:ripgrep_config'    = "$(Join-Path -Path "$HOME" -ChildPath '.ripgreprc')"
+    }
 }

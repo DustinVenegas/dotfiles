@@ -30,4 +30,4 @@ Configuration files are symlinked from the dotfiles repository to `$HOME` paths.
 
 - `$HOME/.gitconfig` points to `gitconfig`
 - `$HOME/.gitignore` points to `gitignore`
-- `$HOME/.gitconfig_os` points to `gitconfig_os_windows`, `gitconfig_os_macos`, etc
+- `$HOME/.gitconfig_os` points to `gitconfig_os_windows`, `gitconfig_os_darwin`, etc

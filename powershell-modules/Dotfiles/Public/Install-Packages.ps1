@@ -38,7 +38,7 @@ function Install-Packages
                     &choco install $packagesConfig --confirm --limit-output --no-progress | Write-Verbose
                     Write-Verbose "Choco Completed"
                 } else {
-                    Write-Warning "Tried to install packages, but no chocolatey-packages.config was detected."
+                    Write-Information "Skipping Chocolatey package installation since a chocolatey-packages.config was detected at $Path."
                 }
             }
         }
@@ -112,7 +112,7 @@ function Install-Packages
         [PSCustomObject]@{
             Name = 'Install-Packages'
             NeedsUpdate = $true
-            Entity = "$command"
+            Entity = Resolve-Path -Path $Path -Relative
             Properties = @{
                 Type = $type
             }
