@@ -17,7 +17,12 @@ process {
 
     Install-Packages $PSScriptRoot
 
+    $kittyDir = $(Join-Path -Path $HOME -ChildPath ".config" -AdditionalChildPath 'kitty')
+    if (-not (Test-Path $kittyDir)) {
+        New-Item -Path $kittyDir -ItemType Directory -Force
+    }
+
     New-SymbolicLink `
-        -Path $(Join-Path -Path $HOME -ChildPath ".config/kitty/kitty.conf") `
+        -Path $(Join-Path -Path $kittyDir -ChildPath 'kitty.conf') `
         -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'kitty.conf')
 }
