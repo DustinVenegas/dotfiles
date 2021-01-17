@@ -54,11 +54,13 @@ if (Test-Path $dotfilesJsonPath) {
 }
 
 if ($dotfilesLocation -and (Test-Path $dotfilesLocation)) {
+    $separator = $([System.IO.Path]::PathSeparator)
+
     # Setup custom PowerShell Modules path located in the dotfiles folder.
     Write-Verbose 'Located a dotfiles path'
     $dotfilesPSModules = Join-Path $dotfilesLocation 'powershell-modules'
-    if ($env:PSModulePath -split ';' | Where-Object {$_ -eq $dotfilesPSModules} -eq $null) {
-        $env:PSModulePath += ";$dotfilesPSModules"
+    if ($env:PSModulePath -split $separator | Where-Object {$_ -eq $dotfilesPSModules} -eq $null) {
+        $env:PSModulePath += "$separator$dotfilesPSModules"
     }
 }
 
