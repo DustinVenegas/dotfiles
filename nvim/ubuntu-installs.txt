@@ -1,1 +1,9 @@
 plantuml
+neovim
+python2-minimal
+python3-pip
+python3-neovim
+fzf
+ripgrep
+nodejs
+editorconfig

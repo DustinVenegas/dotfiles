@@ -19,7 +19,10 @@ function Get-DotfilesOSPlatform {
         'Win*' { $simplifiedRunningOS = "Windows" }
         'Unix*' {
             $simplifiedRunningOS = 'Unix'
-            if ('Darwin' -eq [System.Environment]::OSVersion.OS.ToString()) {
+
+            # MacOS sets a specific property on OSVersion.OS. The property does not exist on other operating
+            if ((Get-Member -InputObject ([System.Environment]::OSVersion) -Name 'OS' -ErrorAction Continue) -and
+                ('Darwin' -eq [System.Environment]::OSVersion.OS.ToString())) {
                 $simplifiedRunningOS = 'Darwin'
             }
         }

@@ -38,9 +38,11 @@ function New-SymbolicLink
 
         $succeeded = $false
         $resolvedValue = Resolve-Path $value
-        $item = Get-Item $path -ErrorAction SilentlyContinue
 
-        if ($item) {
+        if (Test-Path $path) {
+            # -Force includes hidden (.filename) files on Linux.
+            $item = Get-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue
+
             $succeeded = ($item.Target -and $item.Target -eq $resolvedValue.Path)
             if (-Not $succeeded) {
                 Write-Error "A file, directory, or symlinklink already exists at $($item.FullName))"
@@ -61,7 +63,7 @@ function New-SymbolicLink
             NeedsUpdate = -Not $succeeded
             Entity = $Path
             Properties = @{
-                Item = $item
+                Value = $Value
             }
         }
     }

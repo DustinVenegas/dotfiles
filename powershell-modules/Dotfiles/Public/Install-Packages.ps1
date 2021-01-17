@@ -70,18 +70,32 @@ function Install-Packages
                 $Path
             )
 
-            @(Get-Content $Path) | Where-Object {$_ -NotMatch '^#.+'} | xargs sudo apt-get install
-        }
+            # Install any PPAs that might exist first. This adds repositories to apt.
+            $aptRepositories = (Join-Path -Path $Path -ChildPath 'ubuntu-repositories.txt')
+            if (Test-Path -Path $aptRepositories) {
+                $packages = @(Get-Content $aptRepositories | Where-Object { $_ -NotMatch '^#.+' })
+                Write-Information -Message "Apt Repos to register $($packages.Length): $packages"
+                sudo add-apt-repository --yes @packages && sudo apt-get update
+            }
 
-        function Reset-Path {
-            # Refresh the PATH.
-            Write-Verbose "Refreshing the PATH variable."
-            Write-Debug  "Old Value $($env:PATH)"
-            $env:PATH = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-            Write-Debug  "New Value $($env:PATH)"
+            # Install the packages.
+            $ubuntuInstalls = (Join-Path -Path $Path -ChildPath 'ubuntu-installs.txt')
+            if (Test-Path -Path $ubuntuInstalls) {
+                $packages = @(Get-Content $ubuntuInstalls | Where-Object {$_ -NotMatch '^#.+'})
+                Write-Information -Message "Apt Packages to install $($packages.Length): $packages"
+                sudo apt-get install @packages --yes
+            }
         }
 
         $Config = Get-DotfilesConfig
+
+        function Reset-Path {
+            if ($Config.IsWindows) {
+                $env:PATH = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+            } else {
+                $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH")
+            }
+        }
     }
     process {
         $command = {Write-Warning "No Install-Packages command configured. Something went awry."}
@@ -94,7 +108,8 @@ function Install-Packages
             $type = 'MacOS'
             $command = {Install-HomebrewPackages -Path $Path}
         } elseif ($Config.IsUnix) {
-            if ($null -ne (&lsb_release -a '.*Ubuntu.*')) {
+            $lsbResults = &lsb_release -a 2>&1
+            if ($null -ne ($lsbResults -Match 'Ubuntu')) {
                 $type = 'Ubuntu'
                 $command = {Install-UbuntuPackages -Path $Path}
             }
@@ -103,9 +118,7 @@ function Install-Packages
         Write-Debug "Command: $command"
         if ($PSCmdlet.ShouldProcess("Destination: $Path")) {
             $result = &$command
-            Write-Debug "Result was $result"
-
-            Write-Verbose "Updating PATH variable by resetting to the latest values."
+            Write-Debug "Command Result: Command[$command] Result[$result]"
             Reset-Path
         }
 

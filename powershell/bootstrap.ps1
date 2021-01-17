@@ -23,7 +23,7 @@ begin {
 
     $cuahProfileDirectory = Join-Path -Path $HOME -ChildPath $ccp
 
-    $modulesToManage = @('posh-git', 'PSFzf', 'PSScriptAnalyzer')
+    $modulesToManage = @('posh-git', 'PSFzf', 'PSScriptAnalyzer', 'PSReadLine')
     $modulesToInstall = $modulesToManage | Where-Object {
         $null -eq (Get-Module -Name $PSItem -ListAvailable -ErrorAction 'Continue')
     }

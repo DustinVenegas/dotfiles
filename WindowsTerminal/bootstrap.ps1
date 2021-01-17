@@ -16,7 +16,7 @@ begin
 Process
 {
     if (-Not (Test-OSPlatform 'Windows')) {
-        Write-Information "Skipping $($PSScriptRoot) because Windows is not supported. OS/Platform is $($config.SimplifiedOSPlatform)."
+        Write-Information "Skipping $($PSScriptRoot) because only Windows is supported."
         return
     }
 
