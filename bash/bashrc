@@ -117,6 +117,10 @@ if [[ ! "$PATH" == */usr/local/opt/fzf/bin* ]]; then
     export PATH="$PATH:/usr/local/opt/fzf/bin"
 fi
 
+if [ -d "$HOME/.local/bin" ] && [[ ! "$PATH" == *$HOME/.local/bin* ]]; then
+    export PATH="$PATH:$HOME/.local/bin"
+fi
+
 # fzf - Auto-completion
 # fzf - Key bindings
 # ---------------
