@@ -92,12 +92,27 @@ begin {
     $pythonVersions = @{
         '3.8' = Join-Path -Path $pythonVenvPath -ChildPath '3.8'
     }
+
+    $configDir = $env:XDG_CONFIG_HOME
+    if ($null -eq $configDir) {
+        $XDG_CONFIG_HOME_DEFAULT = (Join-Path -Path $HOME -ChildPath '.config')
+
+        if (Test-OSPlatform -Include 'Windows') {
+            # nvim config dir for Windows is LocalAppData/.config/nvim when XDG_CONFIG_HOME is unset.
+            # https://github.com/neovim/neovim/issues/9352
+            $script:configDir = (Join-Path -Path $env:LOCALAPPDATA -ChildPath '.config')
+        } else {
+            $script:configDir = $XDG_CONFIG_HOME_DEFAULT
+        }
+    }
+
+    $nvimConfigDir = Join-Path -Path $configDir -ChildPath 'nvim'
 }
 process {
     Install-Packages $PSScriptRoot
 
     New-SymbolicLink `
-        -Path $(Join-Path -Path $env:LOCALAPPDATA -ChildPath 'nvim') `
+        -Path $nvimConfigDir `
         -Value $PSScriptRoot
 
     Set-UserEnvVar -Name EDITOR -Value 'nvim-qt'
