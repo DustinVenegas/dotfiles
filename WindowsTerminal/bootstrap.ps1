@@ -2,9 +2,9 @@
     .Synopsis
         Configure Windows Terminal for a Dotfiles configuration
 #>
+[CmdletBinding()]
 #Requires -RunAsAdministrator
 #Requires -Version 5
-[CmdletBinding()]
 param()
 begin
 {

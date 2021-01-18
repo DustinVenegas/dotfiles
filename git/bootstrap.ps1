@@ -2,10 +2,9 @@
     .Synopsis
         Configures Git to use the dotfiles configuration files.
 #>
-
+[CmdletBinding()]
 #Requires -RunAsAdministrator
 #Requires -Version 5
-[CmdletBinding()]
 param()
 begin {
     Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))

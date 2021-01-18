@@ -6,9 +6,9 @@
 
         Environment varibable RIPGREP_CONFIG_PATH is set to $HOME/.ripgreprc
 #>
+[CmdletBinding()]
 #Requires -Version 5
 #Requires -RunAsAdministrator
-[CmdletBinding()]
 param()
 begin {
     Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))

@@ -2,8 +2,8 @@
     .Synopsis
         Configures Markdownlint for this Dotfiles repository.
 #>
-#Requires -Version 5
 [CmdletBinding()]
+#Requires -Version 5
 param()
 begin {
     Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))

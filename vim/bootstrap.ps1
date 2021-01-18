@@ -2,9 +2,9 @@
     .Synopsis
         Configure vim for this Dotfiles repository.
 #>
+[CmdletBinding()]
 #Requires -Version 5
 #Requires -RunAsAdministrator
-[CmdletBinding()]
 param()
 begin {
     Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))
