@@ -4,34 +4,39 @@
 HISTCONTROL=ignoreboth  # Ignore duplicate commands, or ones prefixed with a space
 HISTSIZE=65535 # Keep lots of history. Default, 500
 
-# golang
-export GOPATH=$HOME/go
-export GOROOT=/usr/local/opt/go/libexec
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-
-# Set editor to nvim
-export EDITOR=nvim
-
-# Hook for desk activation
-[ -n "$DESK_ENV" ] && source "$DESK_ENV" || true
+# editor
+if type vim >/dev/null 2>&1; then EDITOR=vim; fi
+if type nvim >/dev/null 2>&1; then EDITOR=nvim; fi
+export EDITOR
 
 # homebrew autocomplete
 if type brew 2&>/dev/null; then
-    for completion_file in $(brew --prefix)/etc/bash_completion.d/*; do
+    for completion_file in "$(brew --prefix)"/etc/bash_completion.d/*; do
+        # shellcheck source=/dev/null
         source "$completion_file"
     done
 
     # node-version-manager
     if [ -d "$(brew --prefix nvm)" ]; then
         export NVM_DIR="$HOME/.nvm"
-        [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-        [ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
+
+        nvmsh="/usr/local/opt/nvm/nvm.sh"
+        if [ -s "$nvmsh" ]; then
+            # shellcheck source=/dev/null
+            source "$nvmsh"
+        fi
+        unset nvmsh 
+
+        bashCompletion="/usr/local/opt/nvm/etc/bash_completion"
+        if [ -s "$bashCompletion" ]; then
+            # shellcheck source=/dev/null
+            source "$bashCompletion"
+        fi
+        unset bashCompletion
+
+        # shellcheck source=/dev/null
         source "$(brew --prefix nvm)/nvm.sh"
     fi
-fi
-
-if [ type __git_ps1 > /dev/null 2>&1 ]; then
-    echo "WARN: Looks like __git_ps1 isn't available for the prompt. Should be included with git."
 fi
 
 PROMPT_COMMAND=__prompt_command
@@ -43,10 +48,17 @@ __prompt_command() {
     # Reset the PS1 entry to a blank string to manipulate.
     PS1=""
 
-    # Sets options for git's built-in __git_ps1 script.
+    # Options for __git_ps1, a shell prompt distributed with git.
+    # https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+
+    # shellcheck disable=SC2034
     GIT_PS1_SHOWDIRTYSTATE=true
-    GIT_PS1_SHOWUPSTREAM=true
-    GIT_PS1_SHOWCOLORHINTS=1
+
+    # shellcheck disable=SC2034
+    GIT_PS1_SHOWUPSTREAM="auto"
+
+    # shellcheck disable=SC2034
+    GIT_PS1_SHOWCOLORHINTS=true
 
     # Define some color.
     local Red='\[\e[0;31m\]'
@@ -68,6 +80,7 @@ __prompt_command() {
         last_exit_color="${Gre}"
         last_exit_character='O'
     fi
+
     PS1+="\n"
     PS1+="${last_exit_color}${last_exit_character}${RCol} "
 
@@ -75,13 +88,8 @@ __prompt_command() {
     PS1+="${Blu}\u${RCol}${BBlu}@\h${RCol} "
 
     # Current AWS Account
-    if [ ! -z "${AWS_PROFILE}" ]; then
+    if [ -n "${AWS_PROFILE}" ]; then
         PS1+="${Cya}☁${AWS_PROFILE}${RCol} "
-    fi
-
-    # Currently enabled desk
-    if [ ! -z "${DESK_NAME}" ]; then
-        PS1+="░${DESK_NAME} "
     fi
 
     # Current directory
@@ -100,37 +108,42 @@ __prompt_command() {
     PS1+="\n${Pur}\A${RCol}${BPur}>${RCol} "
 }
 
-# ripgrep - Setup $HOME/.ripgreprc configuration. This configuraiton
-# should act as the default configuration.
+# ripgrep, Makes $HOME/.ripgreprc the default configuration.
 if [ -f "$HOME/.ripgreprc" ]; then
     # RIPGREP_CONFIG_PATH is required for ripgrep to respect the config.
     export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 fi
 
-# fzf - Fuzzy Finder for Bash
-# NOTE: fzf contains an install script that sets up these functions and
-# similar paths. The script may have updated functionallity since run on
-# 2019/01/31 on a MacOS machine for bash.
-# fzf - Setup pathing
-# ---------
-if [[ ! "$PATH" == */usr/local/opt/fzf/bin* ]]; then
-    export PATH="$PATH:/usr/local/opt/fzf/bin"
-fi
-
+# ~/.local/bin, for user binaries. Part of the XDG Base Directory specification.
 if [ -d "$HOME/.local/bin" ] && [[ ! "$PATH" == *$HOME/.local/bin* ]]; then
     export PATH="$PATH:$HOME/.local/bin"
 fi
 
-# fzf - Auto-completion
-# fzf - Key bindings
-# ---------------
-if [ -d /usr/local/opt/fzf/shell ]; then
-    [[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
-source "/usr/local/opt/fzf/shell/key-bindings.bash"
+fzfShellDir="/usr/share/doc/fzf/examples" # Default on Ubuntu 20.04
+if type brew 2&>/dev/null; then
+    fzfShellDir="$(brew --prefix)/opt/fzf/shell"
+
+    if [[ ! "$PATH" == *"$(brew --prefix)"/opt/fzf/bin* ]]; then
+        # Append fzf/bin to the PATH since homebrew does not.
+        PATH="$PATH:$(brew --prefix)/opt/fzf/bin"
+        export PATH
+    fi
 fi
 
-# .bashrc.local support, for local-only bash commands
+if [ -d "$fzfShellDir" ]; then
+    if [[ $- == *i* ]]; then
+        # shellcheck source=/dev/null
+        source "$fzfShellDir/completion.bash" 2> /dev/null
+    fi
+
+    # shellcheck source=/dev/null
+    source "$fzfShellDir/key-bindings.bash"
+fi
+unset fzfShellDir
+
+# .bashrc.local, to override any settings from this .bashrc file.
 if [ -f "$HOME/.bashrc.local" ]; then
-    source $HOME/.bashrc.local
+    # shellcheck source=/dev/null
+    source "$HOME/.bashrc.local"
 fi
 
