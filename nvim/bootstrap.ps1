@@ -44,7 +44,6 @@ begin {
         if ($pipenvMissing) {
             if ($PSCmdlet.ShouldProcess("pip", "install pipenv")) {
                 &pip3 install --quiet --upgrade pipenv | Out-Null
-                &pip2 install --quiet --upgrade pipenv | Out-Null
             }
         }
 
@@ -71,9 +70,7 @@ begin {
         $pipenvPythonPath = $null
         try {
             if ($PSCmdlet.ShouldProcess('PipEnv', $path)) {
-                Write-Verbose "Running pipenv update in $path"
-                $result = &pipenv install
-                Write-Verbose "pipenv update output: $result"
+                pipenv --bare install 2>&1 | Write-Debug
             }
         } catch {
             Write-Error "Error updating pipenv workspace: $_"
@@ -93,7 +90,6 @@ begin {
 
     $pythonVenvPath = Join-Path -Path $PSScriptRoot -ChildPath 'python-venvs'
     $pythonVersions = @{
-        '2.7' = Join-Path -Path $pythonVenvPath -ChildPath '2.7'
         '3.8' = Join-Path -Path $pythonVenvPath -ChildPath '3.8'
     }
 }
@@ -107,12 +103,11 @@ process {
     Set-UserEnvVar -Name EDITOR -Value 'nvim-qt'
 
     Install-PipEnv
-    Set-PipEnvWorkspace -Path $pythonVersions['2.7']
+
     Set-PipEnvWorkspace -Path $pythonVersions['3.8']
 
     Set-JsonValue -Path (Join-Path -Path $PSScriptRoot -ChildPath 'local.dotfiles.json') -InputObject @{
         'g:python3_host_prog' = "$(Get-PipEnvPython -Path $pythonVersions['3.8'])"
-        'g:python_host_prog'  = "$(Get-PipEnvPython -Path $pythonVersions['2.7'])"
         'g:ripgrep_config'    = "$(Join-Path -Path "$HOME" -ChildPath '.ripgreprc')"
     }
 }
