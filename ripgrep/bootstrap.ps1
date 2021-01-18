@@ -8,7 +8,6 @@
 #>
 [CmdletBinding()]
 #Requires -Version 5
-#Requires -RunAsAdministrator
 param()
 begin {
     Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))
@@ -17,8 +16,6 @@ begin {
     $ripgreprcHomePath = $(Join-Path -Path $HOME -ChildPath '.ripgreprc')
 }
 process {
-    Install-Packages $PSScriptRoot
-
     New-SymbolicLink `
         -Path $ripgreprcHomePath `
         -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'ripgreprc')

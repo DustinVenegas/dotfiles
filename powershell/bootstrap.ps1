@@ -29,8 +29,6 @@ begin {
     }
 }
 process {
-    Install-Packages $PSScriptRoot
-
     # Use Current User All Hosts (CUAH) profile directory
     New-SymbolicLink -Path $cuahProfileDirectory -Value $(Resolve-Path $PSScriptRoot)
     Set-JsonValue -Path 'local.dotfiles.json' -InputObject @{ dotfilesLocation = "$($config.Path)" }

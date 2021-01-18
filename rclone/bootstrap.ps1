@@ -3,7 +3,6 @@
         Configure Bash for this Dotfiles configuration
 #>
 [CmdletBinding()]
-#Requires -RunAsAdministrator
 #Requires -Version 5
 param()
 begin {
@@ -73,8 +72,6 @@ begin {
     }
 }
 process {
-    Install-Packages $PSScriptRoot
-
     switch ($config.SimplifiedOSPlatform) {
         'Windows' {
             # Open rclone settings dialog: nssm edit rclone-gdrive

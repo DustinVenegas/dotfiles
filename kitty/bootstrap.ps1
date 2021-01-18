@@ -15,8 +15,6 @@ process {
         return
     }
 
-    Install-Packages $PSScriptRoot
-
     $kittyDir = $(Join-Path -Path $HOME -ChildPath ".config" -AdditionalChildPath 'kitty')
     if (-not (Test-Path $kittyDir)) {
         New-Item -Path $kittyDir -ItemType Directory -Force

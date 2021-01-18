@@ -3,7 +3,6 @@
         Configures Git to use the dotfiles configuration files.
 #>
 [CmdletBinding()]
-#Requires -RunAsAdministrator
 #Requires -Version 5
 param()
 begin {
@@ -14,8 +13,6 @@ begin {
     $SimplifiedOSPlatform = $config.SimplifiedOSPlatform.ToLower()
 }
 process {
-    Install-Packages $PSScriptRoot
-
     # Create gitconfig_local if it does not exist.
     if (-Not (Test-Path gitconfig_local)) {
         Copy-Item -Path gitconfig_local.template -Destination gitconfig_local | Out-Null

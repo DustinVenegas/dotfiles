@@ -25,8 +25,6 @@ process {
         return
     }
 
-    Install-Packages $PSScriptRoot
-
     Invoke-Everytime -Name 'Write_iTerm_Defaults' -ScriptBlock {
         # Point iTerm's preferences at this dotfiles folder
         defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$PSScriptRoot"

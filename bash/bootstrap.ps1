@@ -15,8 +15,6 @@ process {
         return
     }
 
-    Install-Packages $PSScriptRoot
-
     New-SymbolicLink `
         -Path $(Join-Path -Path $HOME -ChildPath '.bashrc') `
         -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'bashrc')

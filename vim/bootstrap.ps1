@@ -4,7 +4,6 @@
 #>
 [CmdletBinding()]
 #Requires -Version 5
-#Requires -RunAsAdministrator
 param()
 begin {
     Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))
@@ -16,8 +15,6 @@ begin {
     }
 }
 process {
-    Install-Packages $PSScriptRoot
-
     New-SymbolicLink -Path $(Join-Path -Path $HOME -ChildPath '.vim') -Value $PSScriptRoot
     New-SymbolicLink -Path $(Join-Path -Path $HOME -ChildPath $vimrcFileName) -Value (Join-Path $PSScriptRoot '.vimrc.entrypoint')
 

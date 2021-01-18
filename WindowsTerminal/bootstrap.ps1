@@ -3,7 +3,6 @@
         Configure Windows Terminal for a Dotfiles configuration
 #>
 [CmdletBinding()]
-#Requires -RunAsAdministrator
 #Requires -Version 5
 param()
 begin
@@ -19,8 +18,6 @@ Process
         Write-Information "Skipping $($PSScriptRoot) because only Windows is supported."
         return
     }
-
-    Install-Packages $PSScriptRoot
 
     New-SymbolicLink `
         -Path $(Join-Path -Path $wtLocalStatePath -ChildPath 'settings.json') `

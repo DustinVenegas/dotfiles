@@ -10,9 +10,6 @@ begin {
     Set-StrictMode -Version latest
 }
 process {
-    # Configure markdownlint, but don't prescribe a specific installation.
-    ##Install-Packages $PSScriptRoot
-
     New-SymbolicLink `
         -Path $(Join-Path -Path $HOME -ChildPath '.markdownlintrc') `
         -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'markdownlint.json')

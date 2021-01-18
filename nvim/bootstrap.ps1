@@ -3,7 +3,6 @@
         Configure Neovim for this Dotfiles configuration
 #>
 [CmdletBinding()]
-#Requires -RunAsAdministrator
 #Requires -Version 5
 param()
 begin {
@@ -109,8 +108,6 @@ begin {
     $nvimConfigDir = Join-Path -Path $configDir -ChildPath 'nvim'
 }
 process {
-    Install-Packages $PSScriptRoot
-
     New-SymbolicLink `
         -Path $nvimConfigDir `
         -Value $PSScriptRoot
