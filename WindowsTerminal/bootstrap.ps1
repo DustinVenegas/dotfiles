@@ -5,15 +5,13 @@
 [CmdletBinding()]
 #Requires -Version 5
 param()
-begin
-{
+begin {
     Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))
     Set-StrictMode -Version latest
 
     $wtLocalStatePath = "$HOME\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\"
 }
-Process
-{
+Process {
     if (-Not (Test-OSPlatform 'Windows')) {
         Write-Information "Skipping $($PSScriptRoot) because only Windows supported. OS/Platform is $($config.SimplifiedOSPlatform)."
         return

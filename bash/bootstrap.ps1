@@ -16,11 +16,11 @@ process {
     }
 
     New-SymbolicLink `
-        -Path $(Join-Path -Path $HOME -ChildPath '.bashrc') `
+        -Path $(Join-Path -Path $env:HOME -ChildPath '.bashrc') `
         -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'bashrc')
 
     New-SymbolicLink `
-        -Path $(Join-Path -Path $HOME -ChildPath '.bash_profile') `
+        -Path $(Join-Path -Path $env:HOME -ChildPath '.bash_profile') `
         -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'bash_profile')
 
      $bashrcLocal = Join-Path -Path $PSScriptRoot -ChildPath 'local.bashrc'
