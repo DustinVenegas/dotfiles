@@ -34,7 +34,7 @@ process {
     Set-JsonValue -Path 'local.dotfiles.json' -InputObject @{ dotfilesLocation = "$($config.Path)" }
 
     foreach ($m in $modulesToInstall) {
-        pwsh -NoLogo -Command "Install-Module -Name $m -Repository $ModuleRepository -Scope $ModuleScope"
+        pwsh -NoLogo -Command "Install-Module -Name $m -Repository $ModuleRepository -Scope $ModuleScope -Confirm"
     }
 
     pwsh -NoLogo -Command "Update-Help -ErrorAction SilentlyContinue"

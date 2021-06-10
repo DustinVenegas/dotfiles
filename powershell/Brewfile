@@ -1,1 +1,5 @@
 cask "powershell"
+
+brew "figet"
+
+brew "fzf"

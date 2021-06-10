@@ -1,3 +1,13 @@
+# neovim core
+brew "neovim"
+
+# neovim-qt, a neovim gui for nvim in QT
+tap "equalsraf/neovim-qt"
+cask "neovim-qt"
+
+# vimr, a neovim GUI for macOS
+cask "vimr"
+
 # Plant UML installation for generating pretty graphs.
 brew "plantuml"
 

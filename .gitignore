@@ -13,3 +13,6 @@ git/gitconfig_local
 # VSCode
 VSCode/workspaceStorage/**
 VSCode/globalStorage/**
+
+# Homebrew, use the lock for debugging, not configuration management.
+Brewfile.lock.json

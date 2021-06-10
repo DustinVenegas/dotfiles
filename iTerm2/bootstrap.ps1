@@ -17,7 +17,7 @@ process {
     }
 
     # Check for Terminal.App *before* installing iTerm2.
-    if ("$TERM_PROGRAM" -ne "Apple_Terminal") {
+    if ("$env:TERM_PROGRAM" -ne "Apple_Terminal") {
         # iTerm2 fails to set some settings when installed from Homebrew using a
         # terminal other than Terminal.app to run 'brew'. iTerm2 fails to set some
         # macOS settings using the 'defaults' binary when run from iTerm2.

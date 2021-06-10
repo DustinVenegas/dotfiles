@@ -17,7 +17,7 @@ process {
 
     $kittyDir = $(Join-Path -Path $HOME -ChildPath ".config" -AdditionalChildPath 'kitty')
     if (-not (Test-Path $kittyDir)) {
-        New-Item -Path $kittyDir -ItemType Directory -Force
+        New-Item -Path $kittyDir -ItemType Directory -Force | Out-Null
     }
 
     New-SymbolicLink `

@@ -87,8 +87,6 @@ function Install-Packages
             }
         }
 
-        $Config = Get-DotfilesConfig
-
         function Reset-Path {
             if ($Config.IsWindows) {
                 $env:PATH = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
@@ -96,6 +94,8 @@ function Install-Packages
                 $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH")
             }
         }
+
+        $Config = Get-DotfilesConfig
     }
     process {
         $command = {Write-Warning "No Install-Packages command configured. Something went awry."}

@@ -19,11 +19,14 @@ function Get-DotfilesOSPlatform {
         'Win*' { $simplifiedRunningOS = "Windows" }
         'Unix*' {
             $simplifiedRunningOS = 'Unix'
-
-            # MacOS sets a specific property on OSVersion.OS. The property does not exist on other operating
-            if ((Get-Member -InputObject ([System.Environment]::OSVersion) -Name 'OS' -ErrorAction Continue) -and
-                ('Darwin' -eq [System.Environment]::OSVersion.OS.ToString())) {
+            if (Get-Variable -Name 'IsMacOS' -ErrorAction SilentlyContinue -ValueOnly) {
+                # IsMacOS is included with PowerShell 6+
                 $simplifiedRunningOS = 'Darwin'
+            } elseif (Get-Command -Name 'uname' -ErrorAction SilentlyContinue) {
+                # `uname` works on PowerShell 5
+                if ((uname -a) -Like 'Darwin*') {
+                    $simplifiedRunningOS = 'Darwin'
+                }
             }
         }
         default {

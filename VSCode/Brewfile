@@ -11,4 +11,4 @@ tap "homebrew/cask-fonts"
 cask "font-hack"
 
 # Install the Cascadia Code font.
-cask "font-cascadia"
+cask "font-cascadia-code"
