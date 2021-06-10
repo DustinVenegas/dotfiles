@@ -25,7 +25,7 @@ if type brew 2&>/dev/null; then
             # shellcheck source=/dev/null
             source "$nvmsh"
         fi
-        unset nvmsh 
+        unset nvmsh
 
         bashCompletion="/usr/local/opt/nvm/etc/bash_completion"
         if [ -s "$bashCompletion" ]; then
@@ -147,3 +147,7 @@ if [ -f "$HOME/.bashrc.local" ]; then
     source "$HOME/.bashrc.local"
 fi
 
+# Install volta and don't modify the ~/.bashrc (--skip-setup)
+#     curl https://get.volta.sh | bash -s -- --skip-setup
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
