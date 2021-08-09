@@ -1,6 +1,4 @@
 @{
-    Severity     = @('Error', 'Warning')
-
     # CodeFormattingOTBS
     IncludeRules = @(
         'PSPlaceOpenBrace',
@@ -76,8 +74,9 @@
             # Simply list the targeted versions of PowerShell here
             TargetVersions = @(
                 '3.0',
-                '5.1',
-                '6.2'
+                '5.0',
+                '6.0',
+                '7.0'
             )
         }
     }

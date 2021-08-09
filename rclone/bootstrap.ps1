@@ -12,6 +12,11 @@ begin {
     $config = Get-DotfilesConfig
 
     function Install-NSSMService {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseCompatibleCommands",
+            "",
+            Justification = "Dotfiles currently supports rclone on Windows.",
+            Scope = "Function",
+            Target = "*")]
         [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
         param(
             [Parameter(Mandatory, Position = 0)]

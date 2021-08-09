@@ -23,10 +23,10 @@ process {
         -Path $(Join-Path -Path $env:HOME -ChildPath '.bash_profile') `
         -Value $(Join-Path -Path $PSScriptRoot -ChildPath 'bash_profile')
 
-     $bashrcLocal = Join-Path -Path $PSScriptRoot -ChildPath 'local.bashrc'
-     if (Test-Path -Path $bashrcLocal) {
-         New-SymbolicLink `
+    $bashrcLocal = Join-Path -Path $PSScriptRoot -ChildPath 'local.bashrc'
+    if (Test-Path -Path $bashrcLocal) {
+        New-SymbolicLink `
             -Path $(Join-Path -Path $HOME -ChildPath '.bashrc.local') `
             -Value $bashrcLocal
-     }
+    }
 }

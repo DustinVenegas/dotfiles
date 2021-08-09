@@ -97,9 +97,9 @@ begin {
         $XDG_CONFIG_HOME_DEFAULT = (Join-Path -Path $HOME -ChildPath '.config')
 
         if (Test-OSPlatform -Include 'Windows') {
-            # nvim config dir for Windows is LocalAppData/.config/nvim when XDG_CONFIG_HOME is unset.
+            # nvim config dir for Windows when XDG_CONFIG_HOME is unset.
             # https://github.com/neovim/neovim/issues/9352
-            $script:configDir = (Join-Path -Path $env:LOCALAPPDATA -ChildPath '.config')
+            $script:configDir = $env:LOCALAPPDATA
         } else {
             $script:configDir = $XDG_CONFIG_HOME_DEFAULT
         }

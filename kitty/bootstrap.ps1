@@ -15,7 +15,8 @@ process {
         return
     }
 
-    $kittyDir = $(Join-Path -Path $HOME -ChildPath ".config" -AdditionalChildPath 'kitty')
+    $xdgBaseDir = $(Join-Path -Path $HOME -ChildPath ".config")
+    $kittyDir = $(Join-Path -Path $xdgBaseDir -ChildPath 'kitty')
     if (-not (Test-Path $kittyDir)) {
         New-Item -Path $kittyDir -ItemType Directory -Force | Out-Null
     }

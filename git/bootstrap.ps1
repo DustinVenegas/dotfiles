@@ -28,5 +28,5 @@ process {
         New-SymbolicLink -Path $PSItem.Key -Value $PSItem.Value
     }
 
-    Install-Module -Name 'posh-git' -Scope "CurrentUser" -Confirm
+    Install-Module -Name 'posh-git' -Scope "CurrentUser" -Force
 }
