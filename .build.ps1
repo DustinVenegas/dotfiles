@@ -29,3 +29,8 @@ Task Lint-PSScriptAnalyzer {
     }
     Assert ($results.Count -eq 0) "Expected linting results of 0, but received $($results.Count)"
 }
+
+Task Lint-Shellcheck {
+    $lintFiles = Get-ChildItem -Recurse -Path $PSScriptRoot -Depth 1 -Include '*.sh', 'bash*'
+    Exec { shellcheck $lintFiles }
+}

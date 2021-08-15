@@ -1,14 +1,18 @@
-# Auto detect text files and perform line-ending normalization
+# Fall-back to git auto-detection for line endings.
 * text=auto
 
-# Files I want normalized
+# Global filetypes
 *.sh text eol=lf
 *.json text eol=lf
 *.js text eol=lf
 *.ps1 text eol=clrf
 
-# All git* files shuld be basic lf
+# bash
+*.sh text eol=lf
+bash/* text eol=lf
+
+# git
 git/git* text eol=lf
 
-# ConEmu prefers lf by default
+# ConEmu
 ConEmu.xml text eol=lf
