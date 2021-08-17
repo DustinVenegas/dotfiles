@@ -7,12 +7,10 @@
 *.js text eol=lf
 *.ps1 text eol=clrf
 
-# bash
-*.sh text eol=lf
-bash/* text eol=lf
-
-# git
+# Unix Native Apps
+bash/bash* text eol=lf
 git/git* text eol=lf
 
-# ConEmu
+# Other
 ConEmu.xml text eol=lf
+.shellcheckrc text eol=lf

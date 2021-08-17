@@ -2,7 +2,7 @@
 
 Task . Lint-PSScriptAnalyzer, Lint-MarkdownLint
 
-Task Lint -Jobs Lint-PSScriptAnalyzer, Lint-MarkdownLint
+Task Lint -Jobs Lint-PSScriptAnalyzer, Lint-MarkdownLint, Lint-Shellcheck
 
 Task Lint-MarkdownLint {
     Exec { markdownlint '**/*.md' --ignore 'nvim/node_modules' --ignore 'nvim/plugged' --ignore 'vim/plugged' --ignore 'WindowsPowerShell/Modules' --ignore 'powershell/Modules' }
@@ -31,6 +31,11 @@ Task Lint-PSScriptAnalyzer {
 }
 
 Task Lint-Shellcheck {
-    $lintFiles = Get-ChildItem -Recurse -Path $PSScriptRoot -Depth 1 -Include '*.sh', 'bash*'
-    Exec { shellcheck $lintFiles }
+    $lintFiles = Get-ChildItem -File -Recurse -Path $PWD -Depth 2 -Include '*.sh', 'bash*'
+    #Exec { shellcheck --external-sources $lintFiles }
+    shellcheck --color=auto --external-sources $lintFiles
+    $succeeded, $lec = $?, $LASTEXITCODE
+
+    Assert ($succeeded) "Expected shellcheck to emit successful command, but received $succeeded"
+    Assert ($lec -eq 0) "Expected shellcheck to return zero, but received $lec"
 }

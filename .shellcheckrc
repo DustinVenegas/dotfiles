@@ -1,0 +1,3 @@
+enable=add-default-case
+enable=check-unassigned-uppercase
+enable=quote-safe-variables
