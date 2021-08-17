@@ -3,3 +3,5 @@ cask "powershell"
 brew "figet"
 
 brew "fzf"
+
+brew "volta"
