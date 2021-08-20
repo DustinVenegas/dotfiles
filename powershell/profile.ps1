@@ -63,7 +63,7 @@ if (Test-Path $dotfilesJsonPath) {
     Write-Verbose 'Located an optional local.dotfiles.json'
     $dotfilesJson = Get-Content -Path $dotfilesJsonPath -Raw | ConvertFrom-Json
 
-    foreach($i in $dotfilesJson | Get-Member -MemberType NoteProperty) {
+    foreach ($i in $dotfilesJson | Get-Member -MemberType NoteProperty) {
         $name = $i.Name
         $value = $dotfilesJson.$name
         Write-Verbose "Setting variable '$name' = '$value'"
@@ -77,7 +77,7 @@ if ($dotfilesLocation -and (Test-Path $dotfilesLocation)) {
     # Setup custom PowerShell Modules path located in the dotfiles folder.
     Write-Verbose 'Located a dotfiles path'
     $dotfilesPSModules = Join-Path $dotfilesLocation 'powershell-modules'
-    if ($env:PSModulePath -split $separator | Where-Object {$_ -eq $dotfilesPSModules} -eq $null) {
+    if ($env:PSModulePath -split $separator | Where-Object { $_ -eq $dotfilesPSModules } -EQ $null) {
         $env:PSModulePath += "$separator$dotfilesPSModules"
     }
 }
@@ -89,10 +89,10 @@ if (Get-Command -Name 'fzf' -ErrorAction SilentlyContinue) {
         Write-Verbose "Found psfzf PowerShell Module."
 
         # Rebind Ctrl+t, "swap characters", in PSReadLine to Ctrl+t in PSFzf, Fuzzy-Find Current Provider Path.
-        Remove-PSReadlineKeyHandler 'Ctrl+t'
+        Remove-PSReadLineKeyHandler 'Ctrl+t'
 
         # Rebind Ctrl+r, "reverse search", in PSReadLine to Ctrl+r in PSFzf, Fuzzy-Find History in Reverse.
-        Remove-PSReadlineKeyHandler 'Ctrl+r'
+        Remove-PSReadLineKeyHandler 'Ctrl+r'
 
         Import-Module PSFzf
     }
