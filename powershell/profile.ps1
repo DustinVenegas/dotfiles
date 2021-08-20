@@ -1,31 +1,49 @@
 $env:EDITOR = 'nvim'
 $MaximumHistoryCount = 10000
 
-function promptForPOSHGit {
-    # colorStatus: Green if no errors, red if errors
-    $colorStatus = if ($? -eq $true) { [ConsoleColor]::DarkCyan } else { [ConsoleColor]::Red }
-
-    # Your non-prompt logic here
-    $prompt = Write-Prompt "$([System.Environment]::NewLine)$([char]0x0A7) " -ForegroundColor $colorStatus
-
-    # Conditional bits
-    if (Test-Path 'env:\AWS_PROFILE') {
-        $prompt += Write-Prompt "$([char]0x2601)$($env:AWS_PROFILE) " -ForegroundColor DarkMagenta
-    }
-
-    # Write the prompt.
-    $prompt += & $GitPromptScriptBlock
-
-    # Suffix
-    $prompt += Write-Prompt "$([System.Environment]::NewLine)"
-    $prompt += Write-Prompt "$([DateTime]::now.ToString("HH:mm:ss")) " -ForegroundColor Blue
-    $prompt += Write-Prompt "$((Get-History -Count 1).id + 1)$('>' * ($nestedPromptLevel))" -ForegroundColor DarkGray
-    if ($prompt) { $prompt } else { " " }
+$script:colors = @{
+    'darkmagenta' = "`e[035m"
+    'darkcyan'    = "`e[036m"
+    'darkgrey'    = "`e[037m"
+    'reset'       = "`e[0m"
+    'red'         = "`e[031m"
 }
 
+# To prevent prompt tearing, where visual artifacts like newlines visually break a single line prompt into multiple lines,
 function Prompt {
-    $prompt = promptForPOSHGit
-    if ($prompt) { $prompt } else { " " }
+    # $? is modified by running commands so momento the last result *first*.
+    $lastCmdOK = $?
+
+    # Beginning of the first line.
+    $p = [System.Environment]::NewLine
+
+    # Status indicator using the 'section' character 0x0A7
+    # TODO: Is it '0xA7' ?
+    $lastCmdOKColors = @{
+        $true  = $colors.darkcyan
+        $false = $colors.red
+    }
+    $p += "$($lastCmdOKColors[$lastCmdOK])$([char]0x0A7)$($colors.reset) "
+
+    # Current location
+    $p += "$($colors.darkgrey)$($executionContext.SessionState.Path.CurrentLocation.Path)$($colors.reset)"
+
+    if (Test-Path 'env:\AWS_PROFILE') {
+        $p += " $($colors.darkmagenta)$([char]0x2601)$($env:AWS_PROFILE)$($colors.reset)"
+    }
+
+    # Write VCS status using the posh-git PowerShell Module.
+    $p += "$($colors.reset)$(Write-VcsStatus)$($colors.reset)"
+
+    # Second Line
+    $p += [System.Environment]::NewLine
+
+    $p += "$($colors.darkcyan)$([DateTime]::now.ToString("HH:mm"))$($colors.reset) "
+    $p += "$($colors.darkgrey)$((Get-History -Count 1).id + 1)$('>' * ($nestedPromptLevel + 1))$($colors.reset) "
+
+    # Prevent "prompt tearing" by emitting a single string with terminal escape
+    # codes instead of using Write-Host.
+    return "$p"
 }
 
 if (Test-Path "$HOME/.ripgreprc") {
