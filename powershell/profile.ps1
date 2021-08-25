@@ -2,11 +2,25 @@ $env:EDITOR = 'nvim'
 $MaximumHistoryCount = 10000
 
 $script:colors = @{
+    'black'       = "`e[030m"
     'darkmagenta' = "`e[035m"
     'darkcyan'    = "`e[036m"
     'darkgrey'    = "`e[037m"
     'reset'       = "`e[0m"
     'red'         = "`e[031m"
+}
+
+$script:bgColors = @{
+    'darkcyan' = "`e[46m"
+}
+
+$script:gliphs = @{
+    'home'             = [char]0x2302
+    'section'          = [char]0x0A7
+    'cloud'            = [char]0x2601
+    'heavyRightAngle'  = [char]0x276F
+    'heavyRightAngle2' = [char]0x2771
+    'mountain'         = [char]0x26F0
 }
 
 # To prevent prompt tearing, where visual artifacts like newlines visually break a single line prompt into multiple lines,
@@ -18,18 +32,26 @@ function Prompt {
     $p = [System.Environment]::NewLine
 
     # Status indicator using the 'section' character 0x0A7
-    # TODO: Is it '0xA7' ?
     $lastCmdOKColors = @{
         $true  = $colors.darkcyan
         $false = $colors.red
     }
-    $p += "$($lastCmdOKColors[$lastCmdOK])$([char]0x0A7)$($colors.reset) "
+    $p += "$($lastCmdOKColors[$lastCmdOK])$($gliphs.section)$($colors.reset) "
 
     # Current location
-    $p += "$($colors.darkgrey)$($executionContext.SessionState.Path.CurrentLocation.Path)$($colors.reset)"
+    $cl = $executionContext.SessionState.Path.CurrentLocation.Path
+    $mntC = '/mnt/c/'
+    if ($cl.StartsWith($HOME)) {
+        $cl = $cl.Replace("$HOME", "$($gliphs.home)")
+    } elseif ($cl.StartsWith($mntC)) {
+        $cl = $cl.Replace($mntC, "$($gliphs.mountain)/")
+    }
+    # TODO: BACKGROUND BLUE, TEXT WHITE
+    $p += "$($bgColors.darkcyan)$($colors.black)$($cl)$($colors.reset)"
 
+    # Optional AWS Profile
     if (Test-Path 'env:\AWS_PROFILE') {
-        $p += " $($colors.darkmagenta)$([char]0x2601)$($env:AWS_PROFILE)$($colors.reset)"
+        $p += " $($colors.darkmagenta)$($gliphs.cloud)$($env:AWS_PROFILE)$($colors.reset)"
     }
 
     # Write VCS status using the posh-git PowerShell Module.
@@ -39,7 +61,8 @@ function Prompt {
     $p += [System.Environment]::NewLine
 
     $p += "$($colors.darkcyan)$([DateTime]::now.ToString("HH:mm"))$($colors.reset) "
-    $p += "$($colors.darkgrey)$((Get-History -Count 1).id + 1)$('>' * ($nestedPromptLevel + 1))$($colors.reset) "
+    $p += "$($colors.darkgrey)$((Get-History -Count 1).id + 1)$($colors.reset)"
+    $p += "$($colors.darkcyan)$($gliphs.heavyRightAngle)$('>' * ($nestedPromptLevel))$($colors.reset) "
 
     # Prevent "prompt tearing" by emitting a single string with terminal escape
     # codes instead of using Write-Host.
@@ -77,7 +100,7 @@ if ($dotfilesLocation -and (Test-Path $dotfilesLocation)) {
     # Setup custom PowerShell Modules path located in the dotfiles folder.
     Write-Verbose 'Located a dotfiles path'
     $dotfilesPSModules = Join-Path $dotfilesLocation 'powershell-modules'
-    if ($env:PSModulePath -split $separator | Where-Object { $_ -eq $dotfilesPSModules } -EQ $null) {
+    if ($env:PSModulePath -split $separator | Where-Object { $_ -EQ $dotfilesPSModules } -EQ $null) {
         $env:PSModulePath += "$separator$dotfilesPSModules"
     }
 }
