@@ -1,71 +1,94 @@
 $env:EDITOR = 'nvim'
 $MaximumHistoryCount = 10000
 
-$script:colors = @{
-    'black'       = "`e[030m"
-    'darkmagenta' = "`e[035m"
-    'darkcyan'    = "`e[036m"
-    'darkgrey'    = "`e[037m"
-    'reset'       = "`e[0m"
-    'red'         = "`e[031m"
-}
-
-$script:bgColors = @{
-    'darkcyan' = "`e[46m"
-}
-
-$script:gliphs = @{
-    'home'             = [char]0x2302
-    'section'          = [char]0x0A7
-    'cloud'            = [char]0x2601
-    'heavyRightAngle'  = [char]0x276F
-    'heavyRightAngle2' = [char]0x2771
-    'mountain'         = [char]0x26F0
-}
-
-# To prevent prompt tearing, where visual artifacts like newlines visually break a single line prompt into multiple lines,
 function Prompt {
     # $? is modified by running commands so momento the last result *first*.
     $lastCmdOK = $?
+    $lastLastExitCode = $LASTEXITCODE
 
-    # Beginning of the first line.
-    $p = [System.Environment]::NewLine
+    #####################
+    # vt100 escape codes
+    #####################
+    # Use reset sparing. Spamming resets may cause rendering issues
+    # when term windows are resized.
+    $rst = "`e[0m" # Reset style, background, and foreground.
 
-    # Status indicator using the 'section' character 0x0A7
-    $lastCmdOKColors = @{
-        $true  = $colors.darkcyan
-        $false = $colors.red
+    # Insert line, 2=entire line
+    $il  = "`e[2L" # Insert line
+
+    # Foreground color escape codes.
+    $fgc = @{
+        default     = "`e[039m"
+
+        black       = "`e[030m"
+        red         = "`e[031m"
+        green       = "`e[032m"
+        yellow      = "`e[033m"
+        blue        = "`e[034m"
+        darkmagenta = "`e[035m"
+        darkcyan    = "`e[036m"
+        darkgrey    = "`e[037m"
     }
-    $p += "$($lastCmdOKColors[$lastCmdOK])$($gliphs.section)$($colors.reset) "
+
+    # Background color escape codes.
+    $bgc = @{
+        default  = "`e[049m"
+
+        darkcyan = "`e[46m"
+    }
+
+    #####################
+    # first line
+    #####################
+    $p = $il
+
+    # Status indicator using the section character '§', 0xA7
+    $lastCmdOK_C = 'red'
+    if ($lastCmdOK) {
+        $lastCmdOK_C = 'darkcyan'
+    }
+    $p += "$($fgc[$lastCmdOK_C])$([char]0x0A7)$($fgc.default) "
 
     # Current location
     $cl = $executionContext.SessionState.Path.CurrentLocation.Path
     $mntC = '/mnt/c/'
-    if ($cl.StartsWith($HOME)) {
-        $cl = $cl.Replace("$HOME", "$($gliphs.home)")
-    } elseif ($cl.StartsWith($mntC)) {
-        $cl = $cl.Replace($mntC, "$($gliphs.mountain)/")
+    switch ($cl) {
+        { $_.StartsWith($HOME) } { $cl = $_.Replace("$HOME", '~') }
+        { $_.StartsWith($mntC) } { $cl = $_.Replace("$mntC", 'WINDOWS:/') }
     }
-    # TODO: BACKGROUND BLUE, TEXT WHITE
-    $p += "$($bgColors.darkcyan)$($colors.black)$($cl)$($colors.reset)"
+    $p += "$($bgc.darkcyan)$($fgc.black)$($cl)$($fgc.default)$($bgc.default)"
 
-    # Optional AWS Profile
-    if (Test-Path 'env:\AWS_PROFILE') {
-        $p += " $($colors.darkmagenta)$($gliphs.cloud)$($env:AWS_PROFILE)$($colors.reset)"
-    }
+    # Git Status via posh-git
+    $p += "$(Write-VcsStatus) "
 
-    # Write VCS status using the posh-git PowerShell Module.
-    $p += "$($colors.reset)$(Write-VcsStatus)$($colors.reset)"
+    # End the line with an unstyled character to create a boundry, otherwise
+    # resizing a terminal may cause effects to 'leak' until the end of line.
+    $p += "$([char]0x2591)"
 
-    # Second Line
-    $p += [System.Environment]::NewLine
+    #####################
+    # second line
+    #####################
 
-    $p += "$($colors.darkcyan)$([DateTime]::now.ToString("HH:mm"))$($colors.reset) "
-    $p += "$($colors.darkgrey)$((Get-History -Count 1).id + 1)$($colors.reset)"
-    $p += "$($colors.darkcyan)$($gliphs.heavyRightAngle)$('>' * ($nestedPromptLevel))$($colors.reset) "
+    # Move the cursor to the second line.
+    $p += "$([System.Environment]::NewLine)"
 
-    # Prevent "prompt tearing" by emitting a single string with terminal escape
-    # codes instead of using Write-Host.
+    # Current Time
+    $p += "$($fgc.darkcyan)$([DateTime]::now.ToString("HH:mm"))$($fgc.default) "
+
+    # Command number
+    $p += "$($fgc.darkgrey)$((Get-History -Count 1).id + 1)$($fgc.default)"
+
+    # Prompt ('>') **AND** nested-prompt (also '>')
+    $p += "$($fgc.darkcyan)>$('>' * ($nestedPromptLevel))$($fgc.default) "
+
+    #####################
+    # Cleanup
+    #####################
+
+    # Reset $LASTEXITCODE so the value is available to the terminal.
+    $global:LASTEXITCODE = $lastLastExitCode
+
+    # The final prompt is a single string with terminal escape codes to reduce screen tearing.
     return "$p"
 }
 
@@ -128,4 +151,12 @@ if (Get-Module -Name PSReadLine) {
             Set-PSReadLineKeyHandler -Chord 'Ctrl+x,Ctrl+e' -Function ViEditVisually
         }
     }
+}
+
+if (Get-Module -Name posh-git -ListAvailable -ErrorAction SilentlyContinue) {
+    Import-Module posh-git
+
+    # Remove the '[', ']' around the git status.
+    $global:GitPromptSettings.BeforeStatus.Text = ''
+    $global:GitPromptSettings.AfterStatus.Text = ''
 }
