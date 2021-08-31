@@ -72,8 +72,16 @@ function Prompt {
     # Move the cursor to the second line.
     $p += "$([System.Environment]::NewLine)"
 
+    # Debugger active
+    if (Test-Path variable:PSDebugContext) {
+        $p += "$($fgc.yellow)[DBG]:$($fgc.default) "
+    }
+
     # Current Time
     $p += "$($fgc.darkcyan)$([DateTime]::now.ToString("HH:mm"))$($fgc.default) "
+
+    # Directory stack astericks
+    $p += "$('*' * ($(Get-Location -Stack).Count))"
 
     # Command number
     $p += "$($fgc.darkgrey)$((Get-History -Count 1).id + 1)$($fgc.default)"
