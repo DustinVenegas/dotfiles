@@ -37,33 +37,34 @@ function Prompt {
         darkcyan = "`e[46m"
     }
 
+    $sep = ' '
+
     #####################
     # first line
     #####################
     $p = $il
 
-    # Status indicator using the section character '§', 0xA7
+    # Status indicator
     $lastCmdOK_C = 'red'
     if ($lastCmdOK) {
         $lastCmdOK_C = 'darkcyan'
     }
-    $p += "$($fgc[$lastCmdOK_C])$([char]0x0A7)$($fgc.default) "
+    $p += "$($fgc[$lastCmdOK_C])$([char]0x03bb)$($fgc.default)${sep}"
 
     # Current location
     $cl = $executionContext.SessionState.Path.CurrentLocation.Path
-    $mntC = '/mnt/c/'
     switch ($cl) {
         { $_.StartsWith($HOME) } { $cl = $_.Replace("$HOME", '~') }
-        { $_.StartsWith($mntC) } { $cl = $_.Replace("$mntC", 'WINDOWS:/') }
+        { $_.StartsWith('/mnt/c/') } { $cl = $_.Replace('/mnt/c/', 'WINDOWS:/') }
     }
     $p += "$($bgc.darkcyan)$($fgc.black)$($cl)$($fgc.default)$($bgc.default)"
 
     # Git Status via posh-git
-    $p += "$(Write-VcsStatus) "
+    $p += "$(Write-VcsStatus)"
 
     # End the line with an unstyled character to create a boundry, otherwise
     # resizing a terminal may cause effects to 'leak' until the end of line.
-    $p += "$([char]0x2591)"
+    $p += "${sep}$($fgc.darkcyan)$([char]0x21B2)$($fgc.default)"
 
     #####################
     # second line
@@ -74,11 +75,11 @@ function Prompt {
 
     # Debugger active
     if (Test-Path variable:PSDebugContext) {
-        $p += "$($fgc.yellow)[DBG]:$($fgc.default) "
+        $p += "$($fgc.yellow)[DBG]:$($fgc.default)${sep}"
     }
 
     # Current Time
-    $p += "$($fgc.darkcyan)$([DateTime]::now.ToString("HH:mm"))$($fgc.default) "
+    $p += "$($fgc.darkcyan)$([DateTime]::now.ToString("HH:mm"))$($fgc.default)${sep}"
 
     # Directory stack astericks
     $p += "$('*' * ($(Get-Location -Stack).Count))"
@@ -87,7 +88,7 @@ function Prompt {
     $p += "$($fgc.darkgrey)$((Get-History -Count 1).id + 1)$($fgc.default)"
 
     # Prompt ('>') **AND** nested-prompt (also '>')
-    $p += "$($fgc.darkcyan)>$('>' * ($nestedPromptLevel))$($fgc.default) "
+    $p += "$($fgc.darkcyan)>$('>' * ($nestedPromptLevel))$($fgc.default)${sep}"
 
     #####################
     # Cleanup
