@@ -46,10 +46,12 @@ function Prompt {
 
     # Status indicator
     $lastCmdOK_C = 'red'
+    $lastCmdGlyph = 'X'
     if ($lastCmdOK) {
         $lastCmdOK_C = 'darkcyan'
+        $lastCmdGlyph = ''
     }
-    $p += "$($fgc[$lastCmdOK_C])$([char]0x03bb)$($fgc.default)${sep}"
+    $p += "$($fgc.darkcyan)[$($fgc[$lastCmdOK_C])$lastCmdGlyph$($fgc.default)${sep}"
 
     # Current location
     $cl = $executionContext.SessionState.Path.CurrentLocation.Path
@@ -64,7 +66,7 @@ function Prompt {
 
     # End the line with an unstyled character to create a boundry, otherwise
     # resizing a terminal may cause effects to 'leak' until the end of line.
-    $p += "${sep}$($fgc.darkcyan)$([char]0x21B2)$($fgc.default)"
+    $p += "${sep}$($fgc.darkcyan)]$($fgc.default)"
 
     #####################
     # second line
