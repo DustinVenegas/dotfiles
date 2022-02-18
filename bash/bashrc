@@ -9,8 +9,13 @@ if type vim >/dev/null 2>&1; then EDITOR=vim; fi
 if type nvim >/dev/null 2>&1; then EDITOR=nvim; fi
 export EDITOR
 
+# homebrew for linux
+if [ -d /home/linuxbrew/ ]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 # homebrew autocomplete
-if type brew 2&>/dev/null; then
+if type brew >/dev/null 2>&1; then
     for completion_file in "$(brew --prefix)"/etc/bash_completion.d/*; do
         # shellcheck source=/dev/null
         source "$completion_file"
@@ -20,14 +25,14 @@ if type brew 2&>/dev/null; then
     if [ -d "$(brew --prefix nvm)" ]; then
         export NVM_DIR="$HOME/.nvm"
 
-        nvmsh="/usr/local/opt/nvm/nvm.sh"
+        nvmsh="$(brew --prefix)/opt/nvm/nvm.sh"
         if [ -s "$nvmsh" ]; then
             # shellcheck source=/dev/null
             source "$nvmsh"
         fi
         unset nvmsh
 
-        bashCompletion="/usr/local/opt/nvm/etc/bash_completion"
+        bashCompletion="$(brew --prefix)/opt/nvm/etc/bash_completion"
         if [ -s "$bashCompletion" ]; then
             # shellcheck source=/dev/null
             source "$bashCompletion"
@@ -38,75 +43,6 @@ if type brew 2&>/dev/null; then
         source "$(brew --prefix nvm)/nvm.sh"
     fi
 fi
-
-PROMPT_COMMAND=__prompt_command
-
-__prompt_command() {
-    # Record the last exit first, otherwise another binary call would overwrite it.
-    local EXIT="$?"
-
-    # Reset the PS1 entry to a blank string to manipulate.
-    PS1=""
-
-    # Options for __git_ps1, a shell prompt distributed with git.
-    # https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
-
-    # shellcheck disable=SC2034
-    GIT_PS1_SHOWDIRTYSTATE=true
-
-    # shellcheck disable=SC2034
-    GIT_PS1_SHOWUPSTREAM="auto"
-
-    # shellcheck disable=SC2034
-    GIT_PS1_SHOWCOLORHINTS=true
-
-    # Define some color.
-    local red='\[\e[0;31m\]'
-    local gre='\[\e[0;32m\]'
-    local yel='\[\e[0;33m\]'
-    local blu='\[\e[0;34m\]'
-    local bblu='\[\e[1;34m\]'
-    local bpur='\[\e[1;35m\]'
-    local pur='\[\e[0;35m\]'
-    local cya='\[\e[0;36m\]';
-    local rcol='\[\e[0m\]'      # reset the color
-
-    local last_exit_color=''
-    local last_exit_character=''
-    if [ "$EXIT" != 0 ]; then
-        last_exit_color="${red}"
-        last_exit_character='X'
-    else
-        last_exit_color="${gre}"
-        last_exit_character='O'
-    fi
-
-    PS1+="\n"
-    PS1+="${last_exit_color}${last_exit_character}${rcol} "
-
-    # user@host
-    PS1+="${blu}\u${rcol}${bblu}@\h${rcol} "
-
-    # Current AWS Account
-    if [ -n "${AWS_PROFILE:=}" ]; then
-        PS1+="${cya}☁${AWS_PROFILE}${rcol} "
-    fi
-
-    # Current directory
-    PS1+="${yel}\w${rcol}"
-
-    if [ "$EXIT" != 0 ]; then
-        # Add the exit code when not zero.
-        PS1+=" ${last_exit_color}[${EXIT}]${rcol}"
-    fi
-
-    if type __git_ps1 > /dev/null 2>&1; then
-	# Adds __git_ps1 to prompt.
-	PS1+="$(__git_ps1)"
-    fi
-
-    PS1+="\n${pur}\A${rcol}${bpur}>${rcol} "
-}
 
 # ripgrep, Makes $HOME/.ripgreprc the default configuration.
 if [ -f "$HOME/.ripgreprc" ]; then
@@ -151,3 +87,17 @@ fi
 #     curl https://get.volta.sh | bash -s -- --skip-setup
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
+
+if type brew >/dev/null 2>&1; then
+    # shellcheck disable=2088 # oh-my-posh uses a literal tilde to internally represent themes in the homebrew directory.
+    T='~/jandedobbeleer.omp.json'
+
+    if [ -f "$HOME/prompt.omp.json" ]; then
+        T="$HOME/prompt.omp.json"
+    fi
+    if [ -f "$HOME/.dotfiles-prompt.omp.json" ]; then
+        T="$HOME/.dotfiles-prompt.omp.json"
+    fi
+
+    eval "$(oh-my-posh --init --shell bash --config "$T")"
+fi

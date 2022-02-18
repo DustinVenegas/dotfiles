@@ -1,0 +1,142 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "blocks": [
+    {
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#FAFAFA",
+          "background": "#4F90DB",
+          "properties": {
+            "template": " λ "
+          }
+        },
+        {
+          "type": "root",
+          "style": "plain",
+          "background": "#DB9165",
+          "foreground": "#060606",
+          "properties": {
+            "template": " # ",
+            "enabled": "true"
+          }
+        },
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#FAFAFA",
+          "background": "#213C5C",
+          "properties": {
+            "template": " {{ .UserName }}@{{ .HostName }} "
+          }
+        },
+        {
+          "type": "path",
+          "style": "plain",
+          "background": "#4F90DB",
+          "foreground": "#FAFAFA",
+          "properties": {
+            "style": "folder",
+            "template": " {{ .Path }} "
+          }
+        },
+        {
+          "type": "git",
+          "style": "plain",
+          "foreground": "#FAFAFA",
+          "background": "#596675",
+          "properties": {
+            "fetch_status": true,
+            "fetch_stash_count": true,
+            "template": "{{ .BranchStatus }}{{ if .Working.Changed }} W {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} S {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} ST {{ .StashCount }}{{ end }} "
+          }
+        },
+        {
+          "type": "executiontime",
+          "background": "#DBC239",
+          "foreground": "#060606",
+          "properties": {
+            "template": " {{ .FormattedMs }} "
+          },
+          "style": "plain"
+        },
+        {
+          "type": "exit",
+          "style": "plain",
+          "foreground": "#060606",
+          "background": "#DB65BA",
+          "properties": {
+            "template": " RET {{ .Code }} "
+          }
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "aws",
+          "style": "plain",
+          "foreground": "#FFA400",
+          "background": "#232F38",
+          "properties": {
+            "template": "AWS:{{.Profile}}{{if .Region}}@{{.Region}}{{end}}"
+          }
+        },
+        {
+          "type": "az",
+          "style": "plain",
+          "foreground": "#FFFFFF",
+          "background": "#0078D4",
+          "properties": {
+            "template": "AZ:{{ .EnvironmentName }}"
+          }
+        },
+        {
+          "type": "time",
+          "style": "plain",
+          "foreground": "#6997C9",
+          "properties": {
+            "template": " {{ .CurrentDate | date .Format }} ",
+            "time_format": "15:04:05"
+          }
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#0077c2",
+          "properties": {
+            "template": " "
+          }
+        },
+        {
+          "type": "shell",
+          "style": "plain",
+          "foreground": "#FAFAFA",
+          "properties": {
+            "mapped_shell_names": {
+              "pwsh": "ps"
+            },
+            "template": "{{ .Name }}>"
+          }
+        }
+      ],
+      "type": "prompt",
+      "newline": true
+    }
+  ],
+  "final_space": true,
+  "console_title": true,
+  "console_title_style": "template",
+  "console_title_template": "{{.Folder}}{{if .Root}} :: root{{end}} :: {{.Shell}}",
+  "version": 1
+}

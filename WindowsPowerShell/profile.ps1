@@ -3,15 +3,20 @@
 ################################################################################
 $MaximumHistoryCount=1024
 
+# expand symbolic links
+$dotfilesLocation = $MyInvocation.MyCommand.Source.Directory
+Get-Item $MyInvocation.MyCommand.Source | Select-Object -ExpandProperty Target | Get-Item | Select-Object -ExpandProperty Directory | Set-Variable -Name dotfilesLocation
+$dotfilesLocation = Resolve-Path -Path (Join-Path $dotfilesLocation ..)
+
 ################################################################################
 # Welcome Message
 ################################################################################
 # When the current directory is a SymbolicLink, resolve the link target and
 $dotfilesPSModules = Get-Item $PSScriptRoot |
-    Where-Object {$_.LinkType -eq 'SymbolicLink'} |
-    ForEach-Object {Join-Path (Join-path ($_.Target) '..') 'powershell-modules'} |
-    Where-Object {Test-Path $_} |
-    Foreach-Object {Resolve-Path $_}
+    Where-Object { $_.LinkType -eq 'SymbolicLink' } |
+    ForEach-Object { Join-Path (Join-Path ($_.Target) '..') 'powershell-modules' } |
+    Where-Object { Test-Path $_ } |
+    ForEach-Object { Resolve-Path $_ }
 
 # (optional) Load local.profile.ps1
 $localProfilePath = Join-Path $PSScriptRoot 'local.profile.ps1'
@@ -31,9 +36,6 @@ if ($dotfilesPSModules) {
 
 if (Get-Module -ListAvailable -Name posh-git) {
     Import-Module posh-git
-
-    # Removes extra space
-    $global:GitPromptSettings.AfterText = ']'
 } else {
     Write-Verbose @"
 PSModule posh-git is missing! Git prompts will be disabled.
@@ -55,7 +57,7 @@ function SetWindowTitle() {
 
     # Obtain the last history record and add one to see what our "current"
     # history is going to be after we execute this command.
-    $currentHistoryIndex = (get-history | Sort-Object 'id' -descending | Select-Object -First 1).id + 1
+    $currentHistoryIndex = (Get-History | Sort-Object 'id' -Descending | Select-Object -First 1).id + 1
 
     $host.Ui.RawUi.WindowTitle = "[#$currentHistoryIndex][$(Get-Location)] [$($Host.Name)::$($Host.Version)]"
 }
@@ -63,19 +65,18 @@ function SetWindowTitle() {
 ################################################################################
 # Map PSDrives
 ################################################################################
-function Set-DotfilesDrives
-{
+function Set-DotfilesDrives {
     @(
-        ('Dotfiles',(Resolve-Path(Join-Path $PSScriptRoot '..')),"Personal Dotfiles Repository from $PSScriptRoot"),
-        ('Scripts',(Resolve-Path(Join-Path $PSScriptRoot '\Scripts')),"Powershell Scripts from $PSScriptRoot\Scripts")
-    ) | Foreach-Object {
-            New-PSDrive `
-                -Name $_[0] `
-                -PSProvider FileSystem `
-                -Root $_[1] `
-                -Description $_[2] `
-                -Scope 'Global' | Out-Null
-        }
+        ('Dotfiles', (Resolve-Path(Join-Path $PSScriptRoot '..')), "Personal Dotfiles Repository from $PSScriptRoot"),
+        ('Scripts', (Resolve-Path(Join-Path $PSScriptRoot '\Scripts')), "Powershell Scripts from $PSScriptRoot\Scripts")
+    ) | ForEach-Object {
+        New-PSDrive `
+            -Name $_[0] `
+            -PSProvider FileSystem `
+            -Root $_[1] `
+            -Description $_[2] `
+            -Scope 'Global' | Out-Null
+    }
 }
 
 ################################################################################
@@ -106,55 +107,24 @@ if (Get-Command rg -ErrorAction SilentlyContinue) {
 # Customize Prompt
 ################################################################################
 function Shorten-Path([string] $path) {
-   $loc = $path.Replace($HOME, '~')
-   # remove prefix for UNC paths
-   $loc = $loc -Replace '^[^:]+::', ''
-   # make path shorter like tabs in Vim,
-   # handle paths starting with \\ and . correctly
-   return ($loc -Replace '\\(\.?)([^\\])[^\\]*(?=\\)','\$1$2')
+    $loc = $path.Replace($HOME, '~')
+    # remove prefix for UNC paths
+    $loc = $loc -Replace '^[^:]+::', ''
+    # make path shorter like tabs in Vim,
+    # handle paths starting with \\ and . correctly
+    return ($loc -Replace '\\(\.?)([^\\])[^\\]*(?=\\)', '\$1$2')
 }
 
-function Prompt {
-    # Prompt:
-    #   §
-    #   |--- Green if no errors. Red if errors
+if (Get-Command -Name 'oh-my-posh' -ErrorAction SilentlyContinue) {
+    $ompDir = Join-Path $dotfilesLocation 'oh-my-posh'
 
-    # our theme
-    $colorStatus = if ($? -eq $true) {[ConsoleColor]::DarkCyan} else { [ConsoleColor]::Red }
-    $colorDelimiter = [ConsoleColor]::DarkCyan
-    $colorHost = [ConsoleColor]::Green
-    $colorLocation = [ConsoleColor]::Cyan
-    $colorCloud = [ConsoleColor]::Magenta
+    $variation = '.minimal'
 
-    Write-Host "$([char]0x0A7) " -NoNewLine -ForegroundColor $colorStatus
-
-    #if ($PSSenderInfo)
-    if (Get-Variable -Name 'PSSenderInfo' -ErrorAction SilentlyContinue)
-    {
-        # Display the computer name if this is a remote session
-        # $PSSenderInfo is only available in PSSession to detect remoting.
-        # See `Get-Help about_Automatic_Variables for more information
-        Write-Host "$(($env:COMPUTERNAME).ToLower()) " -NoNewLine -ForegroundColor $colorHost
-    }
-
-    Write-Host '{' -NoNewLine -f $colorDelimiter
-    Write-Host "$(shorten-path (pwd).Path)" -NoNewLine -ForegroundColor $colorLocation
-    Write-Host '} ' -NoNewLine -f $colorDelimiter
-
-    if (Get-Module 'AzureRM.profile')
-    {
-        $azureContext = Get-AzureRmContext
-        if ($azureContext -and $azureContext.Subscription -and $azureContext.Subscription.Name)
-        {
-            Write-Host "$([char]0x2601)$($azureContext.Subscription.Name) " -NoNewLine -ForegroundColor $colorCloud
-        }
-    }
-
-    Write-VcsStatus
-
-    SetWindowTitle
-
-    Return ' '
+    if ($env:TERM_PROGRAM -eq 'VSCode') { $variation = '' } # VSCode
+    if ($env:WT_SESSION) { $variation = '' } # Windows Terminal
+    $ompTheme = Resolve-Path (Join-Path $ompDir "dotfiles-prompt${variation}.omp.json")
+    Write-Host "Theme is $ompTheme"
+    oh-my-posh --init --shell pwsh --config "$ompTheme" | Invoke-Expression
 }
 
 Import-Module JunkDrawer

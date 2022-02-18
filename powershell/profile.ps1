@@ -1,113 +1,11 @@
 $env:EDITOR = 'nvim'
 $MaximumHistoryCount = 10000
 
-function Prompt {
-    # $? is modified by running commands so momento the last result *first*.
-    $lastCmdOK = $?
-    $lastLastExitCode = $LASTEXITCODE
+$dotfilesLocation = (Get-Item $MyInvocation.MyCommand.Source).Directory
+$dotfilesLocation | Select-Object -ExpandProperty Target | Set-Variable -Name dotfilesLocation
+$dotfilesLocation = Resolve-Path -Path (Join-Path $dotfilesLocation ..)
 
-    #####################
-    # vt100 escape codes
-    #####################
-    # Use reset sparing. Spamming resets may cause rendering issues
-    # when term windows are resized.
-    $rst = "`e[0m" # Reset style, background, and foreground.
-
-    # Insert line, 2=entire line
-    $il  = "`e[2L" # Insert line
-
-    # Foreground color escape codes.
-    $fgc = @{
-        default     = "`e[039m"
-
-        black       = "`e[030m"
-        red         = "`e[031m"
-        green       = "`e[032m"
-        yellow      = "`e[033m"
-        blue        = "`e[034m"
-        darkmagenta = "`e[035m"
-        darkcyan    = "`e[036m"
-        darkgrey    = "`e[037m"
-    }
-
-    # Background color escape codes.
-    $bgc = @{
-        default  = "`e[049m"
-
-        darkcyan = "`e[46m"
-    }
-
-    $sep = ' '
-
-    #####################
-    # first line
-    #####################
-    $p = $il
-
-    # Status indicator
-    $lastCmdOK_C = 'red'
-    $lastCmdGlyph = 'X'
-    if ($lastCmdOK) {
-        $lastCmdOK_C = 'darkcyan'
-        $lastCmdGlyph = ''
-    }
-    $p += "$($fgc.darkcyan)[$($fgc[$lastCmdOK_C])$lastCmdGlyph$($fgc.default)${sep}"
-
-    # Current location
-    $cl = $executionContext.SessionState.Path.CurrentLocation.Path
-    switch ($cl) {
-        { $_.StartsWith($HOME) } { $cl = $_.Replace("$HOME", '~') }
-        { $_.StartsWith('/mnt/c/') } { $cl = $_.Replace('/mnt/c/', 'WINDOWS:/') }
-    }
-    $p += "$($bgc.darkcyan)$($fgc.black)$($cl)$($fgc.default)$($bgc.default)"
-
-    # Git Status via posh-git
-    $p += "$(Write-VcsStatus)"
-
-    # End the line with an unstyled character to create a boundry, otherwise
-    # resizing a terminal may cause effects to 'leak' until the end of line.
-    $p += "${sep}$($fgc.darkcyan)]$($fgc.default)"
-
-    #####################
-    # second line
-    #####################
-
-    # Move the cursor to the second line.
-    $p += "$([System.Environment]::NewLine)"
-
-    # Debugger active
-    if (Test-Path variable:PSDebugContext) {
-        $p += "$($fgc.yellow)[DBG]:$($fgc.default)${sep}"
-    }
-
-    # Current Time
-    $p += "$($fgc.darkcyan)$([DateTime]::now.ToString("HH:mm"))$($fgc.default)${sep}"
-
-    # Directory stack astericks
-    $p += "$('*' * ($(Get-Location -Stack).Count))"
-
-    # Command number
-    $p += "$($fgc.darkgrey)$((Get-History -Count 1).id + 1)$($fgc.default)"
-
-    # Prompt ('>') **AND** nested-prompt (also '>')
-    $p += "$($fgc.darkcyan)>$('>' * ($nestedPromptLevel))$($fgc.default)${sep}"
-
-    #####################
-    # Cleanup
-    #####################
-
-    # Reset $LASTEXITCODE so the value is available to the terminal.
-    $global:LASTEXITCODE = $lastLastExitCode
-
-    # The final prompt is a single string with terminal escape codes to reduce screen tearing.
-    return "$p"
-}
-
-if (Test-Path "$HOME/.ripgreprc") {
-    $env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
-}
-
-# Support an optional local.profile.ps1.
+# Optional local.profile.ps1 for profile machine-specific profile functions.
 $profileLocalPath = Join-Path -Path $PSScriptRoot -ChildPath 'local.profile.ps1'
 if (Test-Path "$profileLocalPath") {
     Write-Verbose "Located an optional local.profile.ps1"
@@ -171,3 +69,17 @@ if (Get-Module -Name posh-git -ListAvailable -ErrorAction SilentlyContinue) {
     $global:GitPromptSettings.BeforeStatus.Text = ''
     $global:GitPromptSettings.AfterStatus.Text = ''
 }
+
+if (Get-Command -Name 'oh-my-posh' -ErrorAction SilentlyContinue) {
+    $ompDir = Join-Path $dotfilesLocation 'oh-my-posh'
+
+    $variation = '.minimal'
+
+    if ($env:TERM_PROGRAM -eq 'VSCode') { $variation = '' } # VSCode
+    if ($env:WT_SESSION) { $variation = '' } # Windows Terminal
+    $ompTheme = Resolve-Path (Join-Path $ompDir "dotfiles-prompt${variation}.omp.json")
+    Write-Host "Theme is $ompTheme"
+    oh-my-posh --init --shell pwsh --config "$ompTheme" | Invoke-Expression
+}
+
+

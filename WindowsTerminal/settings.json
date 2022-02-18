@@ -57,6 +57,10 @@
                 "backgroundImageOpacity": 0.20000000000000001,
                 "backgroundImageStretchMode": "none",
                 "commandline": "powershell.exe",
+                "font": 
+                {
+                    "face": "CaskaydiaCove NF"
+                },
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
                 "hidden": false,
                 "name": "Windows PowerShell",
@@ -78,6 +82,10 @@
                 "backgroundImageAlignment": "topRight",
                 "backgroundImageOpacity": 0.20000000000000001,
                 "backgroundImageStretchMode": "none",
+                "font": 
+                {
+                    "face": "CaskaydiaCove NF"
+                },
                 "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
                 "hidden": false,
                 "name": "Ubuntu",

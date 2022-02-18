@@ -1,0 +1,144 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "blocks": [
+    {
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "os",
+          "style": "powerline",
+          "foreground": "#FAFAFA",
+          "background": "#4F90DB",
+          "properties": {
+            "template": " {{ .Icon }} "
+          }
+        },
+        {
+          "type": "root",
+          "style": "powerline",
+          "background": "#DB9165",
+          "foreground": "#060606",
+          "powerline_symbol": "\ue0b0",
+          "properties": {
+            "template": " \uF0E7 ",
+            "enabled": "true"
+          }
+        },
+        {
+          "type": "text",
+          "style": "powerline",
+          "powerline_symbol": "\uE0B0",
+          "foreground": "#FAFAFA",
+          "background": "#213C5C",
+          "properties": {
+            "template": " {{ .UserName }}@{{ .HostName }} "
+          }
+        },
+        {
+          "type": "path",
+          "style": "powerline",
+          "background": "#4F90DB",
+          "foreground": "#FAFAFA",
+          "powerline_symbol": "\ue0b0",
+          "properties": {
+            "style": "folder",
+            "template": " \ue5ff {{ .Path }} "
+          }
+        },
+        {
+          "type": "git",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "invert_powerline": false,
+          "foreground": "#FAFAFA",
+          "background": "#596675",
+          "properties": {
+            "fetch_status": true,
+            "fetch_stash_count": true,
+            "fetch_upstream_icon": true,
+            "template": " {{ .UpstreamIcon }}{{ .HEAD }}{{ .BranchStatus }}{{ if .Working.Changed }} \uF044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uF046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uF692 {{ .StashCount }}{{ end }} "
+          }
+        },
+        {
+          "type": "executiontime",
+          "background": "#DBC239",
+          "foreground": "#060606",
+          "powerline_symbol": "\ue0b0",
+          "properties": {
+            "template": " \ufbab{{ .FormattedMs }} "
+          },
+          "style": "powerline"
+        },
+        {
+          "type": "exit",
+          "style": "powerline",
+          "foreground": "#060606",
+          "background": "#DB65BA",
+          "powerline_symbol": "\ue0b0",
+          "properties": {
+            "template": " \uE23A {{ .Code }} "
+          }
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "aws",
+          "style": "powerline",
+          "powerline_symbol": "\uE0B0",
+          "foreground": "#FFA400",
+          "background": "#232F38",
+          "properties": {
+            "template": "\uE7AD {{.Profile}}{{if .Region}}@{{.Region}}{{end}}"
+          }
+        },
+        {
+          "type": "az",
+          "style": "powerline",
+          "powerline_symbol": "\uE0B0",
+          "foreground": "#FFFFFF",
+          "background": "#0078D4",
+          "properties": {
+            "template": "\uFD03 {{ .EnvironmentName }}"
+          }
+        },
+        {
+          "type": "time",
+          "style": "plain",
+          "foreground": "#6997C9",
+          "properties": {
+            "template": " {{ .CurrentDate | date .Format }} ",
+            "time_format": "15:04:05"
+          }
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "shell",
+          "style": "powerline",
+          "foreground": "#FAFAFA",
+          "properties": {
+            "mapped_shell_names": {
+              "pwsh": "ps"
+            },
+            "template": "{{ .Name }}\u276F"
+          }
+        }
+      ],
+      "type": "prompt",
+      "newline": true
+    }
+  ],
+  "final_space": true,
+  "console_title": true,
+  "console_title_style": "template",
+  "console_title_template": "{{.Folder}}{{if .Root}} :: root{{end}} :: {{.Shell}}",
+  "version": 1
+}
