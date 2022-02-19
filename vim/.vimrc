@@ -1,9 +1,3 @@
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"   Filename: .vimrc                                                           "
-" Maintainer: Dustin Venegas <dustin.venegas@gmail.com>                        "
-"        URL: https://github.com/DustinVenegas/dotfiles                        "
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 " Environment Specific Setup {
     set nocompatible " Make Vim behave in a more useful way
 
