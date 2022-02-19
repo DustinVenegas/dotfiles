@@ -24,6 +24,11 @@ begin {
     $cuahProfileDirectory = Join-Path -Path $HOME -ChildPath $ccp
 
     $modulesToManage = @('posh-git', 'PSFzf', 'PSScriptAnalyzer', 'PSReadLine', 'Terminal-Icons')
+
+    if (Test-OSPlatform -Include @('Unix', 'Darwin')) {
+        $modulesToManage += 'Microsoft.PowerShell.UnixCompleters' # PSUnixUtilCompleters
+    }
+
     $modulesToInstall = $modulesToManage | Where-Object {
         $null -eq (Get-Module -Name $PSItem -ListAvailable -ErrorAction 'Continue')
     }

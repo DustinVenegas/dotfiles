@@ -6,6 +6,8 @@ $dotfilesLocation | Select-Object -ExpandProperty Target | Set-Variable -Name do
 $dotfilesLocation = Resolve-Path -Path (Join-Path $dotfilesLocation ..)
 
 $dotfilesEnhancedTerm = $false
+if ($env:TERM_PROGRAM -eq 'VSCode') { $dotfilesEnhancedTerm = $true } # VSCode
+if ($env:WT_SESSION) { $dotfilesEnhancedTerm = $true } # Windows Terminal
 
 # Optional local.profile.ps1 for profile machine-specific profile functions.
 $profileLocalPath = Join-Path -Path $PSScriptRoot -ChildPath 'local.profile.ps1'
@@ -80,6 +82,14 @@ if (Get-Command -Name 'oh-my-posh' -ErrorAction SilentlyContinue) {
 
     $ompTheme = Resolve-Path (Join-Path $ompDir "dotfiles-prompt${variation}.omp.json")
     oh-my-posh --init --shell pwsh --config "$ompTheme" | Invoke-Expression
+}
+
+if (($IsLinux -or $IsMacOS) -and (Get-Module -Name Microsoft.PowerShell.UnixCompleters -ListAvailable -ErrorAction SilentlyContinue)) {
+    # PSUnixUtilCompleters enables argument completion for Linux binaries. Data is based on shell competions loaded into a zsh/bash.
+    Import-Module Microsoft.PowerShell.UnixCompleters
+
+    # 'tab' on a '-' or '--' provides a friendly menu to cycle through arguments.
+    Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 }
 
 if ($enhancedTerm) {
