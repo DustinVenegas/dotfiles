@@ -5,6 +5,8 @@ $dotfilesLocation = (Get-Item $MyInvocation.MyCommand.Source).Directory
 $dotfilesLocation | Select-Object -ExpandProperty Target | Set-Variable -Name dotfilesLocation
 $dotfilesLocation = Resolve-Path -Path (Join-Path $dotfilesLocation ..)
 
+$dotfilesEnhancedTerm = $false
+
 # Optional local.profile.ps1 for profile machine-specific profile functions.
 $profileLocalPath = Join-Path -Path $PSScriptRoot -ChildPath 'local.profile.ps1'
 if (Test-Path "$profileLocalPath") {
@@ -74,12 +76,13 @@ if (Get-Command -Name 'oh-my-posh' -ErrorAction SilentlyContinue) {
     $ompDir = Join-Path $dotfilesLocation 'oh-my-posh'
 
     $variation = '.minimal'
+    if ($dotfilesEnhancedTerm) { $variation = '' }
 
-    if ($env:TERM_PROGRAM -eq 'VSCode') { $variation = '' } # VSCode
-    if ($env:WT_SESSION) { $variation = '' } # Windows Terminal
     $ompTheme = Resolve-Path (Join-Path $ompDir "dotfiles-prompt${variation}.omp.json")
-    Write-Host "Theme is $ompTheme"
     oh-my-posh --init --shell pwsh --config "$ompTheme" | Invoke-Expression
 }
 
+if ($enhancedTerm) {
+    Import-Module -Name Terminal-Icons
+}
 
