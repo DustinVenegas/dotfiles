@@ -82,6 +82,14 @@ if (Get-Command -Name 'oh-my-posh' -ErrorAction SilentlyContinue) {
 
     $ompTheme = Resolve-Path (Join-Path $ompDir "dotfiles-prompt${variation}.omp.json")
     oh-my-posh --init --shell pwsh --config "$ompTheme" | Invoke-Expression
+
+    # oh-my-posh calls Set-PoshContext
+    function Set-DotfilesOhMyPoshContext() {
+        if ($zlocationEnabled) {
+            Update-ZLocation -Path $pwd
+        }
+    }
+    New-Alias -Name 'Set-PoshContext' -Value 'Set-DotfilesOhMyPoshContext' -Scope Global -Force
 }
 
 if (($IsLinux -or $IsMacOS) -and (Get-Module -Name Microsoft.PowerShell.UnixCompleters -ListAvailable -ErrorAction SilentlyContinue)) {
@@ -94,5 +102,20 @@ if (($IsLinux -or $IsMacOS) -and (Get-Module -Name Microsoft.PowerShell.UnixComp
 
 if ($enhancedTerm) {
     Import-Module -Name Terminal-Icons
+}
+
+$zlocationEnabled = $false
+if (Get-Module -Name ZLocation -ListAvailable -ErrorAction SilentlyContinue) {
+    if (-Not ((Get-Command -Name ZLocationOrigPrompt -ErrorAction SilentlyContinue))) {
+        # HACK: Pre-define ZLocation wrapper function in order to prevent ZLocation
+        # from creating a wrapper around the prompt function.
+        #  - Watching PR #121 (2022/02) https://github.com/vors/ZLocation/pull/121
+        #  - Watching Issue #117 (2022/02) https://github.com/vors/ZLocation/issues/117#issuecomment-985850990
+        function ZLocationOrigPrompt {}
+    }
+
+    # Import needs to be after any other imports that modify the prompt.
+    Import-Module ZLocation
+    $zlocationEnabled = $true
 }
 

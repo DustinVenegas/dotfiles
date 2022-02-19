@@ -23,7 +23,7 @@ begin {
 
     $cuahProfileDirectory = Join-Path -Path $HOME -ChildPath $ccp
 
-    $modulesToManage = @('posh-git', 'PSFzf', 'PSScriptAnalyzer', 'PSReadLine', 'Terminal-Icons')
+    $modulesToManage = @('posh-git', 'PSFzf', 'PSScriptAnalyzer', 'PSReadLine', 'Terminal-Icons', 'ZLocation')
 
     if (Test-OSPlatform -Include @('Unix', 'Darwin')) {
         $modulesToManage += 'Microsoft.PowerShell.UnixCompleters' # PSUnixUtilCompleters
