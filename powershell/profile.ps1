@@ -58,6 +58,7 @@ if (Get-Command -Name 'fzf' -ErrorAction SilentlyContinue) {
 }
 
 if (Get-Module -Name PSReadLine) {
+    Import-Module PSReadLine
     if (-Not (Get-PSReadLineKeyHandler -Bound | Where-Object { $_.Function -eq 'ViEditVisually' })) {
         if (Get-Command "$($env:EDITOR)") {
             # <C+X><C+E> should open the current command for editing in $env:EDITOR.
@@ -82,6 +83,12 @@ if (Get-Command -Name 'oh-my-posh' -ErrorAction SilentlyContinue) {
 
     $ompTheme = Resolve-Path (Join-Path $ompDir "dotfiles-prompt${variation}.omp.json")
     oh-my-posh --init --shell pwsh --config "$ompTheme" | Invoke-Expression
+
+    $v = New-Object System.Version($(oh-my-posh --version))
+    if ($dotfilesEnhancedTerm -and ($v.Major -gt 7) -or (($v.Major -eq 7) -and ($v.Minor -ge 20))) {
+        # Enables support for PSReadLine PromptText options.
+        Enable-PoshLineError
+    }
 
     # oh-my-posh calls Set-PoshContext
     function Set-DotfilesOhMyPoshContext() {

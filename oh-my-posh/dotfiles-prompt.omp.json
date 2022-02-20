@@ -136,6 +136,16 @@
       "newline": true
     }
   ],
+  "valid_line": {
+    "background": "transparent",
+    "foreground": "#ffffff",
+    "template": "\nps<#e0def4,transparent>\u276F</> "
+  },
+  "error_line": {
+    "background": "transparent",
+    "foreground": "#ffffff",
+    "template": "\nps<#eb6f92,transparent>\ue009</> "
+  },
   "final_space": true,
   "console_title": true,
   "console_title_style": "template",
