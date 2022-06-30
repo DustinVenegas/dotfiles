@@ -88,16 +88,19 @@ fi
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 
-if type brew >/dev/null 2>&1; then
-    # shellcheck disable=2088 # oh-my-posh uses a literal tilde to internally represent themes in the homebrew directory.
-    T='~/jandedobbeleer.omp.json'
-
-    if [ -f "$HOME/prompt.omp.json" ]; then
-        T="$HOME/prompt.omp.json"
+if type oh-my-posh >/dev/null 2>&1; then
+    promptVariation='.minimal'
+    if [[ -n "${WT_SESSION}" ]]
+    then
+        promptVariation=''
     fi
-    if [ -f "$HOME/.dotfiles-prompt.omp.json" ]; then
-        T="$HOME/.dotfiles-prompt.omp.json"
+    if [[ -n "${TERM_PROGRAM}" ]]
+    then
+        if [[ 'VSCode' == "${TERM_PROGRAM}" ]]
+        then
+            promptVariation=''
+        fi
     fi
 
-    eval "$(oh-my-posh --init --shell bash --config "$T")"
+    eval "$(oh-my-posh --init --shell bash --config ~/.dotfiles-prompt"$promptVariation".omp.json)"
 fi
