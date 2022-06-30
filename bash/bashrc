@@ -38,9 +38,6 @@ if type brew >/dev/null 2>&1; then
             source "$bashCompletion"
         fi
         unset bashCompletion
-
-        # shellcheck source=/dev/null
-        source "$(brew --prefix nvm)/nvm.sh"
     fi
 fi
 
@@ -48,11 +45,6 @@ fi
 if [ -f "$HOME/.ripgreprc" ]; then
     # RIPGREP_CONFIG_PATH is required for ripgrep to respect the config.
     export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
-fi
-
-# ~/.local/bin, for user binaries. Part of the XDG Base Directory specification.
-if [ -d "$HOME/.local/bin" ] && [[ ! "$PATH" == *$HOME/.local/bin* ]]; then
-    export PATH="$PATH:$HOME/.local/bin"
 fi
 
 fzfShellDir="/usr/share/doc/fzf/examples" # Default on Ubuntu 20.04
@@ -82,11 +74,6 @@ if [ -f "$HOME/.bashrc.local" ]; then
     # shellcheck source=/dev/null
     source "$HOME/.bashrc.local"
 fi
-
-# Install volta and don't modify the ~/.bashrc (--skip-setup)
-#     curl https://get.volta.sh | bash -s -- --skip-setup
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
 
 if type oh-my-posh >/dev/null 2>&1; then
     promptVariation='.minimal'
