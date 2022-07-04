@@ -4,15 +4,32 @@
 HISTCONTROL=ignoreboth  # Ignore duplicate commands, or ones prefixed with a space
 HISTSIZE=65535 # Keep lots of history. Default, 500
 
-# editor
-if type vim >/dev/null 2>&1; then EDITOR=vim; fi
-if type nvim >/dev/null 2>&1; then EDITOR=nvim; fi
-export EDITOR
+# XDG bin directory
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+# ripgrep
+if [ -f "$HOME/.ripgreprc" ]; then
+    export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+fi
 
 # homebrew for linux
 if [ -d /home/linuxbrew/ ]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
+
+# volta
+if type volta >/dev/null 2>&1; then
+    VOLTA_HOME="$HOME/.volta"
+    PATH="$VOLTA_HOME/bin:$PATH"
+    export VOLTA_HOME
+fi
+
+# Linux Utilities
+if type vim >/dev/null 2>&1; then EDITOR=vim; fi
+if type nvim >/dev/null 2>&1; then EDITOR=nvim; fi
+export EDITOR
 
 # homebrew autocomplete
 if type brew >/dev/null 2>&1; then
@@ -41,14 +58,8 @@ if type brew >/dev/null 2>&1; then
     fi
 fi
 
-# ripgrep, Makes $HOME/.ripgreprc the default configuration.
-if [ -f "$HOME/.ripgreprc" ]; then
-    # RIPGREP_CONFIG_PATH is required for ripgrep to respect the config.
-    export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
-fi
-
 fzfShellDir="/usr/share/doc/fzf/examples" # Default on Ubuntu 20.04
-if type brew 2&>/dev/null; then
+if type brew >/dev/null 2>&1; then
     fzfShellDir="$(brew --prefix)/opt/fzf/shell"
 
     if [[ ! "$PATH" == *"$(brew --prefix)"/opt/fzf/bin* ]]; then
@@ -90,4 +101,18 @@ if type oh-my-posh >/dev/null 2>&1; then
     fi
 
     eval "$(oh-my-posh --init --shell bash --config ~/.dotfiles-prompt"$promptVariation".omp.json)"
+fi
+
+if type dotnet >/dev/null 2>&1; then
+    # bash parameter completion for the dotnet CLI
+    function _dotnet_bash_complete()
+    {
+    local cur="${COMP_WORDS[COMP_CWORD]}" IFS=$'\n'
+    local candidates
+
+    read -d '' -ra candidates < <(dotnet complete --position "${COMP_POINT}" "${COMP_LINE}" 2>/dev/null)
+
+    read -d '' -ra COMPREPLY < <(compgen -W "${candidates[*]:-}" -- "$cur")
+    }
+    complete -f -F _dotnet_bash_complete dotnet
 fi

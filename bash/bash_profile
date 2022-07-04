@@ -1,20 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-if [ -f "$HOME/.bashrc" ]; then
-    # dot-source .bashrc, which contains the meat
-    # shellcheck source=/dev/null
-    source "$HOME/.bashrc"
+# include .bashrc if it exists
+if [ -f ~/.bashrc ]; then
+	# shellcheck source=/dev/null
+	. ~/.bashrc
 fi
 
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
-
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
+# export PATH once
+export PATH
