@@ -151,7 +151,7 @@ call plug#end()
 
 " mhinz/vim-startify {{{
 " Adds explicit bookmarks to display in startify.
-let g:startify_bookmarks = [ '~/Source/mlcloud/', '~/go/src/bitbucket.org/mlcloud/' ]
+let g:startify_bookmarks = [ '~/Source/', '~/Source/github.com/dustinvenegas/dotfiles/' ]
 let g:startify_custom_header = [
     \ '                                          _   _     _                 ',
     \ '                                         | | | |   (_)                ',
