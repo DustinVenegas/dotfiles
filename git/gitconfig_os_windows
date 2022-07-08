@@ -5,7 +5,7 @@
 [difftool "kdiff3"]
 	path = C:/Program Files/KDiff3/kdiff3.exe
 [credential]
-	helper = manager # Git Credentials Manager vs wincred (Windows Credentials)
+	helper = manager-core # git credential manager core
 
 # Modeline or non-standard named .gitconfig
 # vim:fileformat=unix filetype=.gitconfig

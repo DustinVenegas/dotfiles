@@ -8,3 +8,7 @@
 
 # Modeline or non-standard named .gitconfig
 # vim:fileformat=unix filetype=.gitconfig
+
+# Share credentials from Windows with WSL
+# [credential]
+# 	helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager-core.exe
