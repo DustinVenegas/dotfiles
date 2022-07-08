@@ -5,79 +5,70 @@
       "alignment": "left",
       "segments": [
         {
-          "type": "os",
-          "style": "powerline",
-          "foreground": "#FAFAFA",
           "background": "#4F90DB",
-          "properties": {
-            "template": " {{ .Icon }} "
-          }
+          "foreground": "#FAFAFA",
+          "style": "powerline",
+          "template": " {{ .Icon }} ",
+          "type": "os"
         },
         {
-          "type": "root",
-          "style": "powerline",
           "background": "#DB9165",
           "foreground": "#060606",
           "powerline_symbol": "\ue0b0",
           "properties": {
-            "template": " \uF0E7 ",
             "enabled": "true"
-          }
+          },
+          "style": "powerline",
+          "template": " \uf0e7 ",
+          "type": "root"
         },
         {
-          "type": "text",
-          "style": "powerline",
-          "powerline_symbol": "\uE0B0",
-          "foreground": "#FAFAFA",
           "background": "#213C5C",
-          "properties": {
-            "template": " {{ .UserName }}@{{ .HostName }} "
-          }
+          "foreground": "#FAFAFA",
+          "powerline_symbol": "\ue0b0",
+          "style": "powerline",
+          "template": " {{ .UserName }}@{{ .HostName }} ",
+          "type": "text"
         },
         {
-          "type": "path",
-          "style": "powerline",
           "background": "#4F90DB",
           "foreground": "#FAFAFA",
           "powerline_symbol": "\ue0b0",
           "properties": {
-            "style": "folder",
-            "template": " \ue5ff {{ .Path }} "
-          }
-        },
-        {
-          "type": "git",
+            "style": "folder"
+          },
           "style": "powerline",
-          "powerline_symbol": "",
-          "invert_powerline": false,
-          "foreground": "#FAFAFA",
-          "background": "#596675",
-          "properties": {
-            "fetch_status": true,
-            "fetch_stash_count": true,
-            "fetch_upstream_icon": true,
-            "template": " {{ .UpstreamIcon }}{{ .HEAD }}{{ .BranchStatus }}{{ if .Working.Changed }} \uF044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uF046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uF692 {{ .StashCount }}{{ end }} "
-          }
+          "template": " \ue5ff {{ .Path }} ",
+          "type": "path"
         },
         {
-          "type": "executiontime",
+          "background": "#596675",
+          "foreground": "#FAFAFA",
+          "powerline_symbol": "\ue0b0",
+          "properties": {
+            "fetch_stash_count": true,
+            "fetch_status": true,
+            "fetch_upstream_icon": true
+          },
+          "style": "powerline",
+          "template": " {{ .UpstreamIcon }}{{ .HEAD }}{{ .BranchStatus }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uf692 {{ .StashCount }}{{ end }} ",
+          "type": "git"
+        },
+        {
           "background": "#DBC239",
           "foreground": "#060606",
           "powerline_symbol": "\ue0b0",
-          "properties": {
-            "template": " \ufbab{{ .FormattedMs }} "
-          },
-          "style": "powerline"
+          "style": "powerline",
+          "template": " \ufbab{{ .FormattedMs }} ",
+          "type": "executiontime"
         },
         {
-          "type": "exit",
-          "style": "powerline",
-          "foreground": "#060606",
           "background": "#DB65BA",
+          "foreground": "#060606",
           "powerline_symbol": "\ue0b0",
-          "properties": {
-            "template": " \uE23A {{ .Code }} "
-          }
+          "style": "powerline",
+          "template": " \ue23a {{ .Code }} ",
+          "type": "exit"
         }
       ],
       "type": "prompt"
@@ -86,69 +77,53 @@
       "alignment": "right",
       "segments": [
         {
-          "type": "aws",
-          "style": "powerline",
-          "powerline_symbol": "\uE0B0",
-          "foreground": "#FFA400",
           "background": "#232F38",
-          "properties": {
-            "template": "\uE7AD {{.Profile}}{{if .Region}}@{{.Region}}{{end}}"
-          }
-        },
-        {
-          "type": "az",
+          "foreground": "#FFA400",
+          "powerline_symbol": "\ue0b0",
           "style": "powerline",
-          "powerline_symbol": "\uE0B0",
-          "foreground": "#FFFFFF",
-          "background": "#0078D4",
-          "properties": {
-            "template": "\uFD03 {{ .EnvironmentName }}"
-          }
+          "template": "\ue7ad {{.Profile}}{{if .Region}}@{{.Region}}{{end}}",
+          "type": "aws"
         },
         {
-          "type": "time",
-          "style": "plain",
+          "background": "#0078D4",
+          "foreground": "#FFFFFF",
+          "powerline_symbol": "\ue0b0",
+          "style": "powerline",
+          "template": "\ufd03 {{ .EnvironmentName }}",
+          "type": "az"
+        },
+        {
           "foreground": "#6997C9",
           "properties": {
-            "template": " {{ .CurrentDate | date .Format }} ",
             "time_format": "15:04:05"
-          }
+          },
+          "style": "plain",
+          "template": " {{ .CurrentDate | date .Format }} ",
+          "type": "time"
         }
       ],
       "type": "prompt"
     },
     {
       "alignment": "left",
+      "newline": true,
       "segments": [
         {
-          "type": "shell",
-          "style": "powerline",
           "foreground": "#FAFAFA",
           "properties": {
             "mapped_shell_names": {
               "pwsh": "ps"
-            },
-            "template": "{{ .Name }}\u276F"
-          }
+            }
+          },
+          "style": "powerline",
+          "template": "{{ .Name }}\u276f",
+          "type": "shell"
         }
       ],
-      "type": "prompt",
-      "newline": true
+      "type": "prompt"
     }
   ],
-  "valid_line": {
-    "background": "transparent",
-    "foreground": "#ffffff",
-    "template": "\nps<#e0def4,transparent>\u276F</> "
-  },
-  "error_line": {
-    "background": "transparent",
-    "foreground": "#ffffff",
-    "template": "\nps<#eb6f92,transparent>\ue009</> "
-  },
-  "final_space": true,
-  "console_title": true,
-  "console_title_style": "template",
   "console_title_template": "{{.Folder}}{{if .Root}} :: root{{end}} :: {{.Shell}}",
-  "version": 1
+  "final_space": true,
+  "version": 2
 }

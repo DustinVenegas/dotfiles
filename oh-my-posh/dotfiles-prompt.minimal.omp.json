@@ -5,71 +5,63 @@
       "alignment": "left",
       "segments": [
         {
-          "type": "text",
-          "style": "plain",
-          "foreground": "#FAFAFA",
           "background": "#4F90DB",
-          "properties": {
-            "template": " λ "
-          }
+          "foreground": "#FAFAFA",
+          "style": "plain",
+          "template": " λ ",
+          "type": "text"
         },
         {
-          "type": "root",
-          "style": "plain",
           "background": "#DB9165",
           "foreground": "#060606",
           "properties": {
-            "template": " # ",
             "enabled": "true"
-          }
+          },
+          "style": "plain",
+          "template": " # ",
+          "type": "root"
         },
         {
-          "type": "text",
-          "style": "plain",
-          "foreground": "#FAFAFA",
           "background": "#213C5C",
-          "properties": {
-            "template": " {{ .UserName }}@{{ .HostName }} "
-          }
+          "foreground": "#FAFAFA",
+          "style": "plain",
+          "template": " {{ .UserName }}@{{ .HostName }} ",
+          "type": "text"
         },
         {
-          "type": "path",
-          "style": "plain",
           "background": "#4F90DB",
           "foreground": "#FAFAFA",
           "properties": {
-            "style": "folder",
-            "template": " {{ .Path }} "
-          }
-        },
-        {
-          "type": "git",
+            "style": "folder"
+          },
           "style": "plain",
-          "foreground": "#FAFAFA",
-          "background": "#596675",
-          "properties": {
-            "fetch_status": true,
-            "fetch_stash_count": true,
-            "template": "{{ .BranchStatus }}{{ if .Working.Changed }} W {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} S {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} ST {{ .StashCount }}{{ end }} "
-          }
+          "template": " {{ .Path }} ",
+          "type": "path"
         },
         {
-          "type": "executiontime",
+          "background": "#596675",
+          "foreground": "#FAFAFA",
+          "properties": {
+            "fetch_stash_count": true,
+            "fetch_status": true
+          },
+          "style": "plain",
+          "template": "{{ .BranchStatus }}{{ if .Working.Changed }} W {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} S {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} ST {{ .StashCount }}{{ end }} ",
+          "type": "git"
+        },
+        {
           "background": "#DBC239",
           "foreground": "#060606",
-          "properties": {
-            "template": " {{ .FormattedMs }} "
-          },
-          "style": "plain"
+          "style": "plain",
+          "template": " {{ .FormattedMs }} ",
+          "type": "executiontime"
         },
         {
-          "type": "exit",
-          "style": "plain",
-          "foreground": "#060606",
           "background": "#DB65BA",
-          "properties": {
-            "template": " RET {{ .Code }} "
-          }
+          "foreground": "#060606",
+          "style": "plain",
+          "template": " RET {{ .Code }} ",
+          "type": "exit"
         }
       ],
       "type": "prompt"
@@ -78,65 +70,57 @@
       "alignment": "right",
       "segments": [
         {
-          "type": "aws",
-          "style": "plain",
-          "foreground": "#FFA400",
           "background": "#232F38",
-          "properties": {
-            "template": "AWS:{{.Profile}}{{if .Region}}@{{.Region}}{{end}}"
-          }
+          "foreground": "#FFA400",
+          "style": "plain",
+          "template": "AWS:{{.Profile}}{{if .Region}}@{{.Region}}{{end}}",
+          "type": "aws"
         },
         {
-          "type": "az",
-          "style": "plain",
-          "foreground": "#FFFFFF",
           "background": "#0078D4",
-          "properties": {
-            "template": "AZ:{{ .EnvironmentName }}"
-          }
+          "foreground": "#FFFFFF",
+          "style": "plain",
+          "template": "AZ:{{ .EnvironmentName }}",
+          "type": "az"
         },
         {
-          "type": "time",
-          "style": "plain",
           "foreground": "#6997C9",
           "properties": {
-            "template": " {{ .CurrentDate | date .Format }} ",
             "time_format": "15:04:05"
-          }
+          },
+          "style": "plain",
+          "template": " {{ .CurrentDate | date .Format }} ",
+          "type": "time"
         }
       ],
       "type": "prompt"
     },
     {
       "alignment": "left",
+      "newline": true,
       "segments": [
         {
-          "type": "text",
-          "style": "plain",
           "foreground": "#0077c2",
-          "properties": {
-            "template": " "
-          }
+          "style": "plain",
+          "template": " ",
+          "type": "text"
         },
         {
-          "type": "shell",
-          "style": "plain",
           "foreground": "#FAFAFA",
           "properties": {
             "mapped_shell_names": {
               "pwsh": "ps"
-            },
-            "template": "{{ .Name }}>"
-          }
+            }
+          },
+          "style": "plain",
+          "template": "{{ .Name }}>",
+          "type": "shell"
         }
       ],
-      "type": "prompt",
-      "newline": true
+      "type": "prompt"
     }
   ],
-  "final_space": true,
-  "console_title": true,
-  "console_title_style": "template",
   "console_title_template": "{{.Folder}}{{if .Root}} :: root{{end}} :: {{.Shell}}",
-  "version": 1
+  "final_space": true,
+  "version": 2
 }
