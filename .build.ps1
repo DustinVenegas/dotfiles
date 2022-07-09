@@ -1,6 +1,6 @@
 #Requires -Module InvokeBuild
 
-Task . Lint-PSScriptAnalyzer, Lint-MarkdownLint
+Task . Lint
 
 Task Lint -Jobs Lint-PSScriptAnalyzer, Lint-MarkdownLint, Lint-Shellcheck
 
@@ -31,9 +31,9 @@ Task Lint-PSScriptAnalyzer {
 }
 
 Task Lint-Shellcheck {
-    $lintFiles = Get-ChildItem -File -Recurse -Path $PWD -Depth 2 -Include '*.sh', 'bash*'
-    #Exec { shellcheck --external-sources $lintFiles }
-    shellcheck --color=auto --external-sources $lintFiles
+    $lintFiles = Get-ChildItem -File -Recurse -Path $PWD -Depth 2 -Include '*.sh', 'bash*', 'zshrc'
+    #Exec { shellcheck --color=auto --format=gcc --external-sources $lintFiles }
+    shellcheck --color=auto --format=gcc --external-sources $lintFiles
     $succeeded, $lec = $?, $LASTEXITCODE
 
     Assert ($succeeded) "Expected shellcheck to emit successful command, but received $succeeded"

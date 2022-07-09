@@ -73,7 +73,6 @@
 
             # Simply list the targeted versions of PowerShell here
             TargetVersions = @(
-                '3.0',
                 '5.0',
                 '6.0',
                 '7.0'
