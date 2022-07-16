@@ -54,6 +54,8 @@ if (Get-Command -Name 'fzf' -ErrorAction SilentlyContinue) {
         Remove-PSReadLineKeyHandler 'Ctrl+r'
 
         Import-Module PSFzf
+
+        Set-PsFzfOption -TabExpansion -GitKeyBindings -EnableAliasFuzzyEdit -EnableAliasFuzzyHistory -EnableAliasFuzzyKillProcess -EnableAliasFuzzySetLocation -EnableAliasFuzzyZLocation -EnableAliasFuzzyGitStatus
     }
 }
 
