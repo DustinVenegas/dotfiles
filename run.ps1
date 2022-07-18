@@ -8,9 +8,7 @@
     Installs or updates dotfiles modules.
 #>
 #Requires -RunAsAdministrator
-param(
-    [string[]]$Include
-)
+param()
 begin {
     Import-Module -Name (Resolve-Path (Join-Path -Path $PSScriptRoot -ChildPath ./powershell-modules/Dotfiles/Dotfiles.psm1))
     $bootstrapScripts = Get-ChildItem -Include bootstrap.ps1 -Recurse -Depth 1 .

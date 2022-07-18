@@ -1,5 +1,4 @@
-function New-SymbolicLink
-{
+function New-SymbolicLink {
     <#
     .Synopsis
         Creates a symbolic link from one file or folder to another location.
@@ -20,7 +19,7 @@ function New-SymbolicLink
         New-SymbolicLink -Path c:\a-link-to-pwd -Value .
         Creates a symbolic link at c:\a-link-to-pwd pointed at the present working directory ($pwd).
     #>
-    [CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     param
     (
         [Parameter(Mandatory, Position = 0)]
@@ -29,10 +28,8 @@ function New-SymbolicLink
         [string]$Value
     )
 
-    process
-    {
-        if (-Not (Test-Path $Value))
-        {
+    process {
+        if (-Not (Test-Path $Value)) {
             Write-Error "Expected path to exist for value at: $Value"
         }
 
@@ -59,10 +56,10 @@ function New-SymbolicLink
         }
 
         [PSCustomObject]@{
-            Name = 'New-SymbolicLink'
+            Name        = 'New-SymbolicLink'
             NeedsUpdate = -Not $succeeded
-            Entity = $Path
-            Properties = @{
+            Entity      = $Path
+            Properties  = @{
                 Value = $Value
             }
         }

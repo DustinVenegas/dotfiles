@@ -20,7 +20,7 @@ The resource group name to restart web applications in.
 
 #>
 param(
-    [Parameter(Mandatory=$True)]
+    [Parameter(Mandatory = $True)]
     [string]$ResourceGroupName,
     [string]$SubscriptionName,
     [string]$Slot = 'canary'
@@ -29,19 +29,15 @@ param(
 Set-StrictMode -Version 1.0
 
 $origSubscription = $null;
-try
-{
+try {
     # Set the subscription BS
     $origSubscription = Get-AzureRmContext
 
-    if ($subscriptionName -ne $null)
-    {
+    if ($subscriptionName -ne $null) {
         Get-AzureRmSubscription | Where-Object { $_.SubscriptionName -eq $SubscriptionName } | Set-AzureRmContext | Out-Null
     }
-}
-catch
-{
-    Write-Error "Encountered an exception likely related to logging in. Probably run Login-AzureRmAccount and then use Select-AzureRmSubscription"
+} catch {
+    Write-Error 'Encountered an exception likely related to logging in. Probably run Login-AzureRmAccount and then use Select-AzureRmSubscription'
     Write-Verbose $_.Exception.Message
     Exit -1
 }
@@ -50,14 +46,12 @@ catch
 $webApps = Get-AzureRmWebApp -ResourceGroupName $ResourceGroupName
 
 # For each one of them, restart the dang slot
-foreach($webApp in $webApps) 
-{
+foreach ($webApp in $webApps) {
     Write-Verbose "Restarting Web App...$($webApp.Name) slot $Slot"
     Restart-AzureRmWebAppSlot -ResourceGroupName $ResourceGroupName -Name $webApp.Name -Slot $Slot | Out-Null
 }
 
-if ($origSubscription -ne $null)
-{
+if ($origSubscription -ne $null) {
     Write-Verbose "Resetting subscription to $($origSubscription.Subscription.SubscriptionName)"
     # Set the subscription back to whatever the user was on
     $origSubscription | Set-AzureRmContext | Out-Null

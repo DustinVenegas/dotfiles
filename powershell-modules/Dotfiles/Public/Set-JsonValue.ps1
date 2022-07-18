@@ -1,5 +1,4 @@
-function Set-JsonValue
-{
+function Set-JsonValue {
     <#
     .Synopsis
         Sets multiple JSON values in a file.
@@ -16,7 +15,7 @@ function Set-JsonValue
         Set-JsonValue -Path foo.json -InputObject @{ FieldA = 'SomeValue' } -WhatIf
         WhatIf returns what would be written to 'foo'json'.
     #>
-    [CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     param (
         [Parameter(Mandatory, Position = 0)]
         $Path,
@@ -35,7 +34,7 @@ function Set-JsonValue
 
         foreach ($key in $InputObject.Keys) {
             $value = $InputObject[$key]
-            $property = $data.PSobject.Properties | Where-Object -Property Name -eq $key
+            $property = $data.PSobject.Properties | Where-Object -Property Name -EQ $key
             $valuesEquivalent = $false
 
             if ($property) {
@@ -47,7 +46,7 @@ function Set-JsonValue
             if (!$valuesEquivalent) {
                 Write-Verbose "Setting JSON Value of $key."
 
-                if(Get-Member -InputObject $data -name $key -Membertype Properties) {
+                if (Get-Member -InputObject $data -Name $key -MemberType Properties) {
                     $data.$key = $value
                 } else {
                     $data | Add-Member -NotePropertyName $Key -NotePropertyValue $value
@@ -67,10 +66,10 @@ function Set-JsonValue
         }
 
         [PSCustomObject]@{
-            Name = 'Set-JsonValue'
+            Name        = 'Set-JsonValue'
             NeedsUpdate = $shouldWrite
-            Entity = "$Path, $key"
-            Properties = @{
+            Entity      = "$Path, $key"
+            Properties  = @{
                 Json = $json
             }
         }

@@ -97,7 +97,7 @@ dependencies, which makes maintenance straightforward.
 
 A `pipfile` exists for each neovim Python environment under
 [`python-envs/`](python-envs/). Running `pipenv -py` with a `pipfile` in the
-current working directory returns the _actual_ `python` binary location.
+current working directory returns the *actual* `python` binary location.
 
 First, we need to install the `pipenv` program for python2 and python3.
 
@@ -194,7 +194,7 @@ set runtimepath^=~/dotfiles/nvim/
 source ~/dotfiles/nvim/init.vim
 ```
 
-_Note,_ Source loading the dotfiles configuration has pros and cons. Some
+*Note,* Source loading the dotfiles configuration has pros and cons. Some
 operating systems don't posses full symbolic link capabilities. Consistently source
 loading across all operating systems just makes things easier.
 
@@ -322,7 +322,7 @@ styles.
 [tpope/vim-fugitive](https://github.com/tpope/vim-fugitive) adds git Ex
 Commands, Windows, etc inside of neovim. It provides additional methods to
 interface with git through vim without using `!bang` Ex Commands or the
-`:terminal`. It's useful _in addition_ to git's CLI; not as a replacement.
+`:terminal`. It's useful *in addition* to git's CLI; not as a replacement.
 
 fugitive, and Tim Pope in general, don't make drawer-style plugins. Instead of
 creating fixed Windows and Viewports the user is expected to manage the

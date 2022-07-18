@@ -1,18 +1,31 @@
 #Requires -Module InvokeBuild
+#Requires -Module PSScriptAnalyzer
 
 Task . Lint
 
 Task Lint -Jobs Lint-PSScriptAnalyzer, Lint-MarkdownLint, Lint-Shellcheck
 
 Task Lint-MarkdownLint {
-    Exec { markdownlint '**/*.md' --ignore 'nvim/node_modules' --ignore 'nvim/plugged' --ignore 'vim/plugged' --ignore 'WindowsPowerShell/Modules' --ignore 'powershell/Modules' }
+    Exec { markdownlint '**/*.md' --ignore 'todo.md' --ignore 'nvim/node_modules' --ignore 'nvim/plugged' --ignore 'vim/plugged' --ignore 'WindowsPowerShell/Modules' --ignore 'powershell/Modules' }
 }
 
 Task Lint-PSScriptAnalyzer {
-    $lintFiles = Get-ChildItem -Recurse -Path $PWD -Depth 1 -Include bootstrap.ps1, lint.ps1, .build.ps1, run.ps1
+    # File types to include
+    $include = '*.ps1', '*.psm1'
+
+    $files = Get-ChildItem -Recurse -Path $PWD -Depth 1 -Include $include
+
+    # powershell core
+    $files += Get-ChildItem -Path PowerShell -Exclude Modules | Get-ChildItem -Recurse -File -Include $include
+
+    # powershell-modules
+    $files += Get-ChildItem -Path powershell-modules -Recurse -Include $Include
+
+    # WindowsPowerShell
+    $files += Get-ChildItem -Path WindowsPowerShell -Exclude Modules | Get-ChildItem -Recurse -File -Include $include
 
     $results = @()
-    foreach ($x in $lintFiles) {
+    foreach ($x in $files) {
         $lintArgs = @{
             Path                = "$($x.Directory)\$($x.Name)";
             Settings            = "$(Join-Path $PSScriptRoot 'PSScriptAnalyzerSettings.psd1')";
@@ -25,9 +38,11 @@ Task Lint-PSScriptAnalyzer {
     }
 
     if ($results) {
-        $results | Format-Table
+        $results | ft
+
+        $filesWithErrors = $results.ScriptPath | Get-Unique | Resolve-Path -Relative
+        Assert ($results.Count -eq 0) "PSScriptAnalyzer: expected 0 linting violations but received $($results.Count) across $($filesWithErrors.Count) files:`n  $($filesWithErrors -Join "`n  ")"
     }
-    Assert ($results.Count -eq 0) "Expected linting results of 0, but received $($results.Count)"
 }
 
 Task Lint-Shellcheck {

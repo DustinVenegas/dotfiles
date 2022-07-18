@@ -1,6 +1,7 @@
 function Test-Figlet {
     <#
-        .SYNOPSIS Returns if figlet.exe exists in $env:PATH
+        .SYNOPSIS
+        Returns if figlet.exe exists in $env:PATH
     #>
 
     $figletCommand = Get-Command 'figlet.exe' -ErrorAction SilentlyContinue
@@ -32,7 +33,7 @@ function List-FigletFonts {
 if (-Not (Test-Figlet)) {
     # figlet is a function that takes the place of 'figlet.exe', when figlet is unavailable.
     function script:figlet {
-        Write-Verbose "Would have executed figlet $($args | Foreach-Object{"$_"})"
+        Write-Verbose "Would have executed figlet $($args | ForEach-Object{"$_"})"
     }
 }
 
