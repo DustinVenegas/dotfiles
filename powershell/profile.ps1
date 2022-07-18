@@ -87,10 +87,6 @@ if (Get-Command -Name 'oh-my-posh' -ErrorAction SilentlyContinue) {
     oh-my-posh --init --shell pwsh --config "$ompTheme" | Invoke-Expression
 
     $v = New-Object System.Version($(oh-my-posh --version))
-    if ($dotfilesEnhancedTerm -and ($v.Major -gt 7) -or (($v.Major -eq 7) -and ($v.Minor -ge 20))) {
-        # Enables support for PSReadLine PromptText options.
-        Enable-PoshLineError
-    }
 
     # oh-my-posh calls Set-PoshContext
     function Set-DotfilesOhMyPoshContext() {
