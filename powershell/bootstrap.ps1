@@ -23,7 +23,7 @@ begin {
 
     $cuahProfileDirectory = Join-Path -Path $HOME -ChildPath $ccp
 
-    $modulesToManage = @('posh-git', 'PSFzf', 'PSScriptAnalyzer', 'PSReadLine', 'Terminal-Icons', 'ZLocation')
+    $modulesToManage = @('posh-git', 'PSFzf', 'PSScriptAnalyzer', 'PSReadLine', 'Terminal-Icons', 'PowerShellForGitHub')
 
     if (Test-OSPlatform -Include @('Unix', 'Darwin')) {
         $modulesToManage += 'Microsoft.PowerShell.UnixCompleters' # PSUnixUtilCompleters
@@ -36,7 +36,6 @@ begin {
 process {
     # Use Current User All Hosts (CUAH) profile directory
     New-SymbolicLink -Path $cuahProfileDirectory -Value $(Resolve-Path $PSScriptRoot)
-    Set-JsonValue -Path 'local.dotfiles.json' -InputObject @{ dotfilesLocation = "$($config.Path)" }
 
     foreach ($m in $modulesToInstall) {
         pwsh -NoLogo -Command "Install-Module -Name $m -Repository $ModuleRepository -Scope $ModuleScope -Confirm"

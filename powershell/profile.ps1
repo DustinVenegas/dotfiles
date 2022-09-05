@@ -1,141 +1,99 @@
+$sw = [System.Diagnostics.Stopwatch]::StartNew()
 $env:EDITOR = 'nvim'
+$global:profile_initialized = $false # Indicates if the interactive profile was initialized
 $MaximumHistoryCount = 10000
 
-$dotfilesLocation = (Get-Item $MyInvocation.MyCommand.Source).Directory
-$dotfilesLocation | Select-Object -ExpandProperty Target | Set-Variable -Name dotfilesLocation
-$dotfilesLocation = Resolve-Path -Path (Join-Path $dotfilesLocation ..)
+$script:cfg = Invoke-Command {
+    # Resolve symlinks to the script root.
+    $sr = Get-Item $PSScriptRoot
+    while ($sr.PSObject.Properties.Name -eq 'Target' -and $sr.Target) {
+        $sr = Get-Item $sr.Target
+    }
 
-$dotfilesEnhancedTerm = $false
-if ($env:TERM_PROGRAM -eq 'VSCode') { $dotfilesEnhancedTerm = $true } # VSCode
-if ($env:WT_SESSION) { $dotfilesEnhancedTerm = $true } # Windows Terminal
+    [PSCustomObject]@{
+        DotfilesLocation  = $sr.Parent
+        DotfilesPSModules = Join-Path -Path $sr.Parent -ChildPath 'powershell-modules'
+        LocalProfilePath  = Join-Path -Path $sr -ChildPath 'local.profile.ps1'
+    }
+}
 
 # Optional local.profile.ps1 for profile machine-specific profile functions.
-$profileLocalPath = Join-Path -Path $PSScriptRoot -ChildPath 'local.profile.ps1'
-if (Test-Path "$profileLocalPath") {
-    Write-Verbose "Located an optional local.profile.ps1"
-    . "$PSScriptRoot/local.profile.ps1"
+if ($cfg.LocalProfilePath -and (Test-Path $cfg.LocalProfilePath)) {
+    . $cfg.LocalProfilePath
 }
 
-# Support an optional local.dotfiles.json for machine-specific configuration values.
-$dotfilesJsonPath = Join-Path -Path $PSScriptRoot -ChildPath 'local.dotfiles.json'
-if (Test-Path $dotfilesJsonPath) {
-    Write-Verbose 'Located an optional local.dotfiles.json'
-    $dotfilesJson = Get-Content -Path $dotfilesJsonPath -Raw | ConvertFrom-Json
+# Adds powershell-modules to the PowerShell modules search path.
+@($cfg.DotfilesPSModules) |
+    Where-Object { Test-Path $_ } |
+    Where-Object { ($env:PSModulePath -split [System.IO.Path]::PathSeparator) -notcontains $_ } |
+    ForEach-Object { $env:PSModulePath += [System.IO.Path]::PathSeparator + $_ }
 
-    foreach ($i in $dotfilesJson | Get-Member -MemberType NoteProperty) {
-        $name = $i.Name
-        $value = $dotfilesJson.$name
-        Write-Verbose "Setting variable '$name' = '$value'"
-        Set-Variable -Name $name -Value $value -Scope Script
-    }
-}
+# Initialize-Interactive performs one-time initialize for an interactive profile. Delays first prompt.
+function Initialize-Interactive {
+    $commandsExist = Get-Command -Name @('choco', 'oh-my-posh', 'dotnet') -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name # Batch to performantly check existence with Get-Command.
 
-if ($dotfilesLocation -and (Test-Path $dotfilesLocation)) {
-    $separator = $([System.IO.Path]::PathSeparator)
+    # Set PSReadLine Options.
+    Remove-PSReadLineKeyHandler -Chord @(
+        'Ctrl+x,Ctrl+e', # ??? replaced with ViEditVisually
+        'Ctrl+t', # Rebind "swap characters" with Fuzzy-Find.
+        'Ctrl+r'  # Rebind "reverse search" with Fuzzy-History.
+    )
 
-    # Setup custom PowerShell Modules path located in the dotfiles folder.
-    Write-Verbose 'Located a dotfiles path'
-    $dotfilesPSModules = Join-Path $dotfilesLocation 'powershell-modules'
-    if ($env:PSModulePath -split $separator | Where-Object { $_ -EQ $dotfilesPSModules } -EQ $null) {
-        $env:PSModulePath += "$separator$dotfilesPSModules"
-    }
-}
+    Set-PSReadLineKeyHandler -Chord 'Ctrl+x,Ctrl+e' -Function ViEditVisually
+    Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete # Auto-completion menu on tab
 
-if (Get-Command -Name 'fzf' -ErrorAction SilentlyContinue) {
-    Write-Verbose "Found fzf executable."
-
-    if (Get-Module -ListAvailable -Name 'psfzf') {
-        Write-Verbose "Found psfzf PowerShell Module."
-
-        # Rebind Ctrl+t, "swap characters", in PSReadLine to Ctrl+t in PSFzf, Fuzzy-Find Current Provider Path.
-        Remove-PSReadLineKeyHandler 'Ctrl+t'
-
-        # Rebind Ctrl+r, "reverse search", in PSReadLine to Ctrl+r in PSFzf, Fuzzy-Find History in Reverse.
-        Remove-PSReadLineKeyHandler 'Ctrl+r'
-
-        Import-Module PSFzf
-
-        Set-PsFzfOption -TabExpansion -GitKeyBindings -EnableAliasFuzzyEdit -EnableAliasFuzzyHistory -EnableAliasFuzzyKillProcess -EnableAliasFuzzySetLocation -EnableAliasFuzzyZLocation -EnableAliasFuzzyGitStatus
-    }
-}
-
-if (Get-Module -Name PSReadLine) {
-    Import-Module PSReadLine
-    if (-Not (Get-PSReadLineKeyHandler -Bound | Where-Object { $_.Function -eq 'ViEditVisually' })) {
-        if (Get-Command "$($env:EDITOR)") {
-            # <C+X><C+E> should open the current command for editing in $env:EDITOR.
-            Set-PSReadLineKeyHandler -Chord 'Ctrl+x,Ctrl+e' -Function ViEditVisually
-        }
-    }
-}
-
-if (Get-Module -Name posh-git -ListAvailable -ErrorAction SilentlyContinue) {
-    Import-Module posh-git
-
-    # Remove the '[', ']' around the git status.
-    $global:GitPromptSettings.BeforeStatus.Text = ''
-    $global:GitPromptSettings.AfterStatus.Text = ''
-}
-
-if (Get-Command -Name 'oh-my-posh' -ErrorAction SilentlyContinue) {
-    $ompDir = Join-Path $dotfilesLocation 'oh-my-posh'
-
-    $variation = '.minimal'
-    if ($dotfilesEnhancedTerm) { $variation = '' }
-
-    $ompTheme = Resolve-Path (Join-Path $ompDir "dotfiles-prompt${variation}.omp.json")
-    oh-my-posh --init --shell pwsh --config "$ompTheme" | Invoke-Expression
-
-    $v = New-Object System.Version($(oh-my-posh --version))
-
-    # oh-my-posh calls Set-PoshContext
-    function Set-DotfilesOhMyPoshContext() {
-        if ($zlocationEnabled) {
-            Update-ZLocation -Path $pwd
-        }
-    }
-    New-Alias -Name 'Set-PoshContext' -Value 'Set-DotfilesOhMyPoshContext' -Scope Global -Force
-}
-
-if (($IsLinux -or $IsMacOS) -and (Get-Module -Name Microsoft.PowerShell.UnixCompleters -ListAvailable -ErrorAction SilentlyContinue)) {
-    # PSUnixUtilCompleters enables argument completion for Linux binaries. Data is based on shell competions loaded into a zsh/bash.
-    Import-Module Microsoft.PowerShell.UnixCompleters
-
-    # 'tab' on a '-' or '--' provides a friendly menu to cycle through arguments.
-    Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
-}
-
-if ($enhancedTerm) {
     Import-Module -Name Terminal-Icons
-}
+    Import-Module PSFzf
+    Set-PsFzfOption -TabExpansion -GitKeyBindings -EnableAliasFuzzyEdit -EnableAliasFuzzyHistory -EnableAliasFuzzyKillProcess -EnableAliasFuzzySetLocation -EnableAliasFuzzyZLocation -EnableAliasFuzzyGitStatus
 
-$zlocationEnabled = $false
-if (Get-Module -Name ZLocation -ListAvailable -ErrorAction SilentlyContinue) {
-    if (-Not ((Get-Command -Name ZLocationOrigPrompt -ErrorAction SilentlyContinue))) {
-        # HACK: Pre-define ZLocation wrapper function in order to prevent ZLocation
-        # from creating a wrapper around the prompt function.
-        #  - Watching PR #121 (2022/02) https://github.com/vors/ZLocation/pull/121
-        #  - Watching Issue #117 (2022/02) https://github.com/vors/ZLocation/issues/117#issuecomment-985850990
-        function ZLocationOrigPrompt {}
+    if ($IsLinux -or $IsMacOS) {
+        # PSUnixUtilCompleters enables argument completion for Linux binaries. Data is based on shell competions loaded into a zsh/bash.
+        Import-Module Microsoft.PowerShell.UnixCompleters
     }
 
-    # Import needs to be after any other imports that modify the prompt.
-    Import-Module ZLocation
-    $zlocationEnabled = $true
-}
+    if ($commandsExist -match 'oh-my-posh*') {
+        # oh-my-posh --init --shell pwsh --config "$(Join-Path $script:cfg.DotfilesLocation 'oh-my-posh' 'dotfiles-prompt.omp.json' -Resolve)" | Invoke-Expression
+        @(oh-my-posh init pwsh --config="$($cfg.DotfilesLocation)/oh-my-posh/dotfiles-prompt.omp.json" --print) -join [System.Environment]::NewLine | Invoke-Expression
+    }
 
-# Chocolatey profile
-$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-if (Test-Path($ChocolateyProfile)) {
-    Import-Module "$ChocolateyProfile"
-}
+    if ($env:ChocolateyInstall) {
+        @("$env:ChocolateyInstall\helpers\ChocolateyProfile.psm1") | Where-Object { Test-Path $_ } | ForEach-Object { Import-Module $_ }
+    }
 
-if (Get-Command 'dotnet' -ErrorAction SilentlyContinue) {
-    # PowerShell parameter completion shim for the dotnet CLI
-    Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
-        param($commandName, $wordToComplete, $cursorPosition)
-        dotnet complete --position $cursorPosition "$wordToComplete" | ForEach-Object {
-            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+    if ($commandsExist -match 'dotnet*') {
+        Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
+            param($commandName, $wordToComplete, $cursorPosition)
+            dotnet complete --position $cursorPosition "$wordToComplete" | ForEach-Object {
+                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+            }
         }
     }
+
+    # Setup PSDrives
+    if ([System.IO.Directory]::Exists([System.IO.Path]::Combine("$HOME", 'Source'))) {
+        New-PSDrive -Scope Script -Root ~/Source -Name Source -PSProvider FileSystem -ErrorAction Ignore > $Null
+    }
 }
+
+function prompt {
+    if ($global:profile_initialized -ne $true) {
+        $sw.Start()
+        $global:profile_initialized = $true
+        try {
+            Initialize-Interactive
+
+            # Call the newly Initialized prompt function immediately
+            prompt
+        } catch {
+            Write-Error 'Could not initialize prompt:'
+            Write-Error $_
+        }
+        $sw.Stop()
+
+        Write-Host "Initilizing Interactive: $($sw.ElapsedMilliseconds)ms"
+        $sw = $null
+    }
+}
+
+$sw.Stop()
+Write-Host "Initilizing profile.ps1: $($sw.ElapsedMilliseconds)ms"
