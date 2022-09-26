@@ -94,6 +94,25 @@ function prompt {
     }
 }
 
+if ($commandsExist -match 'zoxide*') {
+    $hook = 'prompt'
+    if ($commandsExist -match 'oh-my-posh*') { $hook = 'none' }
+
+    # Import zoxide environment.
+    (zoxide init --hook "$hook" powershell | Out-String) | Invoke-Expression
+
+    # Upgrade prompt.
+    if ($commandsExist -match 'oh-my-posh*') {
+        function global:Set-ZoxidePoshContext {
+            # Invoke Zoxide from a hook function.
+            $null = __zoxide_hook
+        }
+
+        # Configure oh-my-posh to call Set-ZoxidePoshContext. omp calls Set-PoshContext.
+        New-Alias -Name 'Set-PoshContext' -Value 'Set-ZoxidePoshContext' -Scope Global -Force
+    }
+}
+
 function Get-SourceLocation {
     param(
         [string]$query
