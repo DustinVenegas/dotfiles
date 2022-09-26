@@ -3,7 +3,7 @@
         Configure Bash for this Dotfiles configuration
 #>
 [CmdletBinding()]
-#Requires -Version 5
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseCompatibleCommands", "", Justification = "Dotfiles currently supports rclone on Windows.")]
 param()
 begin {
     Import-Module -Name (Resolve-Path (Join-Path $PSScriptRoot ../powershell-modules/Dotfiles/Dotfiles.psm1))
@@ -77,13 +77,50 @@ begin {
     }
 }
 process {
-    switch ($config.SimplifiedOSPlatform) {
-        'Windows' {
-            # Open rclone settings dialog: nssm edit rclone-gdrive
-            Install-NSSMService -ServiceName 'rclone-gdrive' -CommandPath (Join-Path -Path $PSScriptRoot -ChildPath 'mount-gdrive.cmd')
+    if ($IsWindows) {
+        $name = 'rclonerc'
+
+        # Setup system profile
+        $exeName = "start-$name.cmd"
+        $appdata = "C:\WINDOWS\System32\config\systemprofile\AppData\Local\$name"
+        New-Item -Type Directory $appdata -Force | Out-Null
+
+        $passPath = "$appdata\.rclonercp"
+        if (-not (Test-Path $passPath)) {
+            New-Guid | Select-Object -ExpandProperty Guid > $passPath
         }
-        default {
-            Write-Warning 'rclone-gdrive not setup because the OS/platform platform is unrecognized.'
+
+        $cmdDest = "$appdata\$exeName"
+        $cmdSrc = "$PSScriptRoot\$exeName"
+        if (Test-Path $cmdDest) {
+            $differences = Compare-Object -ReferenceObject (Get-Content $cmdSrc) -DifferenceObject (Get-Content $cmdDest)
+            if ($differences) {
+                Write-Host "Differences detected between '$cmdSrc' '$cmdDest'. Differences:"
+                $differences | ForEach-Object { "$($PSItem.SideIndicator) $($PSItem.InputObject)" } | Write-Host
+                throw "rclonerc differs between src and dest"
+            }
+        } else {
+            Copy-Item $cmdSrc $cmdDest
         }
+
+        # Setup a Windows Service for rclone using the system profile.
+        if (-not (Get-Service -Name $name -ErrorAction SilentlyContinue)) {
+            nssm install $name $commandPath
+        }
+
+        nssm set $name DisplayName 'rclone rc daemon'
+        nssm set $name Description 'daemon for running rclone remote control (rc)'
+        nssm set $name Start 'SERVICE_AUTO_START'
+
+        nssm set $name AppStdout $appdata\service.log
+        nssm set $name AppStderr $appdata\service.log
+        nssm set $name AppStdoutCreationDisposition 4
+        nssm set $name AppStderrCreationDisposition 4
+        nssm set $name AppRotateFiles 1
+        nssm set $name AppRotateOnline 0
+        nssm set $name AppRotateSeconds 86400
+        nssm set $name AppRotateBytes 1048576
+    } else {
+        Write-Warning 'rclone-gdrive not setup because the OS/platform platform is unrecognized.'
     }
 }

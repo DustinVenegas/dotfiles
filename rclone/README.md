@@ -4,25 +4,34 @@
 
 ## Installation
 
-Install Windows dependencies using Chocolatey.
-
-```bash
-choco install chocolatey-packages.config
-```
-
-Create the service by running bootstrap.ps1 in an administrator shell.
+Create the rclonerc service by running bootstrap.ps1 in an administrator shell.
 
 ```ps1
+# Install dependdencies
+choco install chocolatey-packages.config
+
+# Setup Windows service for rclonerc
 .\bootstrap.ps1
 ```
 
-Remove the service by running the following PowerShell command in an Administrator Prompt.
+## Configure rclone
+
+Configure rclone via the React website at https://localhost:5572/ with your user/pass.
+
+Don't have a user/pass?
 
 ```ps1
-Remove-Service rclone-gdrive
-```
+if ($IsWindows) {
+    $s = Get-Service rclonerc -ErrorAction SilentlyContinue
+    if ($s.Status -ne 'Running') {
+        Write-Warning "Expected rclonerc service to be Running, but was $($s.Status)"
+    }
 
-## Setup rclone
+    Start-Process "http://rclone`:$(Get-Content "C:\WINDOWS\System32\config\systemprofile\AppData\Local\rclonerc\.rclonercp")@localhost:5572/"
+} else {
+    Write-Warning "IDK where the .rclonercp is on this OS"
+}
+```
 
 ### Setup Google Drive
 
@@ -79,4 +88,12 @@ The arguments do:
 
 ```sh
     rclone -v --drive-impersonate foo@example.com lsf gdrive:backup
+```
+
+## Troubleshoot
+
+```ps1
+Get-Service rclonerc
+Get-EventLog -logname Application -Source @('nssm', 'WinFsp') -Newest 25
+Get-Content -Tail 25 C:\Windows\SYstem32\config\systemprofile\AppData\Local\rclonerc\service.log -Wait
 ```
