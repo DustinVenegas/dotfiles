@@ -10,5 +10,9 @@ begin {
 }
 process {
     # shfmt for the shell-format extension
-    go install mvdan.cc/sh/v3/cmd/shfmt@latest
+    if ($IsWindows) {
+        scoop install shfmt
+    } elseif ($IsMacOS) {
+        brew install shfmt
+    }
 }

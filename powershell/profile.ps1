@@ -2,8 +2,9 @@ $sw = [System.Diagnostics.Stopwatch]::StartNew()
 $env:EDITOR = 'nvim'
 $global:profile_initialized = $false # Indicates if the interactive profile was initialized
 $MaximumHistoryCount = 10000
+$commandsExist = Get-Command -Name @('rg', 'choco', 'oh-my-posh', 'dotnet', 'zoxide') -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name # Batch to performantly check existence with Get-Command.
 
-$script:cfg = Invoke-Command {
+$script:PSDotfilesCfg = Invoke-Command {
     # Resolve symlinks to the script root.
     $sr = Get-Item $PSScriptRoot
     while ($sr.PSObject.Properties.Name -eq 'Target' -and $sr.Target) {
@@ -11,27 +12,25 @@ $script:cfg = Invoke-Command {
     }
 
     [PSCustomObject]@{
-        DotfilesLocation  = $sr.Parent
-        DotfilesPSModules = Join-Path -Path $sr.Parent -ChildPath 'powershell-modules'
-        LocalProfilePath  = Join-Path -Path $sr -ChildPath 'local.profile.ps1'
+        Path             = $sr.Parent
+        PSModules        = Join-Path -Path $sr.Parent -ChildPath 'powershell-modules'
+        LocalProfilePath = Join-Path -Path $sr -ChildPath 'local.profile.ps1'
     }
 }
 
 # Optional local.profile.ps1 for profile machine-specific profile functions.
-if ($cfg.LocalProfilePath -and (Test-Path $cfg.LocalProfilePath)) {
-    . $cfg.LocalProfilePath
+if ($PSDotfilesCfg.LocalProfilePath -and (Test-Path $PSDotfilesCfg.LocalProfilePath)) {
+    . $PSDotfilesCfg.LocalProfilePath
 }
 
 # Adds powershell-modules to the PowerShell modules search path.
-@($cfg.DotfilesPSModules) |
+@($PSDotfilesCfg.PSModules) |
     Where-Object { Test-Path $_ } |
     Where-Object { ($env:PSModulePath -split [System.IO.Path]::PathSeparator) -notcontains $_ } |
     ForEach-Object { $env:PSModulePath += [System.IO.Path]::PathSeparator + $_ }
 
 # Initialize-Interactive performs one-time initialize for an interactive profile. Delays first prompt.
 function Initialize-Interactive {
-    $commandsExist = Get-Command -Name @('choco', 'oh-my-posh', 'dotnet') -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name # Batch to performantly check existence with Get-Command.
-
     # Set PSReadLine Options.
     Remove-PSReadLineKeyHandler -Chord @(
         'Ctrl+x,Ctrl+e', # ??? replaced with ViEditVisually
@@ -41,8 +40,9 @@ function Initialize-Interactive {
 
     Set-PSReadLineKeyHandler -Chord 'Ctrl+x,Ctrl+e' -Function ViEditVisually
     Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete # Auto-completion menu on tab
+    Set-PSReadLineKeyHandler -Chord 'Ctrl+Shift+c' -Function CaptureScreen # Interactively copy lines
 
-    Import-Module -Name Terminal-Icons
+    # Import-Module -Name Terminal-Icons
     Import-Module PSFzf
     Set-PsFzfOption -TabExpansion -GitKeyBindings -EnableAliasFuzzyEdit -EnableAliasFuzzyHistory -EnableAliasFuzzyKillProcess -EnableAliasFuzzySetLocation -EnableAliasFuzzyZLocation -EnableAliasFuzzyGitStatus
 
@@ -52,8 +52,7 @@ function Initialize-Interactive {
     }
 
     if ($commandsExist -match 'oh-my-posh*') {
-        # oh-my-posh --init --shell pwsh --config "$(Join-Path $script:cfg.DotfilesLocation 'oh-my-posh' 'dotfiles-prompt.omp.json' -Resolve)" | Invoke-Expression
-        @(oh-my-posh init pwsh --config="$($cfg.DotfilesLocation)/oh-my-posh/dotfiles-prompt.omp.json" --print) -join [System.Environment]::NewLine | Invoke-Expression
+        @(oh-my-posh init pwsh --config="$($PSDotfilesCfg.Path)/oh-my-posh/dotfiles-prompt.omp.json" --print) -join [System.Environment]::NewLine | Invoke-Expression
     }
 
     if ($env:ChocolateyInstall) {
@@ -95,5 +94,66 @@ function prompt {
     }
 }
 
+function Get-SourceLocation {
+    param(
+        [string]$query
+    )
+    $sl = Get-Item Source:\ | Select-Object -ExpandProperty FullName
+
+    Invoke-Command -ScriptBlock {
+        if ($commandsExist -match 'rg*') {
+            rg --follow --hidden --files -g '**/.git/HEAD' --max-depth 5 $sl | ForEach-Object {
+                # Replace /.git/HEAD
+                $r = '/.git/HEAD'
+                if ($IsWindows) { $r = '\\.git\\HEAD' }
+                $_ -replace "$r", ''
+            }
+        } else {
+            Get-ChildItem -Path Source:\ -Directory -Recurse -Depth 5 -Include '.git' -Hidden | Select-Object -ExpandProperty Parent
+        }
+    } | ForEach-Object {
+        $r = $sl
+        if ($IsWindows) { $r = $sl.Replace('\', '\\') }
+        ($_ -replace $r, '')
+    } |
+        Invoke-Fzf -Height '50%' -BorderStyle rounded -Header 'SourceLocation' -Query $query |
+        ForEach-Object {
+            # Resolve symlinks
+            $v = Get-Item "$sl/$PSItem"
+            while ($v.PSObject.Properties.Name -eq 'Target' -and $v.Target) {
+                $v = Get-Item $v.Target
+            }
+
+            Write-Output $v
+        }
+}
+
+function Set-SourceLocation {
+    Get-SourceLocation @args | Set-Location
+}
+
+function Push-SourceLocation {
+    Get-SourceLocation @args | Set-Location
+}
+
+function Edit-SourceLocation {
+    $sl = Get-SourceLocation @args
+    code $sl
+}
+
+Set-Alias -Name edsl -Value Edit-SourceLocation
+Set-Alias -Name gsl -Value Get-SourceLocation
+Set-Alias -Name pusl -Value Push-SourceLocation
+Set-Alias -Name ssl -Value Set-SourceLocation
+
 $sw.Stop()
 Write-Host "Initilizing profile.ps1: $($sw.ElapsedMilliseconds)ms"
+
+Set-PSReadLineKeyHandler -Key Ctrl+Shift+b `
+                         -BriefDescription BuildCurrentDirectory `
+                         -LongDescription "Build the current directory" `
+                         -ScriptBlock {
+    [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("dotnet build")
+    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+}

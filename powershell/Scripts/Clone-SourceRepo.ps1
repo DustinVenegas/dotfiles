@@ -10,7 +10,7 @@ function New-SourceCheckout {
         $SourceDir = Resolve-Path -Path '~\Source'
 
         $matchDestFnMap = @{
-            '(?:https\://|git\@)github.com:(?<user>.+)/(?<proj>.+)\.git'  = {
+            '(?:https\://|git\@)github.com/(?<user>.+)/(?<proj>.+)\.git'  = {
                 Join-Path $SourceDir 'github.com' $Matches.User $Matches.proj
             }
             'https://aur.archlinux.org/(?<proj>.+)\.git'                  = {
@@ -23,14 +23,10 @@ function New-SourceCheckout {
                 Join-Path $SourceDir 'go.googlesource.com' $Matches.proj
             }
         }
-    }
-    process {
-        $dest = ''
-        $k = $matchDestFnMap.Keys | Where-Object { $remote -match $_ }
 
-        $neededHelp = $false
+        $k = $matchDestFnMap.Keys | Where-Object { $remote -match $PSItem }
         if ((-not ($k)) -and (-not ($remote.EndsWith('.git')))) {
-            $neededHelp = $true
+            Write-Verbose "Did you mean to add .git? Gotcha!"
             $remote = $remote + '.git'
             $k = $matchDestFnMap.Keys | Where-Object { $remote -match $_ }
         }
@@ -40,27 +36,26 @@ function New-SourceCheckout {
             return
         }
 
-        if ($neededHelp) {
-            Write-Verbose "Did you mean to add .git? Gotcha!"
-        }
-
         $fn = $matchDestFnMap[$k]
         $dest = Invoke-Command $fn
+    }
+    process {
 
-        if (Test-Path $dest) {
-            Push-Location -Path $dest | Out-Null
-            $l = git remote get-url --push origin
-            Pop-Location | Out-Null
+        if (-not (Test-Path $dest)) {
+            New-Item -Force -ItemType Directory -Path $dest | Out-Null
+        }
+        Push-Location -Path $dest | Out-Null
 
-            Write-Verbose "Source repo already exists at destination $dest"
-            if ($l -ne $remote) {
-                Write-Verbose "Remotes locations differ - input:$remote, existing checkout:$l"
-            }
-        } else {
-            Write-Verbose "Checked out remote $remote to destination $dest"
-            #git checkout $remote $dest
+        if (-not (git rev-parse --git-dir 2>&1 | Out-Null)) {
+            git clone $remote .
         }
 
+        $l = git remote get-url --push origin
+        if ($l -ne $remote) {
+            Write-Verbose "Remotes locations differ - input:$remote, existing checkout:$l"
+        }
+
+        Pop-Location | Out-Null
         Write-Output $dest
     }
 }

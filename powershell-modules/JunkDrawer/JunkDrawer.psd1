@@ -23,6 +23,7 @@
     # Functions to export from this module
     FunctionsToExport = @(
         'Edit-HostsFile',
+        'Edit-Dotfiles',
         'New-Guid',
         'New-HttpBasicAuthValue',
         'New-HttpBasicAuthHeader',

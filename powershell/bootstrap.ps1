@@ -32,6 +32,30 @@ begin {
     $modulesToInstall = $modulesToManage | Where-Object {
         $null -eq (Get-Module -Name $PSItem -ListAvailable -ErrorAction 'Continue')
     }
+
+    function Add-WindowsDefenderExclude {
+        <#
+        .SYNOPSIS
+        Sets WindowsDefender to work with PSILoveBackups
+        #>
+        [CmdletBinding()]
+        param($Command)
+
+        if (-not $IsWindows) { return }
+        if (-not (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)){
+            Write-Warning "WindowsDefender ExclusionProcesses requires administrator privileges to set. Skipping."
+            return
+        }
+
+        $ep = Get-MpPreference | Select-Object -ExpandProperty ExclusionProcess
+        $rp = (Get-Command $Command).Path
+        if ((Test-Path $rp) -and ($ep -notcontains $rp)) {
+            $ep += $rp
+
+            Write-Verbose "Adding exlucsion $rp to WindowsDefender exclusions: $ep"
+            Add-MpPreference -ExclusionProcess $ep
+        }
+    }
 }
 process {
     # Use Current User All Hosts (CUAH) profile directory
@@ -42,4 +66,6 @@ process {
     }
 
     pwsh -NoLogo -Command "Update-Help -ErrorAction SilentlyContinue"
+
+    Add-WindowsDefenderExclude -Command 'oh-my-posh'
 }

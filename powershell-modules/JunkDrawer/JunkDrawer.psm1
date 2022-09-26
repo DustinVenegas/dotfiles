@@ -44,6 +44,12 @@ function Convert-FromBinHex([string]$binhex) {
     return $arr
 }
 
+function Edit-Dotfiles {
+    $sr = (Get-Item $PSScriptRoot).Parent.Parent
+
+    & code $sr
+}
+
 function Edit-HostsFile {
     <#
     .SYNOPSIS Edits the machine host file
@@ -237,6 +243,7 @@ function HandCraftedPromptForPowerShellCore {
 $exportModuleMemberParams = @{
     Function = @(
         'Edit-HostsFile',
+        'Edit-Dotfiles',
         'New-Guid',
         'New-HttpBasicAuthValue',
         'New-HttpBasicAuthHeader',
