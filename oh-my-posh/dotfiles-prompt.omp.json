@@ -55,6 +55,22 @@
           "type": "git"
         },
         {
+          "background": "#232F38",
+          "foreground": "#FFA400",
+          "powerline_symbol": "\ue0b0",
+          "style": "powerline",
+          "template": "\ue7ad {{.Profile}}{{if .Region}}@{{.Region}}{{end}}",
+          "type": "aws"
+        },
+        {
+          "background": "#0078D4",
+          "foreground": "#FFFFFF",
+          "powerline_symbol": "\ue0b0",
+          "style": "powerline",
+          "template": "\ufd03 {{ .EnvironmentName }}",
+          "type": "az"
+        },
+        {
           "background": "#DBC239",
           "foreground": "#060606",
           "powerline_symbol": "\ue0b0",
@@ -74,40 +90,19 @@
       "type": "prompt"
     },
     {
-      "alignment": "right",
-      "segments": [
-        {
-          "background": "#232F38",
-          "foreground": "#FFA400",
-          "powerline_symbol": "\ue0b0",
-          "style": "powerline",
-          "template": "\ue7ad {{.Profile}}{{if .Region}}@{{.Region}}{{end}}",
-          "type": "aws"
-        },
-        {
-          "background": "#0078D4",
-          "foreground": "#FFFFFF",
-          "powerline_symbol": "\ue0b0",
-          "style": "powerline",
-          "template": "\ufd03 {{ .EnvironmentName }}",
-          "type": "az"
-        },
-        {
-          "foreground": "#6997C9",
-          "properties": {
-            "time_format": "15:04:05"
-          },
-          "style": "plain",
-          "template": " {{ .CurrentDate | date .Format }} ",
-          "type": "time"
-        }
-      ],
-      "type": "prompt"
-    },
-    {
       "alignment": "left",
       "newline": true,
       "segments": [
+        {
+          "background": "#000",
+          "foreground": "#FAFAFA",
+          "properties": {
+            "time_format": "15:04:05"
+          },
+          "style": "powerline",
+          "template": "[{{ .CurrentDate | date .Format }}] ",
+          "type": "time"
+        },
         {
           "foreground": "#FAFAFA",
           "properties": {

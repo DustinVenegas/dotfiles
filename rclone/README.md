@@ -16,7 +16,7 @@ choco install chocolatey-packages.config
 
 ## Configure rclone
 
-Configure rclone via the React website at https://localhost:5572/ with your user/pass.
+Configure rclone via the React website at <https://localhost:5572/> with your user/pass.
 
 Don't have a user/pass?
 

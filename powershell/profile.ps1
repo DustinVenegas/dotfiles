@@ -75,6 +75,9 @@ function Initialize-Interactive {
 }
 
 function prompt {
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseCompatibleCommands', 'prompt', Justification="prompt is included in pwsh")]
+    param()
+
     if ($global:profile_initialized -ne $true) {
         $sw.Start()
         $global:profile_initialized = $true
@@ -169,10 +172,10 @@ $sw.Stop()
 Write-Host "Initilizing profile.ps1: $($sw.ElapsedMilliseconds)ms"
 
 Set-PSReadLineKeyHandler -Key Ctrl+Shift+b `
-                         -BriefDescription BuildCurrentDirectory `
-                         -LongDescription "Build the current directory" `
-                         -ScriptBlock {
+    -BriefDescription BuildCurrentDirectory `
+    -LongDescription 'Build the current directory' `
+    -ScriptBlock {
     [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("dotnet build")
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert('dotnet build')
     [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
 }

@@ -38,12 +38,16 @@ begin {
         .SYNOPSIS
         Sets WindowsDefender to work with PSILoveBackups
         #>
+        [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseCompatibleCommands", "Get-MpPreference")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseCompatibleCommands", "Add-MpPreference")]
         [CmdletBinding()]
         param($Command)
 
         if (-not $IsWindows) { return }
-        if (-not (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)){
-            Write-Warning "WindowsDefender ExclusionProcesses requires administrator privileges to set. Skipping."
+
+        Import-Module -Name ConfigDefender -ErrorAction SilentlyContinue
+        if (-not (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+            Write-Warning 'WindowsDefender ExclusionProcesses requires administrator privileges to set. Skipping.'
             return
         }
 
@@ -65,7 +69,7 @@ process {
         pwsh -NoLogo -Command "Install-Module -Name $m -Repository $ModuleRepository -Scope $ModuleScope -Confirm"
     }
 
-    pwsh -NoLogo -Command "Update-Help -ErrorAction SilentlyContinue"
+    pwsh -NoLogo -Command 'Update-Help -ErrorAction SilentlyContinue'
 
     Add-WindowsDefenderExclude -Command 'oh-my-posh'
 }

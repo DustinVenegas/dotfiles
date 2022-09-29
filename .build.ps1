@@ -46,7 +46,7 @@ Task Lint-PSScriptAnalyzer {
 }
 
 Task Lint-Shellcheck {
-    $lintFiles = Get-ChildItem -File -Recurse -Path $PWD -Depth 2 -Include '*.sh', 'bash*', 'zshrc'
+    $lintFiles = Get-ChildItem -Exclude zsh | Get-ChildItem -File -Recurse -Depth 1 -Include '*.sh', 'bash*', 'zshrc'
     #Exec { shellcheck --color=auto --format=gcc --external-sources $lintFiles }
     shellcheck --color=auto --format=gcc --external-sources $lintFiles
     $succeeded, $lec = $?, $LASTEXITCODE

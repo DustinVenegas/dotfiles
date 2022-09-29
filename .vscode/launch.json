@@ -16,13 +16,6 @@
 			"request": "launch",
 			"script": "${file}",
 			"cwd": "${file}"
-		},
-		{
-			"name": "run.ps1",
-			"type": "PowerShell",
-			"request": "launch",
-			"script": "${file}",
-			"cwd": "${file}"
 		}
 	]
 }

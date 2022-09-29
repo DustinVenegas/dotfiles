@@ -14,5 +14,7 @@ process {
         scoop install shfmt
     } elseif ($IsMacOS) {
         brew install shfmt
+    } elseif ($IsLinux) {
+        snap install shfmt
     }
 }

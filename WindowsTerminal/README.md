@@ -11,7 +11,7 @@ Windows Terminal is preview software and subject to change dramatically.
 
 ## Configuration
 
-Edit (`settings.json`)[./settings.json] to modify Windows Terminal.
+Edit [`settings.json`](./settings.json) to modify Windows Terminal.
 You can modify and set the [Windows Terminal JSON Settings](https://github.com/microsoft/terminal/blob/master/doc/user-docs/UsingJsonSettings.md)
 
 ```ps1
