@@ -8,16 +8,11 @@ Venegas](https://www.dustinvenegas.com/).
 
 * `bash/`, terminal shell. [`README.md`](./bash/README.md)
 * `git/`, distributed source control. [`README.md`](./git/README.md)
-* `hyper.js/`, terminal emulator based on web technologies.
-* `iTerm2/`, a macOS terminal emulator.
 * `kitty/`, a cross-platform, GPU-enabled terminal emulator.
-* `MacOS/`, Apple macOS. [`README.md`](./MacOS/README.md)
 * `nvim/`, a modern and extendible Vim.
 * `powershell/`, PowerShellCore or PSCore shell.
-* `provision` - Provisioning scripts for this dotfiles repository
 * `ripgrep/`, a fast and flexible file searcher.
 * `vim/`, modal editor configuration.
-* `VSCode/`, code editor and semi-IDE. [`README.md`](./VSCode/README.md)
 * `WindowsPowerShell` - Windows PowerShell configuration files and scripts.
 
 ## Configuration

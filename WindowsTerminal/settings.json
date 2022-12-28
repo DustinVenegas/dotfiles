@@ -123,6 +123,26 @@
                 "hidden": false,
                 "name": "Developer PowerShell for VS 2019",
                 "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "altGrAliasing": true,
+                "antialiasingMode": "grayscale",
+                "backgroundImage": "ms-appdata:///Local/cmd.png",
+                "backgroundImageAlignment": "topRight",
+                "backgroundImageOpacity": 0.20000000000000001,
+                "backgroundImageStretchMode": "none",
+                "closeOnExit": "automatic",
+                "commandline": "nvim.exe",
+                "cursorShape": "bar",
+                "guid": "{272c02bc-bc44-49e9-9acd-49eb9f42d3ad}",
+                "hidden": false,
+                "historySize": 9001,
+                "icon": "C:\\tools\\neovim\\nvim-win64\\share\\icons\\hicolor\\128x128\\apps\\nvim.png",
+                "name": "nvim",
+                "padding": "8, 8, 8, 8",
+                "snapOnInput": true,
+                "startingDirectory": "%USERPROFILE%",
+                "useAcrylic": false
             }
         ]
     },
