@@ -1,14 +1,20 @@
-nvim/plugged/
+# Vim
+*~
+*.swp
 
-# Skip Pipfile.lock for neovim python virtualenvs because:
-#   - We are running x-platform, which causes *.lock churn
-#   - We're not shipping a binary
-nvim/python-venvs/**/Pipfile.lock
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
 
-# Handle localhost-only files.
-**/local.*?
-!**/local.*.template
-git/gitconfig_local
+# macOS
+.DS_Store
 
-# Homebrew, use the lock for debugging, not configuration management.
-Brewfile.lock.json
+# Security
+*.pem
+
+# Misc
+*.orig

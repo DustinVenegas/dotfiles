@@ -1,0 +1,201 @@
+[core]
+	excludesfile = ~/.gitignore
+	attributesfile = ~/.gitattributes # dotfiles hardlinked
+	autocrlf = true
+[merge]
+	conflictstyle = diff3
+	tool = kdiff3
+	guitool = kdiff3
+[mergetool]
+	prompt = false
+[diff]
+	tool = vimdiff
+	guitool = kdiff3
+[push]
+	default = simple # Push a branch, assuming remote/local names match, to "origin"
+[rerere]
+	# Record, replay, resolve. Store manual resolutions
+	enabled = true
+	# Update the index after performing rerere actions
+	autoUpdate = true
+[remote "origin"]
+	# Removes origin remotes that were deleted
+	prune = true
+[log]
+	# Normalize dates to local machine time zone
+	date = local
+[format]
+	# Default git log format:
+	#
+	#     |- Commit hash
+	#     |       |- Commit message (short)
+	#     2d8c3e1 Region storage account should be in multiple regions
+	#     [Dustin Venegas] (Tue Oct 31 10:56:03 2017) (HEAD -> saRegionFix, origin/saRegionFix) {4906b57}
+	#     |                |                          |                                         |- Parents
+	#     |                |                          |- Reflog selector
+	#     |                |- Date (--date=utc,short,relative,etc works)
+	#     |- Author name
+	#
+	# %s, subject (first comment line)
+	# %n, newline
+	# C(auto), reset and automatically color text
+	# %h, short commit hash
+	# %aN, author name (supports .mailmap)
+	# %ad, author date
+	# %gd, reflog selector (master, origin/master, etc format)
+	# %d, decorates reflog selector with colors
+	# %p, parent commit hashes
+	pretty = format:%C(auto)%h%C(auto) %s%n  [%C(auto)%aN] (%C(auto)%ad)%gd%d {%p}%n
+[color "decorate"]
+	branch = green
+	remoteBranch = red
+	tag = white reverse
+	stash = cyan
+	HEAD = green reverse
+[color "branch"]
+	current = green reverse
+	local = green
+	remote = red
+[alias]
+	list-aliases = "!git config --list | grep alias | cut -c 7-"
+
+	############
+	# Utilities
+	############
+	# Intend the opposite of staging a file
+	unstage = reset HEAD
+
+	# Pull with rebase, pruning old commits after. Update all submodules.
+	up = !git pull --rebase
+
+	# Undo the last commit, adding the edits back to unstaged files
+	uncommit = reset HEAD^ --mixed
+
+	# Push to an upstream with some safety (upstream ref is expected)
+	push-please = push --force-with-lease
+
+	###################
+	# Function aliases
+	###################
+	# Current branch name
+	branch-name = "!git rev-parse --abbrev-ref HEAD"
+
+	####################
+	# Branch Management
+	####################
+	# Incoming and outgoing changesets
+	incoming = "!git fetch --quiet && git log ..@{upstream}"
+	outgoing = "!git fetch --quiet && git log @{upstream}.."
+
+	# Merge the current branch into master
+	merge-into-master = !git checkout master && git merge @{-1}
+
+	# Push the current branch to the remote "origin", and set it to track
+	# the upstream branch
+	publish = "!git push --set-upstream origin $(git branch-name)"
+
+	# Delete the remote version of the current branch
+	unpublish = "!git push origin :$(git branch-name)"
+
+	# See all changes between current branch and master
+	master-diff = difftool origin/master...
+
+	# Delete any branches that have been merged into master
+	# See also: https://gist.github.com/robmiller/5133264
+	delete-merged-branches = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+
+	# Ran filter-branches? AFTER YOU VERIFY, run this. It deletes the backups from filter-branches at refs/original
+	delete-refs-original-backup = "!git for-each-ref --format='%(refname)' refs/original/ | xargs -n 1 git update-ref -d"
+
+	# Branches/refs/heads with owner (last commiter)
+	branch-owners = "!(git for-each-ref --format='%(committerdate) %09 %(authorname) %09 %(refname)' | sort -k5n -k2M -k3n -k4n)"
+
+	# Remote branch heads or tagged
+	# --all, includes all branches, tags, stashes, etc
+	# --simplify-by-decoration, simple ref names; ref/heads/master -> master
+	# --boundary, includes bounding commits so parents are displayed
+	branch-graph = log --graph --decorate --boundary --all --simplify-by-decoration
+
+	# Rebase the current branch on top of another branch. Takes in a branch or commit.
+	rebase-on = "!git fetch --all && git rebase -i "
+	rebase-on-origin = "!git fetch --all && git rebase -i origin/"
+	rebase-on-origin-development = "!git fetch --all && git rebase -i origin/development"
+	rebase-on-origin-master = "!git fetch --all && git rebase -i origin/master"
+
+	#############
+	# Logs
+	#############
+	# Show commit log using graph notation; consider params --all, -20, etc
+	log- = log --abbrev-commit --decorate
+	log-graph = "!git log- --graph --topo-order"
+	log-graph-oneline = "!git log-graph --pretty=oneline"
+
+	# List commits showing changed files
+	log-numstat = "!git log- --numstat"
+
+	# Differences, current branch to upstream.
+	log-outgoing = log @{upstream}..
+
+	# Differences, upstream branch to current.
+	log-incoming = log ..@{upstream}
+
+	# Log with statistics
+	log-stat = "!git log- --stat"
+
+	#############
+	# fzf Enabled Shortcuts
+	#############
+
+	# fzf list of branches
+	fbranch = "!echo \"$(git --no-pager branch -vv | fzf +m | awk '{print $1}' | sed \"s/.* //\")\""
+
+	# fzf delete a branch
+	fdbranch = "!git branch -d \"$(git fbranch)\""
+
+	# fzf checkout
+	fcheckout = "!git checkout \"$(git fbranch)\""
+
+	# Select files. Use print0 to ensure a NUL(0) is printed and xargs can handle "no files selected".
+	flsfiles = "!git ls-files -m -o --exclude-standard | fzf -m --print0 | xargs -0 -o"
+
+	# fzf status files
+	fstatus = "!git status --short | fzf -m --print0 | awk '{ print $2 }' | xargs -0 -o"
+
+	# Add files. Use print0 to ensure a NUL(0) is printed and xargs can handle "no files selected".
+	fadd = "!git flsfiles | xargs -t git add --verbose"
+
+	# Reset files, allowing --hard, --soft, --mixed, etc.
+	freset = "!git fstatus | xargs -t git reset"
+
+    # Get the Bitbucket Pull Request URI from the remote origin configured.
+    bitbucket-pr-uri = "!git config remote.origin.url | sed -e 's/git@\\(.*\\):\\(.*\\).git/https:\\/\\/\\1\\/\\2\\/pull-requests/'"
+
+    # Opens the Bitbucket Pull Request URI with the default browser.
+    open-bitbucket-prs = "!git bitbucket-pr-uri | xargs -0 open"
+
+    # Open a Bitbucket Pull Request for the current branch
+    new-bitbucket-pr = "!open \"$(git bitbucket-pr-uri)/new?source=$(git branch-name)\""
+
+	#############
+	# Aliases
+	#############
+
+	lg = !git log-graph
+	ln = !git log-numstat
+	ls = !git log-stat
+	lb = !git log-branch
+
+[include]
+	# Git configuration for Operating System specific configuration
+	path = .gitconfig_os
+
+	# Local, per-machine, configuration for [user] entries and machine-specific settings
+	path = .gitconfig_local
+
+# Modeline or non-standard named .gitconfig
+# vim:fileformat=unix filetype=.gitconfig
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

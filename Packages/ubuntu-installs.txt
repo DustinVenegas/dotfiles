@@ -1,0 +1,15 @@
+tree
+zsh
+golang
+fzf
+vim
+editorconfig
+ripgrep
+figlet
+plantuml
+neovim
+python2-minimal
+python3-pip
+python3-neovim
+nodejs
+git

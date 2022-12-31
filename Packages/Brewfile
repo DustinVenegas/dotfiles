@@ -1,0 +1,35 @@
+# Enable the cask-fonts Homebrew repository.
+tap "homebrew/cask-fonts"
+
+tap "jandedobbeleer/oh-my-posh"
+brew "oh-my-posh"
+
+brew "tree" # tree is useful for displaying file listings as a tree.
+
+brew "git"
+brew "git-lfs"
+cask "kdiff3"
+brew "vim"
+brew "editorconfig"
+brew "ripgrep"
+cask "powershell"
+brew "figet"
+brew "fzf"
+brew "volta"
+brew "plantuml" # Plant UML installation for generating pretty graphs.
+brew "grip" # Grip allows for rendering Github flavored Markdown
+brew "eslint" # Eslint provides linting for EMCAScript/JavaScript.
+brew "yamllint" # Yamllint provides yaml file linting.
+
+cask "kitty" # Kitty terminal
+
+# neovim core
+brew "neovim"
+tap "equalsraf/neovim-qt"
+# cask "macvim"
+cask "neovim-qt"
+cask "vimr"
+
+# Fonts
+cask "font-hack"
+cask "font-cascadia-code" # Cascadia Code (with ligatures)

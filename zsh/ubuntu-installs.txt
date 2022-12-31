@@ -1,4 +1,0 @@
-tree
-zsh
-golang
-fzf
