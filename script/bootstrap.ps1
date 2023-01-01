@@ -19,8 +19,8 @@ begin {
             '.bashrc',
             '.bash_profile',
             '.zshrc',
-            '.gitignore' # dot_gitignore is the global .gitignore
-            '.vimrc', # _vimrc is recognized on Windows.
+            '.gitignore', # dot_gitignore is the global .gitignore
+            '.vimrc' # _vimrc is recognized on Windows.
         )
     }
 
@@ -64,6 +64,23 @@ begin {
                 }
             }
         }
+
+    }
+
+    function Set-UserEnvVar {
+        [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
+        param($name, $value)
+
+        $m = ""
+        $current = [System.Environment]::GetEnvironmentVariable($name, 'User')
+        if ($value -ne $current) {
+            if ($PSCmdlet.ShouldProcess($Name, "Setting a user-level envvar")) {
+                [Environment]::SetEnvironmentVariable($name, $value, 'User')
+            } else {
+                $m = "(whatif) "
+            }
+            Write-Verbose("$m`Setting envvar: $name") 
+        }
     }
 
     function Stow { 
@@ -93,9 +110,10 @@ begin {
 process {
     if (-not $IsWindows) { Write-Error 'pwsh is cross platform, but this particular script is for Windows only. POSIX-compatible systems should use script/bootstrap.' }
 
-    if (-not Test-Path $dotfiles/.gitconfig_local) { cp "$dotfiles/git/.gitconfig_local.template" "$dotfiles/.gitconfig_local" }
-    if (-not Test-Path $dotfiles/.config/nvim/local.dotfiles.vim) { cp "$dotfiles/.config/nvim/local.dotfiles.vim.template" "$dotfiles/.config/nvim/local.dotfiles.vim" }
-    if (-not Test-Path $dotfiles/.vimrc.local) { cp "$dotfiles/vim/.vimrc.local.template" "$dotfiles/.vimrc.local" }
+    # Templates
+    if (-not (Test-Path $dotfiles/git/.gitconfig_local)) { cp "$dotfiles/git/.gitconfig_local.template" "$dotfiles/git/.gitconfig_local" }
+    if (-not (Test-Path $dotfiles/.config/nvim/local.dotfiles.vim)) { cp "$dotfiles/.config/nvim/local.dotfiles.vim.template" "$dotfiles/.config/nvim/local.dotfiles.vim" }
+    if (-not (Test-Path $dotfiles/.vimrc.local)) { cp "$dotfiles/.vim/.vimrc.local.template" "$dotfiles/.vim/.vimrc.local" }
 
     # Generic dotfiles in the root directory.
     Stow -Path $HOME -Target $dotfiles -Include @('.*') -Exclude @($exclude + '.config')
@@ -107,11 +125,21 @@ process {
     Stow -Path $HOME\Documents -Target $dotfiles\Documents -Recurse
     Stow -Path $HOME\.vim -Target $dotfiles\.vim -Recurse
 
-    Stow -Path $HOME\_vimrc -Target $dotfiles\.vimrc
-    Stow -Path $HOME\.gitconfig_os -Target $dotfiles\git\.gitconfig_os_windows
-    Stow -Path $HOME\.gitignore -Target $dotfiles\dot_gitignore
-
     New-Symlink -Path $HOME\.dotfiles -Target $dotfiles
+    New-Symlink -Path $HOME\.gitconfig_os -Target $dotfiles\git\.gitconfig_os_windows
+    New-Symlink -Path $HOME\.gitconfig_local -Target $dotfiles\git\.gitconfig_local
+    New-Symlink -Path $HOME\.gitignore -Target $dotfiles\dot_gitignore
+    New-Symlink -Path $HOME\_vimrc -Target $dotfiles\.vimrc
+
+    Set-UserEnvVar -Name RIPGREP_CONFIG_PATH -Value $HOME\.ripgreprc
+    Set-UserEnvVar -Name EDITOR -Value 'nvim-qt'
+
+    if ($PSCmdlet.ShouldProcess('After Scripts', "Run after link farming")) {
+        vim +PlugInstall +qall
+        nvim +PlugInstall +qall
+    } else {
+        Write-Verbose "Would have ran after scripts."
+    }
 }
 end {
 }
