@@ -1,0 +1,23 @@
+# Vim
+*~
+*.swp
+
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# macOS
+.DS_Store
+
+# Security
+*.pem
+
+# Misc
+*.orig
+
+# macOS
+.DS_Store

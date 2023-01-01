@@ -1,10 +1,6 @@
 [user]
-	name = Dustin Venegas
-	email = dustin.venegas@gmail.com
-
-[safe]
-	directory = C:/Users/electricemu/Source/github.com/dustinvenegas/dotfiles
-	directory = C:/Users/electricemu/Source/pio/cody-phone-data-extraction/ONLY_HALFASS_WORKS_iphone_messages_dump
+#        name = Default Value in .gitconfig_local
+#        email = default_value_in@gitconfig.local
 
 # Example: Conditionally include ~/.gitconfig_user_personal if inside the ~/dotfiles/ git repository
 #[includeIf "gitdir:~/dotfiles/"]
@@ -12,3 +8,7 @@
 
 # Modeline or non-standard named .gitconfig
 # vim:fileformat=unix filetype=.gitconfig
+
+# Share credentials from Windows with WSL
+# [credential]
+# 	helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager-core.exe

@@ -19,7 +19,8 @@ begin {
             '.bashrc',
             '.bash_profile',
             '.zshrc',
-            '.gitconfig_os_*'
+            '.gitignore' # dot_gitignore is the global .gitignore
+            '.vimrc', # _vimrc is recognized on Windows.
         )
     }
 
@@ -92,8 +93,12 @@ begin {
 process {
     if (-not $IsWindows) { Write-Error 'pwsh is cross platform, but this particular script is for Windows only. POSIX-compatible systems should use script/bootstrap.' }
 
+    if (-not Test-Path $dotfiles/.gitconfig_local) { cp "$dotfiles/git/.gitconfig_local.template" "$dotfiles/.gitconfig_local" }
+    if (-not Test-Path $dotfiles/.config/nvim/local.dotfiles.vim) { cp "$dotfiles/.config/nvim/local.dotfiles.vim.template" "$dotfiles/.config/nvim/local.dotfiles.vim" }
+    if (-not Test-Path $dotfiles/.vimrc.local) { cp "$dotfiles/vim/.vimrc.local.template" "$dotfiles/.vimrc.local" }
+
     # Generic dotfiles in the root directory.
-    Stow -Path $HOME -Target $dotfiles -Include @('.*', '_vimrc') -Exclude @($exclude + '.config')
+    Stow -Path $HOME -Target $dotfiles -Include @('.*') -Exclude @($exclude + '.config')
 
     # Platform specific mapping.
     Stow -Path $env:LOCALAPPDATA\nvim -Target $dotfiles\.config\nvim -Recurse
@@ -101,6 +106,10 @@ process {
     Stow -Path $HOME\Documents\PowerShell -Target $dotfiles\.config\powershell -Recurse
     Stow -Path $HOME\Documents -Target $dotfiles\Documents -Recurse
     Stow -Path $HOME\.vim -Target $dotfiles\.vim -Recurse
+
+    Stow -Path $HOME\_vimrc -Target $dotfiles\.vimrc
+    Stow -Path $HOME\.gitconfig_os -Target $dotfiles\git\.gitconfig_os_windows
+    Stow -Path $HOME\.gitignore -Target $dotfiles\dot_gitignore
 
     New-Symlink -Path $HOME\.dotfiles -Target $dotfiles
 }

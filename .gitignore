@@ -1,20 +1,5 @@
-# Vim
-*~
-*.swp
-
-# VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.code-workspace
-
-# macOS
-.DS_Store
-
-# Security
-*.pem
-
-# Misc
-*.orig
+.gitconfig_local
+.config/nvim/local.dotfiles.vim
+.config/nvim/local.dotfiles.json
+.config/powershell/local.profile.ps1
+.vimrc.local
