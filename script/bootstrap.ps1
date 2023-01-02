@@ -133,13 +133,6 @@ process {
 
     Set-UserEnvVar -Name RIPGREP_CONFIG_PATH -Value $HOME\.ripgreprc
     Set-UserEnvVar -Name EDITOR -Value 'nvim-qt'
-
-    if ($PSCmdlet.ShouldProcess('After Scripts', "Run after link farming")) {
-        vim +PlugInstall +qall
-        nvim +PlugInstall +qall
-    } else {
-        Write-Verbose "Would have ran after scripts."
-    }
 }
 end {
 }

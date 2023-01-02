@@ -1,0 +1,1 @@
+vim +PlugInstall +qall
