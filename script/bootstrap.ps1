@@ -130,6 +130,7 @@ process {
     New-Symlink -Path $HOME\.gitconfig_local -Target $dotfiles\git\.gitconfig_local
     New-Symlink -Path $HOME\.gitignore -Target $dotfiles\dot_gitignore
     New-Symlink -Path $HOME\_vimrc -Target $dotfiles\.vimrc
+    New-Symlink -Path $HOME\Documents\PowerShell\Scripts -Target $dotfiles\PSScripts
 
     Set-UserEnvVar -Name RIPGREP_CONFIG_PATH -Value $HOME\.ripgreprc
     Set-UserEnvVar -Name EDITOR -Value 'nvim-qt'

@@ -78,7 +78,7 @@ do
 		if [ "$(uname -s)" = "Darwin" ]; then f="$dotfiles/git/.gitconfig_os_darwin";
 		else f="$dotfiles/git/.gitconfig_os_unix"; fi
 	fi
-	if [ "$f" = "$dotfiles/PSScriptRoot" ]; then # Symlink entire folder to easily capture ad-hoc scripts.
+	if [ "$f" = "$dotfiles/PSScripts" ]; then # Symlink entire folder to easily capture ad-hoc scripts.
 		l="$HOME/.local/share/powershell/Scripts"
 		lv=$(readlink -m "$l")
 	fi
