@@ -113,7 +113,7 @@ process {
     # Templates
     if (-not (Test-Path $dotfiles/git/.gitconfig_local)) { cp "$dotfiles/git/.gitconfig_local.template" "$dotfiles/git/.gitconfig_local" }
     if (-not (Test-Path $dotfiles/.config/nvim/local.dotfiles.vim)) { cp "$dotfiles/.config/nvim/local.dotfiles.vim.template" "$dotfiles/.config/nvim/local.dotfiles.vim" }
-    if (-not (Test-Path $dotfiles/.vimrc.local)) { cp "$dotfiles/.vim/.vimrc.local.template" "$dotfiles/.vim/.vimrc.local" }
+    if (-not (Test-Path $dotfiles/.vimrc.local)) { cp "$dotfiles/.vim/.vimrc.local.template" "$dotfiles/.vimrc.local" }
 
     # Generic dotfiles in the root directory.
     Stow -Path $HOME -Target $dotfiles -Include @('.*') -Exclude @($exclude + '.config')
