@@ -58,6 +58,8 @@ if type brew >/dev/null 2>&1; then
     fi
 fi
 
+if type zoxide >/dev/null 2>&1; then eval "$(zoxide init bash)"; fi
+
 fzfShellDir="/usr/share/doc/fzf/examples" # Default on Ubuntu 20.04
 if type brew >/dev/null 2>&1; then
     fzfShellDir="$(brew --prefix)/opt/fzf/shell"
