@@ -78,14 +78,14 @@ do
 		if [ "$(uname -s)" = "Darwin" ]; then f="$dotfiles/git/.gitconfig_os_darwin";
 		else f="$dotfiles/git/.gitconfig_os_unix"; fi
 	fi
-	if [ "$f" = "$dotfiles/PSScriptRoot" ]; then
-		l=$HOME/.local/share/powershell/Scripts
+	if [ "$f" = "$dotfiles/PSScriptRoot" ]; then # Symlink entire folder to easily capture ad-hoc scripts.
+		l="$HOME/.local/share/powershell/Scripts"
 		lv=$(readlink -m "$l")
 	fi
 
 	# Transform items with wildcard paths.
 	case "$f" in
-		"$dotfiles/.config/"*) [ ! -e "$dotfiles/.config/" ] && mkdir "$dotfiles/.config/" ;;
+		"$dotfiles/.config/"*) [ ! -e "$HOME/.config/" ] && mkdir "$HOME/.config/" ;; # ensure $HOME/.config exists
 	esac
 
 	[ $verbose -gt 1 ] && printf "Evaluating: %s\n" "$f";

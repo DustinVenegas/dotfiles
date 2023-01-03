@@ -2,7 +2,7 @@ $sw = [System.Diagnostics.Stopwatch]::StartNew()
 $env:EDITOR = 'nvim'
 $global:profile_initialized = $false # Indicates if the interactive profile was initialized
 $MaximumHistoryCount = 10000
-$commandsExist = Get-Command -Name @('rg', 'choco', 'oh-my-posh', 'dotnet', 'zoxide') -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name # Batch to performantly check existence with Get-Command.
+$commandsExist = Get-Command -Name @('rg', 'choco', 'oh-my-posh', 'dotnet', 'zoxide') -ErrorAction Ignore | Select-Object -ExpandProperty Name # Batch to performantly check existence with Get-Command.
 
 $script:PSDotfilesCfg = Invoke-Command {
     # Resolve symlinks to the script root.
@@ -110,14 +110,14 @@ if ($commandsExist -match 'zoxide*') {
     # Import zoxide environment.
     (zoxide init --hook "$hook" powershell | Out-String) | Invoke-Expression
 
-    # Upgrade prompt.
-    if ($commandsExist -match 'oh-my-posh*') {
+    # Enable oh-my-posh to control the prompt and update Zoxide after commands.
+    if ((Test-Path function:\__zoxide_hook) -and ($commandsExist -match 'oh-my-posh*')) {
         function global:Set-ZoxidePoshContext {
-            # Invoke Zoxide from a hook function.
+            # Update Zoxide directory context.
             $null = __zoxide_hook
         }
 
-        # Configure oh-my-posh to call Set-ZoxidePoshContext. omp calls Set-PoshContext.
+        # After-command hook for oh-my-posh.
         New-Alias -Name 'Set-PoshContext' -Value 'Set-ZoxidePoshContext' -Scope Global -Force
     }
 }
