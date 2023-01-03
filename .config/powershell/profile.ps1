@@ -23,11 +23,17 @@ if ($PSDotfilesCfg.LocalProfilePath -and (Test-Path $PSDotfilesCfg.LocalProfileP
     . $PSDotfilesCfg.LocalProfilePath
 }
 
-# Adds powershell-modules to the PowerShell modules search path.
+# Add modules to the PowerShell modules search path.
 @($PSDotfilesCfg.PSModules) |
     Where-Object { Test-Path $_ } |
     Where-Object { ($env:PSModulePath -split [System.IO.Path]::PathSeparator) -notcontains $_ } |
     ForEach-Object { $env:PSModulePath += [System.IO.Path]::PathSeparator + $_ }
+
+# Add to the PATH for PowerShell sessions.
+@("$HOME/.local/share/powershell/Scripts") |
+    Where-Object { Test-Path $_ } |
+    Where-Object { ($env:PATH -split [System.IO.Path]::PathSeparator) -notcontains $_ } |
+    ForEach-Object { $env:PATH += [System.IO.Path]::PathSeparator + $_ }
 
 # Initialize-Interactive performs one-time initialize for an interactive profile. Delays first prompt.
 function Initialize-Interactive {

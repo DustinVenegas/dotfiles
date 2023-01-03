@@ -1,5 +1,5 @@
 #!/bin/sh
-show_help() { cat << EOF 
+show_help() { cat << EOF
 bootstrap.sh - Farms symlinks to configure a machine for this dotfiles repository.
 
 Creates symlinks in \$HOME, \$XDC_CONFIG_HOME and other locations to configure
@@ -46,6 +46,7 @@ dotfiles=$(cd -- "$scriptroot/.." && pwd)
 retc=0
 if [ $whatif ]; then m='(whatif) '; fi
 
+# Transform templates
 if [ ! -e "$dotfiles/.gitconfig_local" ]; then
 	if [ ! $whatif ]; then cp "$dotfiles/git/.gitconfig_local.template" "$dotfiles/.gitconfig_local"; fi
 	echo "${m}Template: $dotfiles/.gitconfig_local"
@@ -55,29 +56,34 @@ if [ ! -e "$dotfiles/.config/nvim/local.dotfiles.vim" ]; then
 	echo "${m}Template: $dotfiles/.config/nvim/local.dotfiles.vim"
 fi
 if [ ! -e "$dotfiles/.vimrc.local" ]; then
-	if [ ! $whatif ]; then cp "$dotfiles/.vim/.vimrc.local.template" "$dotfiles/.vim/.vimrc.local"; fi
+	if [ ! $whatif ]; then cp "$dotfiles/.vim/.vimrc.local.template" "$dotfiles/.vimrc.local"; fi
 	echo "${m}Template: $dotfiles/.vimrc.local"
 fi
 
-for f in "$dotfiles"/.* "$dotfiles/.gitconfig_os" "$dotfiles"/.config/*
+# Item list to be symlinked.
+for f in "$dotfiles"/.* "$dotfiles/.gitconfig_os" "$dotfiles"/.config/* "$dotfiles/PSScriptRoot"
 do
-	if [ "$f" = "$dotfiles/.." ]; then continue; fi
-	if [ "$f" = "$dotfiles/.git" ]; then continue; fi
-	if [ "$f" = "$dotfiles/.config" ]; then continue; fi
-
+	# Get item information.
 	r=$(realpath -q --relative-to="$dotfiles" "$f") #relative
 	l="$HOME/$r" # symlink file path
 	lv=$(readlink -m "$l") # symlink value
 
-	# Transform after setting initial values.
+	# Transform items with absolute paths.
+	if [ "$f" = "$dotfiles/." ]; then f="$dotfiles"; l="$HOME/.dotfiles"; lv=$(readlink -m "$l"); fi # this repo to $HOME/.dotfiles
+	if [ "$f" = "$dotfiles/.." ]; then continue; fi # skip parent directory entirely
+	if [ "$f" = "$dotfiles/.git" ]; then continue; fi 
+	if [ "$f" = "$dotfiles/.config" ]; then continue; fi
 	if [ "$f" = "$dotfiles/.gitignore" ]; then f="$dotfiles/dot_gitignore"; fi
 	if [ "$f" = "$dotfiles/.gitconfig_os" ]; then
 		if [ "$(uname -s)" = "Darwin" ]; then f="$dotfiles/git/.gitconfig_os_darwin";
 		else f="$dotfiles/git/.gitconfig_os_unix"; fi
 	fi
-	if [ "$f" = "$dotfiles/." ]; then f="$dotfiles"; l="$HOME/.dotfiles"; lv=$(readlink -m "$l"); fi
+	if [ "$f" = "$dotfiles/PSScriptRoot" ]; then
+		l=$HOME/.local/share/powershell/Scripts
+		lv=$(readlink -m "$l")
+	fi
 
-	# Wildcards
+	# Transform items with wildcard paths.
 	case "$f" in
 		"$dotfiles/.config/"*) [ ! -e "$dotfiles/.config/" ] && mkdir "$dotfiles/.config/" ;;
 	esac
