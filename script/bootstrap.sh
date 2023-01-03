@@ -61,7 +61,7 @@ if [ ! -e "$dotfiles/.vimrc.local" ]; then
 fi
 
 # Item list to be symlinked.
-for f in "$dotfiles"/.* "$dotfiles/.gitconfig_os" "$dotfiles"/.config/* "$dotfiles/PSScriptRoot"
+for f in "$dotfiles"/.* "$dotfiles/.gitconfig_os" "$dotfiles"/.config/* "$dotfiles/PSScripts"
 do
 	# Get item information.
 	r=$(realpath -q --relative-to="$dotfiles" "$f") #relative
