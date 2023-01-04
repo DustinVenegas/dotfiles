@@ -16,11 +16,10 @@ begin {
     $exclude = @()
     if ($IsWindows) {
         $exclude += @(
-            '.bashrc',
-            '.bash_profile',
-            '.zshrc',
-            '.gitignore', # dot_gitignore is the global .gitignore
-            '.vimrc' # _vimrc is recognized on Windows.
+            'dot_bash_profile',
+            'dot_bashrc',
+            'dot_vimrc' # _vimrc is recognized on Windows.
+            'dot_zshrc'
         )
     }
 
@@ -36,7 +35,6 @@ begin {
                 Type          = 'Placeholder'
                 Path          = $Path
                 Target        = $Target
-                IsPlaceholder = $true
             }
 
             $l = Get-Item -Path $Path -Force
@@ -92,43 +90,41 @@ begin {
             [switch]$Recurse
         )
 
-        Push-Location -Path $Target
-
         # -Path that ends with \* searches files within that path for includes/excludes
         # -Include/-Exclude takes a generic wildcard
         $files = Get-ChildItem -File -Path $Target\* -Include $Include -Exclude $Exclude -Recurse:$($Recurse.ToBool()) -Force
         foreach ($f in $files) {
+            Push-Location -Path $Target
             $slTarget = Resolve-Path $f
-            $slPath = (Join-Path $Path $(Resolve-Path $f -Relative)).Replace('\.\', '\') # Removes non-noramlized segement from Join-Path without -resolve.
+            $rel = $(Resolve-Path $f -Relative).Replace('dot_', '.')
+            $slPath = (Join-Path $Path $rel).Replace('\.\', '\') # Removes non-noramlized segement from Join-Path without -resolve.
+            Pop-Location
 
             New-Symlink -Path $slPath -Target $slTarget
         }
 
-        Pop-Location
     }
 }
 process {
     if (-not $IsWindows) { Write-Error 'pwsh is cross platform, but this particular script is for Windows only. POSIX-compatible systems should use script/bootstrap.' }
 
     # Templates
-    if (-not (Test-Path $dotfiles/git/.gitconfig_local)) { cp "$dotfiles/git/.gitconfig_local.template" "$dotfiles/git/.gitconfig_local" }
-    if (-not (Test-Path $dotfiles/.config/nvim/local.dotfiles.vim)) { cp "$dotfiles/.config/nvim/local.dotfiles.vim.template" "$dotfiles/.config/nvim/local.dotfiles.vim" }
-    if (-not (Test-Path $dotfiles/.vimrc.local)) { cp "$dotfiles/.vim/.vimrc.local.template" "$dotfiles/.vimrc.local" }
+    Copy-Item "$dotfiles/git/.gitconfig_local.template" "$dotfiles/dot_gitconfig_local" -Force
+    Copy-Item "$dotfiles/.config/nvim/local.dotfiles.vim.template" "$dotfiles/.config/nvim/local.dotfiles.vim"
+    Copy-Item "$dotfiles/dot_vim/.vimrc.local.template" "$dotfiles/dot_vimrc.local"
+    New-Symlink -Path $HOME\.gitconfig_os -Target $dotfiles\git\.gitconfig_os_windows
 
-    # Generic dotfiles in the root directory.
-    Stow -Path $HOME -Target $dotfiles -Include @('.*') -Exclude @($exclude + '.config')
+    # Stow files in the dotfiles directory prefixed with 'dot_'.
+    Stow -Path $HOME -Target $dotfiles -Include @('dot_*') -Exclude $exclude
 
-    # Platform specific mapping.
+    # Windows specific mapping.
     Stow -Path $env:LOCALAPPDATA\nvim -Target $dotfiles\.config\nvim -Recurse
     Stow -Path $env:LOCALAPPDATA -Target $dotfiles\AppData\Local\ -Recurse
     Stow -Path $HOME\Documents\PowerShell -Target $dotfiles\.config\powershell -Recurse
     Stow -Path $HOME\Documents -Target $dotfiles\Documents -Recurse
-    Stow -Path $HOME\.vim -Target $dotfiles\.vim -Recurse
+    Stow -Path $HOME\.vim -Target $dotfiles\dot_vim -Recurse
 
     New-Symlink -Path $HOME\.dotfiles -Target $dotfiles
-    New-Symlink -Path $HOME\.gitconfig_os -Target $dotfiles\git\.gitconfig_os_windows
-    New-Symlink -Path $HOME\.gitconfig_local -Target $dotfiles\git\.gitconfig_local
-    New-Symlink -Path $HOME\.gitignore -Target $dotfiles\dot_gitignore
     New-Symlink -Path $HOME\_vimrc -Target $dotfiles\.vimrc
     New-Symlink -Path $HOME\Documents\PowerShell\Scripts -Target $dotfiles\PSScripts
 

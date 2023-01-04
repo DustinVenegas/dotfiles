@@ -1,4 +1,15 @@
 #!/bin/sh
+
+whatif=
+verbose=0 # Variables to be evaluated as shell arithmetic should be initialized to a default or validated beforehand.
+scriptroot=$(cd -- "$(dirname -- "$0")" && pwd)
+dotfiles=$(cd -- "$scriptroot/.." && pwd)
+cd "$scriptroot" || exit 1
+retc=0 # return code
+
+variation=unix
+if [ "$(uname -s)" = "Darwin" ]; then variation=darwin; fi
+
 show_help() { cat << EOF
 bootstrap.sh - Farms symlinks to configure a machine for this dotfiles repository.
 
@@ -12,8 +23,6 @@ Options:
 EOF
 }
 
-verbose=0 # Variables to be evaluated as shell arithmetic should be initialized to a default or validated beforehand.
-whatif=
 while :; do
     case $1 in
         -h|-\?|--help)   # Call a "show_help" function to display a synopsis, then exit.
@@ -41,72 +50,66 @@ while :; do
     shift
 done
 
-scriptroot=$(cd -- "$(dirname -- "$0")" && pwd)
-dotfiles=$(cd -- "$scriptroot/.." && pwd)
-retc=0
-if [ $whatif ]; then m='(whatif) '; fi
+if [ $whatif ]; then w='(whatif) '; fi
+log() { printf "%s%s\n" "$w" "$1"; }
+info() { [ $verbose -gt 0 ] && printf "%s\n" "$1"; }
+warn() { printf "WARN: %s\n" "$1"; }
 
 # Transform templates
-if [ ! -e "$dotfiles/.gitconfig_local" ]; then
-	if [ ! $whatif ]; then cp "$dotfiles/git/.gitconfig_local.template" "$dotfiles/.gitconfig_local"; fi
-	echo "${m}Template: $dotfiles/.gitconfig_local"
-fi
-if [ ! -e "$dotfiles/.config/nvim/local.dotfiles.vim" ]; then
-	if [ ! $whatif ]; then cp "$dotfiles/.config/nvim/local.dotfiles.vim.template" "$dotfiles/.config/nvim/local.dotfiles.vim"; fi
-	echo "${m}Template: $dotfiles/.config/nvim/local.dotfiles.vim"
-fi
-if [ ! -e "$dotfiles/.vimrc.local" ]; then
-	if [ ! $whatif ]; then cp "$dotfiles/.vim/.vimrc.local.template" "$dotfiles/.vimrc.local"; fi
-	echo "${m}Template: $dotfiles/.vimrc.local"
-fi
+copyTemplate () {
+	if [ ! -f "$2" ]; then
+		log "Copying Template: $2"; 
+		if [ ! $whatif ]; then cp "$1" "$2"; fi
+	fi
+}
 
-# Item list to be symlinked.
-for f in "$dotfiles"/.* "$dotfiles/.gitconfig_os" "$dotfiles"/.config/* "$dotfiles/PSScripts"
-do
-	# Get item information.
-	r=$(realpath -q --relative-to="$dotfiles" "$f") #relative
-	l="$HOME/$r" # symlink file path
+handleLink () {
+	l=$1 # destination
+	f=$2 # target
 	lv=$(readlink -m "$l") # symlink value
 
-	# Transform items with absolute paths.
-	if [ "$f" = "$dotfiles/." ]; then f="$dotfiles"; l="$HOME/.dotfiles"; lv=$(readlink -m "$l"); fi # this repo to $HOME/.dotfiles
-	if [ "$f" = "$dotfiles/.." ]; then continue; fi # skip parent directory entirely
-	if [ "$f" = "$dotfiles/.git" ]; then continue; fi 
-	if [ "$f" = "$dotfiles/.config" ]; then continue; fi
-	if [ "$f" = "$dotfiles/.gitignore" ]; then f="$dotfiles/dot_gitignore"; fi
-	if [ "$f" = "$dotfiles/.gitconfig_os" ]; then
-		if [ "$(uname -s)" = "Darwin" ]; then f="$dotfiles/git/.gitconfig_os_darwin";
-		else f="$dotfiles/git/.gitconfig_os_unix"; fi
-	fi
-	if [ "$f" = "$dotfiles/PSScripts" ]; then # Symlink entire folder to easily capture ad-hoc scripts.
-		l="$HOME/.local/share/powershell/Scripts"
-		lv=$(readlink -m "$l")
-	fi
-
-	# Transform items with wildcard paths.
-	case "$f" in
-		"$dotfiles/.config/"*) [ ! -e "$HOME/.config/" ] && mkdir "$HOME/.config/" ;; # ensure $HOME/.config exists
-	esac
-
-	[ $verbose -gt 1 ] && printf "Evaluating: %s\n" "$f";
-	[ $verbose -gt 1 ] && printf "\tRel: %s\n\tLink: %s\n\tValue: %s\n" "$r" "$l" "$lv";
-
-	if [ -L "$l" ] && [ "$lv" = "$f" ]; then
-		if [ $verbose -gt 0 ]; then echo "No Changes to symlink $l"; fi
+	if [ -L "$l" ] && [ "$lv" = "$(readlink -m "$f")" ]; then
+		info "No Changes to symlink $l"
 	elif [ -L "$l" ] && [ "$lv" != "$f" ]; then
-		echo "WARN: Unexpected value for symlink: $l"
-		if [ $verbose -gt 0 ]; then printf "\tActual: \t%s\n\tExpected: \t%s\n" "$lv" "$f"; fi
+		warn "Unexpected value for symlink: $l"
+		echo "$f $lv"
 		retc=1
 	elif [ ! -e "$l" ]; then
-		m=""
-		if [ $whatif ]; then m='(whatif) ';
-		else ln -s "$f" "$l"; fi
-		echo "${m}Created symlink $l"
-		if [ $verbose -gt 0 ]; then printf "\tTo: \t%s\n" "$f"; fi
+		log "Create symlink: $f $l"
+		if [ ! $whatif ]; then ln -s "$f" "$l"; fi
 	else
-		echo "WARN: Existing item at symlink destination: $l"
+		warn "Existing item at symlink destination: $f"
 		retc=1
 	fi
+}
+
+# Environmental prerequisites
+[ ! -d "$HOME/.config" ] && warn "Missing .config folder in \$HOME" && exit 1; # non-standard xdc path?
+
+copyTemplate "$dotfiles/git/.gitconfig_local.template" "$dotfiles/dot_gitconfig_local"
+copyTemplate "$dotfiles/.config/nvim/local.dotfiles.vim" "$dotfiles/.config/nvim/local.dotfiles.vim"
+copyTemplate "$dotfiles/dot_vimrc.local" "$dotfiles/dot_vimrc.local"
+
+# Local links
+f="$dotfiles/git/.gitconfig_os_$variation"
+l="$dotfiles/dot_gitconfig_os"
+handleLink "$l" "$f"
+
+# Item list to be symlinked.
+for f in "$dotfiles/." "$dotfiles"/dot_* "$dotfiles"/.config/* "$dotfiles/PSScripts"
+do
+	# Get item information.
+	r=$(realpath -s -q --relative-to="$dotfiles" "$f") # don't expand symlinks, quiet
+	r=$(echo "$r" | sed "s/dot_/./") # transform dot_ to .
+	l="$HOME/$r" # symlink file path
+
+	# Transform items
+	if [ "$f" = "$dotfiles/." ]; then f="$dotfiles"; l="$HOME/.dotfiles"; fi # this repo to $HOME/.dotfiles
+	if [ "$f" = "$dotfiles/PSScripts" ]; then # Symlink entire folder to easily capture ad-hoc scripts.
+		l="$HOME/.local/share/powershell/Scripts"
+	fi
+
+	handleLink "$l" "$f"
 done
 
 exit $retc
