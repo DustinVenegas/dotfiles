@@ -122,56 +122,21 @@ if ($commandsExist -match 'zoxide*') {
     }
 }
 
-function Get-SourceLocation {
-    param(
-        [string]$query
-    )
-    $sl = Get-Item Source:\ | Select-Object -ExpandProperty FullName
-
-    Invoke-Command -ScriptBlock {
-        if ($commandsExist -match 'rg*') {
-            rg --follow --hidden --files -g '**/.git/HEAD' --max-depth 5 $sl | ForEach-Object {
-                # Replace /.git/HEAD
-                $r = '/.git/HEAD'
-                if ($IsWindows) { $r = '\\.git\\HEAD' }
-                $_ -replace "$r", ''
-            }
-        } else {
-            Get-ChildItem -Path Source:\ -Directory -Recurse -Depth 5 -Include '.git' -Hidden | Select-Object -ExpandProperty Parent
-        }
-    } | ForEach-Object {
-        $r = $sl
-        if ($IsWindows) { $r = $sl.Replace('\', '\\') }
-        ($_ -replace $r, '')
-    } |
-        Invoke-Fzf -Height '50%' -BorderStyle rounded -Header 'SourceLocation' -Query $query |
-        ForEach-Object {
-            # Resolve symlinks
-            $v = Get-Item "$sl/$PSItem"
-            while ($v.PSObject.Properties.Name -eq 'Target' -and $v.Target) {
-                $v = Get-Item $v.Target
-            }
-
-            Write-Output $v
-        }
+function Get-SourceLocations {
+    Get-ChildItem -Directory "$HOME/Source" -Recurse -FollowSymlink -Depth 2 -Force -WarningVariable wa -WarningAction SilentlyContinue | Select-Object -ExpandProperty FullName
+    $wa | Where-Object { $PSItem -notlike 'Skip already-visited directory *'} | Write-Warning
 }
-
-function Set-SourceLocation {
-    Get-SourceLocation @args | Set-Location
-}
-
-function Push-SourceLocation {
-    Get-SourceLocation @args | Set-Location
-}
-
+function Get-SourceLocation { Get-SourceLocations | Invoke-Fzf }
+function Set-SourceLocation { Get-SourceLocations | Invoke-Fzf | Set-Location }
+function Push-SourceLocation { Get-SourceLocations | Invoke-Fzf | Push-Location }
 function Edit-SourceLocation {
-    $sl = Get-SourceLocation @args
+    $sl = Get-SourceLocations | Invoke-Fzf
     code $sl
 }
 
-Set-Alias -Name edsl -Value Edit-SourceLocation
+Set-Alias -Name esl -Value Edit-SourceLocation
 Set-Alias -Name gsl -Value Get-SourceLocation
-Set-Alias -Name pusl -Value Push-SourceLocation
+Set-Alias -Name psl -Value Push-SourceLocation
 Set-Alias -Name ssl -Value Set-SourceLocation
 
 $sw.Stop()

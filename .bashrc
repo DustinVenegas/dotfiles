@@ -118,3 +118,17 @@ if type dotnet >/dev/null 2>&1; then
     }
     complete -f -F _dotnet_bash_complete dotnet
 fi
+
+getSourceLocations () {
+    find -L "$HOME/Source" -mindepth 1 -maxdepth 3 -type d | grep -v '\.git'
+}
+
+editSourceLocation () { $EDITOR "$(getSourceLocations | fzf)" || return; }
+getSourceLocation () { "$(getSourceLocations | fzf)" || return; }
+setSourceLocation () { cd "$(getSourceLocations | fzf)" || return; }
+pushSourceLocation () { pushd "$(getSourceLocations | fzf)" || return; }
+
+alias esl=editSourceLocation
+alias gsl=getSourceLocation
+alias ssl=setSourceLocation
+alias psl=pushSourceLocation
