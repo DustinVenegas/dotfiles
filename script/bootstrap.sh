@@ -1,6 +1,7 @@
 #!/bin/sh
 
 whatif=
+force=
 verbose=0 # Variables to be evaluated as shell arithmetic should be initialized to a default or validated beforehand.
 scriptroot=$(cd -- "$(dirname -- "$0")" && pwd)
 dotfiles=$(cd -- "$scriptroot/.." && pwd)
@@ -29,7 +30,10 @@ while :; do
             show_help
             exit
             ;;
-        -w|--whatif)       # Takes an option argument, ensuring it has been specified.
+        -f|--force)
+			force=1
+            ;;
+        -w|--whatif)
 			whatif=1
             ;;
         -v|--verbose)
@@ -57,7 +61,9 @@ warn() { printf "WARN: %s\n" "$1"; }
 
 # Transform templates
 copyTemplate () {
-	if [ ! -f "$2" ]; then
+	if [ $force ]; then
+		cp "$1" "$2" --force
+	elif [ ! -f "$2" ]; then
 		log "Copying Template: $2"; 
 		if [ ! $whatif ]; then cp "$1" "$2"; fi
 	fi
@@ -65,10 +71,12 @@ copyTemplate () {
 
 handleLink () {
 	l=$1 # link
-	f=$2 # target
+	f=$2 # pointing to target
 	lv=$(readlink -m "$l") # symlink value
 
-	if [ -L "$l" ] && [ "$lv" = "$(readlink -m "$f")" ]; then
+	if [ $force ]; then
+		ln -s "$f" "$l" --force
+	elif [ -L "$l" ] && [ "$lv" = "$(readlink -m "$f")" ]; then
 		info "No Changes to symlink $l"
 	elif [ -L "$l" ] && [ "$lv" != "$f" ]; then
 		warn "Unexpected value for symlink: $l"

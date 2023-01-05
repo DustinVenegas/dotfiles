@@ -23,6 +23,6 @@ jobs:
     - name: Install PowerShell
       run: dotnet tool install --global PowerShell
     - name: Bootstrap Script
-      run: ./script/bootstrap.sh --verbose
+      run: ./script/bootstrap.sh --verbose --force
     - name: Health Check
       run: ./script/check-dotfiles-health.sh
