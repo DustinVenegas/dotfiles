@@ -78,6 +78,15 @@ function Initialize-Interactive {
     if ([System.IO.Directory]::Exists([System.IO.Path]::Combine("$HOME", 'Source'))) {
         New-PSDrive -Scope Script -Root ~/Source -Name Source -PSProvider FileSystem -ErrorAction Ignore > $Null
     }
+
+    Set-PSReadLineKeyHandler -Key Ctrl+Shift+b `
+        -BriefDescription BuildCurrentDirectory `
+        -LongDescription 'Build the current directory' `
+        -ScriptBlock {
+        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert('dotnet build')
+        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+    }
 }
 
 function prompt {
@@ -141,12 +150,3 @@ Set-Alias -Name ssl -Value Set-SourceLocation
 
 $sw.Stop()
 Write-Host "Initilizing profile.ps1: $($sw.ElapsedMilliseconds)ms"
-
-Set-PSReadLineKeyHandler -Key Ctrl+Shift+b `
-    -BriefDescription BuildCurrentDirectory `
-    -LongDescription 'Build the current directory' `
-    -ScriptBlock {
-    [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-    [Microsoft.PowerShell.PSConsoleReadLine]::Insert('dotnet build')
-    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
-}
