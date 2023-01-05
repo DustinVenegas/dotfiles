@@ -64,7 +64,7 @@ copyTemplate () {
 }
 
 handleLink () {
-	l=$1 # destination
+	l=$1 # link
 	f=$2 # target
 	lv=$(readlink -m "$l") # symlink value
 
@@ -75,16 +75,17 @@ handleLink () {
 		echo "$f $lv"
 		retc=1
 	elif [ ! -e "$l" ]; then
-		log "Create symlink: $f $l"
+		log "Create symlink: $l"
 		if [ ! $whatif ]; then ln -s "$f" "$l"; fi
 	else
-		warn "Existing item at symlink destination: $f"
+		warn "Existing item at symlink destination: $l"
 		retc=1
 	fi
 }
 
 # Environmental prerequisites
-[ ! -d "$HOME/.config" ] && warn "Missing .config folder in \$HOME" && exit 1; # non-standard xdc path?
+[ ! -d "$HOME/.config" ] && mkdir "$HOME/.config"; # non-standard xdc path?
+[ ! -d "$HOME/.local/share" ] && mkdir "$HOME/.local/share"; # non-standard xdc path?
 
 copyTemplate "$dotfiles/git/.gitconfig_local.template" "$dotfiles/dot_gitconfig_local"
 copyTemplate "$dotfiles/.config/nvim/local.dotfiles.vim" "$dotfiles/.config/nvim/local.dotfiles.vim"
@@ -106,6 +107,7 @@ do
 	# Transform items
 	if [ "$f" = "$dotfiles/." ]; then f="$dotfiles"; l="$HOME/.dotfiles"; fi # this repo to $HOME/.dotfiles
 	if [ "$f" = "$dotfiles/PSScripts" ]; then # Symlink entire folder to easily capture ad-hoc scripts.
+		[ ! -d "$HOME/.local/share/powershell" ] && mkdir "$HOME/.local/share/powershell"; # non-standard xdc path?
 		l="$HOME/.local/share/powershell/Scripts"
 	fi
 

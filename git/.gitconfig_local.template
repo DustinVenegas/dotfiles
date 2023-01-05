@@ -9,6 +9,10 @@
 # Modeline or non-standard named .gitconfig
 # vim:fileformat=unix filetype=.gitconfig
 
-# Share credentials from Windows with WSL
+# WSL sharing credentials from Windows.
 # [credential]
 # 	helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager-core.exe
+
+# Dev Container sharing credentials from Windows.
+# [credential]
+#	helper = "!f() { /home/vscode/.vscode-server/bin/e8a3071ea4344d9d48ef8a4df2c097372b0c5161/node /tmp/vscode-remote-containers-567f8e6f5a511090bfaff5da6ebbc2b18b09231b.js $*; }; f"
