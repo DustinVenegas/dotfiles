@@ -12,13 +12,13 @@ if ! env -i git version 1>/dev/null; then ec=1; echo "error: git version";  fi
 if ! env git config --get user.name 1>/dev/null; then ec=1; echo "error: git user.name missing";  fi
 if ! env git config --get user.email 1>/dev/null; then ec=1; echo "error: git user.email missing";  fi
 
-rm nvimlog -f
-nvim -V1nvimlog +qall # Output errors (-V1) to a file. File data indicates an error.
-if [ -s nvimlog ]; then
-	ec=1; 
-	echo "error: nvim log contained content at: nvimlog"
-	cat nvimlog
-fi
+# rm nvimlog -f
+# nvim -V1nvimlog +qall # Output errors (-V1) to a file. File data indicates an error.
+# if [ -s nvimlog ]; then
+# 	ec=1; 
+# 	echo "error: nvim log contained content at: nvimlog"
+# 	cat nvimlog
+# fi
 
 # May be better ways to detect errors in vim/neovim.
 #

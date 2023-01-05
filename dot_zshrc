@@ -92,41 +92,44 @@ if [ -f "$HOME/.zshrc.local" ]; then
     source "$HOME/.zshrc.local"
 fi
 
-# Use modern completion system
-autoload -Uz compinit
-compinit
+if [[ -o interactive ]]; then
+  # Use modern completion system
+  autoload -Uz compinit
+  compinit
 
-if type oh-my-posh >/dev/null 2>&1; then
-        promptVariation='.minimal'
-        if [[ -n "${WT_SESSION}" ]]
-        then
-                promptVariation=''
-        fi
-        if [[ -n "${TERM_PROGRAM}" ]]
-        then
-                if [[ 'VSCode' == "${TERM_PROGRAM}" ]]
-                then
-                        promptVariation=''
-                fi
-        fi
+  if type oh-my-posh >/dev/null 2>&1; then
+          promptVariation='.minimal'
+          if [[ -n "${WT_SESSION}" ]]
+          then
+                  promptVariation=''
+          fi
+          if [[ -n "${TERM_PROGRAM}" ]]
+          then
+                  if [[ 'VSCode' == "${TERM_PROGRAM}" ]]
+                  then
+                          promptVariation=''
+                  fi
+          fi
 
-        eval "$(oh-my-posh --init --shell zsh --config ~/.dotfiles-prompt$promptVariation.omp.json)"
-else
-        autoload -Uz promptinit
-        promptinit
-        prompt adam1
-fi
+          eval "$(oh-my-posh --init --shell zsh --config ~/.dotfiles-prompt$promptVariation.omp.json)"
+  else
+          autoload -Uz promptinit
+          promptinit
+          prompt adam1
+  fi
 
-if type dotnet >/dev/null 2>&1; then
-  # zsh parameter completion for the dotnet CLI
-  _dotnet_zsh_complete()
-  {
-    local completions=("$(dotnet complete "$words")")
+  if type dotnet >/dev/null 2>&1; then
+    # zsh parameter completion for the dotnet CLI
+    _dotnet_zsh_complete()
+    {
+      local completions=("$(dotnet complete "$words")")
 
-    reply=( "${(ps:\n:)completions}" )
-  }
+      reply=( "${(ps:\n:)completions}" )
+    }
 
-  compctl -K _dotnet_zsh_complete dotnet
+    compctl -K _dotnet_zsh_complete dotnet
+  fi
+
 fi
 
 getSourceLocations () {
