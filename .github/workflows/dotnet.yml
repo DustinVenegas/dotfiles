@@ -22,6 +22,8 @@ jobs:
         dotnet-version: 7.0.x
     - name: Install PowerShell
       run: dotnet tool install --global PowerShell
+    - name: Install other dependencies
+      run: sudo apt-get install zsh git neovim -y
     - name: Bootstrap Script
       run: ./script/bootstrap.sh --verbose --force
     - name: Health Check
