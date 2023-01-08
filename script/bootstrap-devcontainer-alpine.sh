@@ -3,7 +3,7 @@
 scriptroot=$(cd -- "$(dirname -- "$0")" && pwd)
 
 # Move originals into home_backup
-[ ! -d home_backup ] && mkdir home_backup
+[ ! -d home_backup ] && mkdir -p home_backup
 bk () { [ ! -L "$HOME/$1" ] && [ -f "$HOME/$1" ] && mv "$HOME/$1" home_backup/; }
 bk '.bashrc'
 bk '.gitconfig'

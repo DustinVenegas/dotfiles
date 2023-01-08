@@ -1,0 +1,10 @@
+# Attributes so Windows checkouts function in a Dev Container.
+* text=auto eol=lf
+
+*.ps1 text=auto eol=auto
+*.psm1 text=auto eol=auto
+*.psd1 text=auto eol=auto
+*.cmd text=auto eol=auto
+
+chocolatey-packages.config text=auto eol=auto
+chocolatey-*-packages.config text=auto eol=auto

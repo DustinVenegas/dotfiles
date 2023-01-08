@@ -92,8 +92,8 @@ handleLink () {
 }
 
 # Environmental prerequisites
-[ ! -d "$HOME/.config" ] && mkdir "$HOME/.config"; # non-standard xdc path?
-[ ! -d "$HOME/.local/share" ] && mkdir "$HOME/.local/share"; # non-standard xdc path?
+[ ! -d "$HOME/.config" ] && mkdir -p "$HOME/.config"; # non-standard xdc path?
+[ ! -d "$HOME/.local/share" ] && mkdir -p "$HOME/.local/share"; # non-standard xdc path?
 
 copyTemplate "$dotfiles/git/.gitconfig_local.template" "$dotfiles/dot_gitconfig_local"
 copyTemplate "$dotfiles/.config/nvim/local.dotfiles.vim.template" "$dotfiles/.config/nvim/local.dotfiles.vim"
@@ -115,7 +115,7 @@ do
 	# Transform items
 	if [ "$f" = "$dotfiles/." ]; then f="$dotfiles"; l="$HOME/.dotfiles"; fi # this repo to $HOME/.dotfiles
 	if [ "$f" = "$dotfiles/PSScripts" ]; then # Symlink entire folder to easily capture ad-hoc scripts.
-		[ ! -d "$HOME/.local/share/powershell" ] && mkdir "$HOME/.local/share/powershell"; # non-standard xdc path?
+		[ ! -d "$HOME/.local/share/powershell" ] && mkdir -p "$HOME/.local/share/powershell"; # non-standard xdc path?
 		l="$HOME/.local/share/powershell/Scripts"
 	fi
 

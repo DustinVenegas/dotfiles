@@ -1,0 +1,12 @@
+#!/bin/sh
+# bootstrap - GitHub Codespaces bootstrapper.
+#
+#
+
+scriptroot=$(cd -- "$(dirname -- "$0")" && pwd)
+
+# Codespaces specific bootstrapper.
+"$scriptroot/bootstrap-devcontainer-alpine.sh"
+
+# Generic bootstrapper.
+"$scriptroot/bootstrap.sh"

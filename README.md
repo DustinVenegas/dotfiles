@@ -1,29 +1,35 @@
 # Dustin Venegas's dotfiles
 
-[dotfiles](https://dotfiles.github.io/) configuration files for [Dustin Venegas](https://www.dustinvenegas.com/)
-that focuses on PowerShell, VSCode, neovim, and runs across Linux, macOS, and Windows platforms. Bootstrapping and platform specific scripts are located in `./scripts/`.
+[dotfiles](https://dotfiles.github.io/) configurations for a portable computing environment based on POSIX and PowerShell by [Dustin Venegas](https://dustinvenegas.com).
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=35863681&machine=basicLinux32gb&&devcontainer_path=.devcontainer%2Fdevcontainer.json&location=WestUs2)
+
+Targets Linux, macOS, and Windows with native bootstrap scripts. Environments are configured through the magic of symlinks.
 
 ![build](https://github.com/DustinVenegas/dotfiles/actions/workflows/main.yml/badge.svg)
 
 ## Installation
 
-Install any prerequisites for the specific platform and then run the bootstrapper at [`./script/check-dotfiles-health.sh`](./script/check-dotfiles-health.sh).
+Bootstrap scripts are located under `./scripts/`. Using native POSIX/PowerShell scripts avoids taking bootstrapping dependencies.
+
+Run a bootstrap script in 'whatif' mode:
 
 - POSIX-Based OS: `./script/bootstrap.sh --whatif --verbose`
 - Windows OS:  `./script/bootstrap.ps1 -verbose -whatif`
 
 ## Health
 
-Check the environment health using the check script at [`./script/check-dotfles-health.sh`](./script/check-dotfiles-health.sh).
+Perform a basic environment health check with [`./script/check-dotfles-health.sh`](./script/check-dotfiles-health.sh).
 
 ## Why PowerShell Core?
 
-Because piping objects with properties and functions is fun and useful.
+Because piping objects with properties and functions is fun and useful. PowerShell
+is just a cross-platform shell. POSIX is for glue code and PWSH is for exploration.
 
 ```ps1
 Get-ChildItem $HOME -Force | # items in $HOME
   Select-Object Name, @{
-    Name="FirstLine";        
+    Name="FirstLine";
     Expression={Get-Content $_ -ReadCount 1 -ErrorAction Ignore}
   } | # object with Name and FirstLine.
   Tee-Object -Variable files | # save pipeline to a variable
@@ -32,7 +38,24 @@ Get-ChildItem $HOME -Force | # items in $HOME
 
 ![Approximate Command Output](assets/pwsh-demo.png)
 
+## Package Managers
+
+`./Packages` contains bundles of packages for package managers like Chocolatey, Homebrew, and apt.
+
+```sh
+# Chocolatey
+choco install ./Packages/chocolatey-desktop.config
+
+# Homebrew
+brew bundle install --file=./Packages/Brewfile
+
+# apt
+sed 's/#.*//' ubuntu-installs.txt | xargs sudo apt-get install`
+```
+
 ## Components
+
+Notable components included in this dotfiles repository.
 
 - [bash](https://www.gnu.org/software/bash/) shell.  Local Configuration: `$HOME/.bashrc.local` [docs](https://www.gnu.org/software/bash/manual/bash.html)
 - [Markdownlint](https://github.com/markdownlint/markdownlint) is a CLI tool used to lint Markdown files. [docs](https://github.com/markdownlint/markdownlint/blob/master/docs/configuration.md)
