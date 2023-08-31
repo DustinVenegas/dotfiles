@@ -40,7 +40,7 @@ begin {
             $l = Get-Item -Path $Path -Force
             switch ($l) {
                 { $_.Target -and ($_.Target -eq $Target) } { $rv.Type = 'Unchanged'; if ($ShowUnchanged.ToBool()) { Break } else { return } }
-                { $_.Target -and ($_.Target -ne $Target) } { $rv.Type = 'Mismatched'; Write-Warning "Unexpected target at path: $_"; Break }
+                { $_.Target -and ($_.Target -ne $Target) } { $rv.Type = 'Mismatched'; Write-Warning "Unexpected target at path: $_.`n`tExpected: $Target`n`tReceived: $($_.Target)"; Break }
                 { $null -ne $_ } { $rv.Type = 'Conflict'; Write-Warning "File or directory exists as non-symlink at path: $_"; Break }
                 default { $rv.Type = 'Error'; Write-Warning 'File exists but the symlink status is unhandled.' }
             }

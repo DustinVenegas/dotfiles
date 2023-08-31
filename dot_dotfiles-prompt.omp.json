@@ -62,7 +62,8 @@
           "foreground": "#FFA400",
           "powerline_symbol": "\ue0b0",
           "style": "powerline",
-          "template": "\ue7ad {{.Profile}}{{if .Region}}@{{.Region}}{{end}}",
+          "display_default": true,
+          "template": " \ue7ad {{.Profile}}{{if .Region}}@{{.Region}}{{end}} ",
           "type": "aws"
         },
         {

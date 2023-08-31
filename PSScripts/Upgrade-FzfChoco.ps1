@@ -9,7 +9,7 @@ Runs choco upgrade on selected packages. Packages are selected
 from a fzf fuzzy-finder listing outdated packages.
 #>
 
-[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseCompatibleCommands", "Join-String")] # Requires version 6.0
+[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseCompatibleCommands', 'Join-String')] # Requires version 6.0
 param()
 
 choco outdated --limit-output --ignore-pinned |

@@ -2,7 +2,7 @@ $sw = [System.Diagnostics.Stopwatch]::StartNew()
 $env:EDITOR = 'nvim'
 $global:profile_initialized = $false # Indicates if the interactive profile was initialized
 $MaximumHistoryCount = 10000
-$commandsExist = Get-Command -Name @('rg', 'choco', 'oh-my-posh', 'dotnet', 'zoxide') -ErrorAction Ignore | Select-Object -ExpandProperty Name # Batch to performantly check existence with Get-Command.
+$script:commandsExist = Get-Command -Name @('rg', 'choco', 'oh-my-posh', 'dotnet', 'zoxide', 'aws') -ErrorAction Ignore | Select-Object -ExpandProperty Name # Batch to performantly check existence with Get-Command.
 
 $script:PSDotfilesCfg = Invoke-Command {
     # Resolve symlinks to the script root.
@@ -29,11 +29,13 @@ if ($PSDotfilesCfg.LocalProfilePath -and (Test-Path $PSDotfilesCfg.LocalProfileP
     Where-Object { ($env:PSModulePath -split [System.IO.Path]::PathSeparator) -notcontains $_ } |
     ForEach-Object { $env:PSModulePath += [System.IO.Path]::PathSeparator + $_ }
 
-# Add to the PATH for PowerShell sessions.
-@("$HOME/.local/share/powershell/Scripts") |
-    Where-Object { Test-Path $_ } |
-    Where-Object { ($env:PATH -split [System.IO.Path]::PathSeparator) -notcontains $_ } |
-    ForEach-Object { $env:PATH += [System.IO.Path]::PathSeparator + $_ }
+if (-not $IsWindows) {
+    # Add to the PATH for PowerShell sessions.
+    @("$HOME/.local/share/powershell/Scripts") |
+        Where-Object { Test-Path $_ } |
+        Where-Object { ($env:PATH -split [System.IO.Path]::PathSeparator) -notcontains $_ } |
+        ForEach-Object { $env:PATH += [System.IO.Path]::PathSeparator + $_ }
+}
 
 # Initialize-Interactive performs one-time initialize for an interactive profile. Delays first prompt.
 function Initialize-Interactive {
@@ -73,6 +75,22 @@ function Initialize-Interactive {
             }
         }
     }
+    
+    if ($commandsExist -match 'aws*') {
+        Register-ArgumentCompleter -Native -CommandName aws -ScriptBlock {
+            param($commandName, $wordToComplete, $cursorPosition)
+            $env:COMP_LINE = $wordToComplete
+            if ($env:COMP_LINE.Length -lt $cursorPosition) {
+                $env:COMP_LINE = $env:COMP_LINE + ' '
+            }
+            $env:COMP_POINT = $cursorPosition
+            aws_completer.exe | ForEach-Object {
+                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+            }
+            Remove-Item Env:\COMP_LINE     
+            Remove-Item Env:\COMP_POINT  
+        }
+    }
 
     # Setup PSDrives
     if ([System.IO.Directory]::Exists([System.IO.Path]::Combine("$HOME", 'Source'))) {
@@ -90,7 +108,7 @@ function Initialize-Interactive {
 }
 
 function prompt {
-    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseCompatibleCommands', 'prompt', Justification="prompt is included in pwsh")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseCompatibleCommands', 'prompt', Justification = 'prompt is included in pwsh')]
     param()
 
     if ($global:profile_initialized -ne $true) {
@@ -133,7 +151,7 @@ if ($commandsExist -match 'zoxide*') {
 
 function Get-SourceLocations {
     Get-ChildItem -Directory "$HOME/Source" -Recurse -FollowSymlink -Depth 2 -Force -WarningVariable wa -WarningAction SilentlyContinue | Select-Object -ExpandProperty FullName
-    $wa | Where-Object { $PSItem -notlike 'Skip already-visited directory *'} | Write-Warning
+    $wa | Where-Object { $PSItem -notlike 'Skip already-visited directory *' } | Write-Warning
 }
 function Get-SourceLocation { Get-SourceLocations | Invoke-Fzf }
 function Set-SourceLocation { Get-SourceLocations | Invoke-Fzf | Set-Location }
@@ -147,6 +165,18 @@ Set-Alias -Name esl -Value Edit-SourceLocation
 Set-Alias -Name gsl -Value Get-SourceLocation
 Set-Alias -Name psl -Value Push-SourceLocation
 Set-Alias -Name ssl -Value Set-SourceLocation
+
+function Set-AwsProfile {
+    $p = aws configure list-profiles | Invoke-Fzf -Select1
+    $env:AWS_PROFILE = $p
+}
+
+if ($IsWindows) {
+    New-PSDrive -Name script -PSProvider FileSystem -Root $HOME\Documents\PowerShell\Scripts | Out-Null
+    Write-ResticStatus
+} else {
+    New-PSDrive -Name script -PSProvider FileSystem -Root $HOME/.local/share/powershell/Scripts | Out-Null
+}
 
 $sw.Stop()
 Write-Host "Initilizing profile.ps1: $($sw.ElapsedMilliseconds)ms"

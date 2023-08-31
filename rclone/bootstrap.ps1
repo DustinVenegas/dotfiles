@@ -80,16 +80,16 @@ process {
     if ($IsWindows) {
         $name = 'rclonerc'
 
-        # Setup system profile
-        $exeName = "start-$name.cmd"
+        # Setup password for the System Profile.
         $appdata = "C:\WINDOWS\System32\config\systemprofile\AppData\Local\$name"
-        New-Item -Type Directory $appdata -Force | Out-Null
-
         $passPath = "$appdata\.rclonercp"
         if (-not (Test-Path $passPath)) {
+            New-Item -Type Directory $appdata -Force | Out-Null
             New-Guid | Select-Object -ExpandProperty Guid > $passPath
         }
 
+        # Copy start-rclonerc.cmd to the System Profile.
+        $exeName = "start-$name.cmd"
         $cmdDest = "$appdata\$exeName"
         $cmdSrc = "$PSScriptRoot\$exeName"
         if (Test-Path $cmdDest) {
@@ -105,9 +105,10 @@ process {
 
         # Setup a Windows Service for rclone using the system profile.
         if (-not (Get-Service -Name $name -ErrorAction SilentlyContinue)) {
-            nssm install $name $commandPath
+            nssm install $name $cmdDest
         }
 
+        # Configure that crap.
         nssm set $name DisplayName 'rclone rc daemon'
         nssm set $name Description 'daemon for running rclone remote control (rc)'
         nssm set $name Start 'SERVICE_AUTO_START'
