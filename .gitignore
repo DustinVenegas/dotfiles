@@ -8,3 +8,4 @@ dot_vimrc.local
 home_backup/*
 nvimlog
 vimlog
+dist/*
