@@ -1,10 +1,10 @@
 .config/nvim/local.dotfiles.json
 .config/nvim/local.dotfiles.vim
 .config/powershell/local.profile.ps1
-dot_gitconfig_os
-dot_gitconfig_local
-dot_vim/.vimrc.local
-dot_vimrc.local
+home/.gitconfig_os
+home/.gitconfig_local
+home/.vim/.vimrc.local
+home/.vimrc.local
 home_backup/*
 nvimlog
 vimlog
