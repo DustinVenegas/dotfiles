@@ -5,6 +5,7 @@ home/.gitconfig_os
 home/.gitconfig_local
 home/.vim/.vimrc.local
 home/.vimrc.local
+home/.bashrc_local
 home_backup/*
 nvimlog
 vimlog

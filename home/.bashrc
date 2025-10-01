@@ -132,3 +132,8 @@ alias esl=editSourceLocation
 alias gsl=getSourceLocation
 alias ssl=setSourceLocation
 alias psl=pushSourceLocation
+
+if [ -f "$HOME/.bashrc_local" ]; then
+	# shellcheck source=/dev/null
+	. "$HOME/.bashrc_local"
+fi

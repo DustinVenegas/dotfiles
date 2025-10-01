@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-# include .bashrc if it exists
-if [ -f ~/.bashrc ]; then
+if [ -f "$HOME/.profile" ]; then
 	# shellcheck source=/dev/null
-	. ~/.bashrc
+	. "$HOME/.profile"
 fi
 
 # export PATH once
