@@ -1,126 +1,152 @@
 {
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "console_title_template": "{{.Folder}}{{if .Root}} :: root{{end}} :: {{.Shell}}",
   "blocks": [
     {
+      "type": "prompt",
       "alignment": "left",
       "segments": [
         {
-          "background": "#4F90DB",
-          "foreground": "#FAFAFA",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": " λ ",
-          "type": "text"
+          "foreground": "#FAFAFA",
+          "background": "#4F90DB",
+          "type": "text",
+          "style": "plain"
         },
         {
-          "background": "#DB9165",
-          "foreground": "#060606",
           "properties": {
+            "cache_duration": "none",
             "enabled": "true"
           },
-          "style": "plain",
           "template": " # ",
-          "type": "root"
+          "foreground": "#060606",
+          "background": "#DB9165",
+          "type": "root",
+          "style": "plain"
         },
         {
-          "background": "#213C5C",
-          "foreground": "#FAFAFA",
-          "style": "plain",
-          "template": " {{ .UserName }}@{{ .HostName }} ",
-          "type": "text"
-        },
-        {
-          "background": "#4F90DB",
-          "foreground": "#FAFAFA",
           "properties": {
+            "cache_duration": "none"
+          },
+          "template": " {{ .UserName }}@{{ .HostName }} ",
+          "foreground": "#FAFAFA",
+          "background": "#213C5C",
+          "type": "text",
+          "style": "plain"
+        },
+        {
+          "properties": {
+            "cache_duration": "none",
             "style": "folder"
           },
-          "style": "plain",
           "template": " {{ .Path }} ",
-          "type": "path"
+          "foreground": "#FAFAFA",
+          "background": "#4F90DB",
+          "type": "path",
+          "style": "plain"
         },
         {
-          "background": "#596675",
-          "foreground": "#FAFAFA",
           "properties": {
+            "cache_duration": "none",
             "fetch_stash_count": true,
             "fetch_status": true
           },
-          "style": "plain",
           "template": "{{ .BranchStatus }}{{ if .Working.Changed }} W {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} S {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} ST {{ .StashCount }}{{ end }} ",
-          "type": "git"
+          "foreground": "#FAFAFA",
+          "background": "#596675",
+          "type": "git",
+          "style": "plain"
         },
         {
-          "background": "#DBC239",
-          "foreground": "#060606",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": " {{ .FormattedMs }} ",
-          "type": "executiontime"
+          "foreground": "#060606",
+          "background": "#DBC239",
+          "type": "executiontime",
+          "style": "plain"
         },
         {
-          "background": "#DB65BA",
-          "foreground": "#060606",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": " RET {{ .Code }} ",
-          "type": "exit"
+          "foreground": "#060606",
+          "background": "#DB65BA",
+          "type": "exit",
+          "style": "plain"
         }
-      ],
-      "type": "prompt"
+      ]
     },
     {
+      "type": "prompt",
       "alignment": "right",
       "segments": [
         {
-          "background": "#232F38",
-          "foreground": "#FFA400",
-          "style": "plain",
-          "template": "AWS:{{.Profile}}{{if .Region}}@{{.Region}}{{end}}",
-          "type": "aws"
-        },
-        {
-          "background": "#0078D4",
-          "foreground": "#FFFFFF",
-          "style": "plain",
-          "template": "AZ:{{ .EnvironmentName }}",
-          "type": "az"
-        },
-        {
-          "foreground": "#6997C9",
           "properties": {
+            "cache_duration": "none"
+          },
+          "template": "AWS:{{.Profile}}{{if .Region}}@{{.Region}}{{end}}",
+          "foreground": "#FFA400",
+          "background": "#232F38",
+          "type": "aws",
+          "style": "plain"
+        },
+        {
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": "AZ:{{ .EnvironmentName }}",
+          "foreground": "#FFFFFF",
+          "background": "#0078D4",
+          "type": "az",
+          "style": "plain"
+        },
+        {
+          "properties": {
+            "cache_duration": "none",
             "time_format": "15:04:05"
           },
-          "style": "plain",
           "template": " {{ .CurrentDate | date .Format }} ",
-          "type": "time"
+          "foreground": "#6997C9",
+          "type": "time",
+          "style": "plain"
         }
-      ],
-      "type": "prompt"
+      ]
     },
     {
+      "type": "prompt",
       "alignment": "left",
-      "newline": true,
       "segments": [
         {
-          "foreground": "#0077c2",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": " ",
-          "type": "text"
+          "foreground": "#0077c2",
+          "type": "text",
+          "style": "plain"
         },
         {
-          "foreground": "#FAFAFA",
           "properties": {
+            "cache_duration": "none",
             "mapped_shell_names": {
               "pwsh": "ps"
             }
           },
-          "style": "plain",
           "template": "{{ .Name }}>",
-          "type": "shell"
+          "foreground": "#FAFAFA",
+          "type": "shell",
+          "style": "plain"
         }
       ],
-      "type": "prompt"
+      "newline": true
     }
   ],
-  "console_title_template": "{{.Folder}}{{if .Root}} :: root{{end}} :: {{.Shell}}",
-  "final_space": true,
-  "version": 2
+  "version": 3,
+  "final_space": true
 }
