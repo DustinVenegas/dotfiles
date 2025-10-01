@@ -6,8 +6,9 @@ function! s:IncludeDotfilesVim()
     if !empty(globpath(&rtp, 'local.dotfiles.vim'))
         " Source all instances of local.settings.vim in the &rtp
         " TODO: Keep or ditch? I like the idea of json if
-        runtime! 'local.dotfiles.vim'
+        runtime! local.dotfiles.vim
     endif
+
 endfunction
 
 function! s:IncludeDotfilesJson()

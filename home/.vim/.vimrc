@@ -198,6 +198,17 @@
         " Enable syntax highlighting for JSDoc
         let g:javascript_plugin_jsdoc = 1
     " }
+
+    " airline {
+        " Suppress errors in vimlog with autocmds that do nothing for Airline.
+        " autocmd User AirlineToggledOn 
+        " autocmd User AirlineAfterInit 
+        " autocmd User AirlineAfterTheme 
+
+        if mode() ==# 'c'
+            let g:airline#extensions#tabline#enabled = 0
+        endif
+    " }
 " }
 
 " Language Specific Settings {

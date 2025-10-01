@@ -16,5 +16,7 @@ if has('win32') || has('win64')
 
     source $HOME\\.vim\\.vimrc
 else
-    source $HOME/.vim/.vimrc
+    if filereadable(expand("$HOME/.vim/.vimrc"))
+        source $HOME/.vim/.vimrc
+    endif
 endif
