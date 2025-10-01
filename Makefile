@@ -1,73 +1,62 @@
-XDG_CONFIG_HOME ?= $(HOME)/.config
-XDG_DATA_HOME ?= $(HOME)/.local/share
-DIST_DIR ?= $(or $(dist),dist)
-BUILD_DIR ?= $(or $(build),build)
-CONTAINER ?= mcr.microsoft.com/devcontainers/base:alpine-3.17
-HOME ?= $(error HOME variable is not set. Please set the HOME variable.)
+makefile:=$(lastword $(MAKEFILE_LIST))
+HELP_DEPS=help-root
 
-SRCS=xdg local home
-DESTS=$(XDG_CONFIG_HOME) $(XDG_DATA_HOME) $(HOME)
-INTERNAL_LINKS := xdg/git/.gitconfig_os
+include projects/build/*.mk projects/build/apps/*.mk projects/build/tests/*.mk
 
-# Quick validate SRCS and DESTS since index are correlated.
-$(foreach src,$(SRCS),$(if $(wildcard $(src)/*),,$(error SRC '$(src)' must exist with files)))
-$(foreach dest,$(DESTS),$(if $(wildcard $(dest)),,$(error DEST '$(dest)' does not exist)))
-$(if $(filter-out $(words $(SRCS)),$(words $(DESTS))),$(error SRCS and DESTS must have the same number of words))
+# Set dependencies for global app targets to run dotfiles targets first.
+$(filter-out dotfiles/health,$(HEALTH_DEPS)): dotfiles/health
+$(filter-out dotfiles/configure,$(CONFIGURE_DEPS)): dotfiles/configure
+dotfiles/clean: $(filter-out dotfiles/clean,$(CLEAN_DEPS))
 
-all_items = $(filter-out %. %..,$(wildcard $(addsuffix /.*,$1)) $(wildcard $(addsuffix /*,$1)))
-SEQ = $(shell seq 1 $(words $1))
-ALL_INSTALL_FILES = $(foreach i,$(call SEQ,$(SRCS)),$(addprefix $(word $(i),$(DESTS))/,$(notdir $(call all_items,$(word $(i),$(SRCS))))))
+health: $(HEALTH_DEPS)
+	$(info Health Checked)
 
-DIST_SDIRS = $(addprefix dist/,$(addsuffix /.,$(SRCS)))
-DIST_FILES = $(addprefix $(DIST_DIR)/,$(foreach src,$(SRCS),$(call all_items,$(src))))
+configure: $(CONFIGURE_DEPS)
+	$(info Configured)
 
-GITCONFIGOS = xdg/git/.gitconfig_os_$(if $(filter Darwin,$(shell uname -s)),darwin,unix)
-DIST_GITHASH = $(DIST_DIR)/githash
+clean: $(CLEAN_DEPS)
+	$(info Cleaned)
 
-.PHONY: clean clean/internal dist distclean internal term
+test: $(TEST_DEPS)
+	$(info Tests Ran)
 
-clean:
-	@rm -rf $(BUILD_DIR) 
+container: container/term
 
-clean/internal:
-	@rm -f $(INTERNAL_LINKS)
+container/term: docker/term
 
-dist: dist/update_time
-	$(info Completed dist)
-	@true
+container/test: docker/test
 
-distclean:
-	@rm -rf $(DIST_DIR)
+packages: packages/configure
 
-internal: build/internal
-	@true
+debug: $(BUILD_DIR)/Makefile.print
+	$(info Makefile output to $<)
 
-term:
-	$(info Starting terminal in $(CONTAINER) with /dotfiles mounted to $(PWD))
-	docker run -it --rm -v $(PWD):/dotfiles -w /dotfiles $(CONTAINER) /bin/sh
+$(BUILD_DIR)/Makefile.print.raw: MAKE_P=-pRrqd -f $(makefile)
+$(BUILD_DIR)/Makefile.print.raw: $(makefile)
+	@$(MAKE) $(MAKE_P) > $@
 
-# Differentiate dir creation from other targets by appending a `/.`.
-$(DIST_DIR)/. $(BUILD_DIR)/. $(DIST_SDIRS):
-	@mkdir -p $@
+$(BUILD_DIR)/Makefile.print: $(BUILD_DIR)/Makefile.print.raw
+	@cat $< | grep -v '^#' > $@
 
-$(DIST_FILES): | $(DIST_SDIRS)
-$(DIST_GITHASH): | $(DIST_SDIRS)
+help-root:
+	$(info Make for dotfiles.sh)
+	$(info Root Targets:)
+	$(info - health:         All Health Targets)
+	$(info - configure:      All Configure Targets)
+	$(info - clean:          All Clean Targets)
+	$(info - test:           All Test Targets)
+	$(info - packages:       Install System Packages)
+	$(info )
+	$(info Sub-Targets:)
+	$(info - Clean Targets:     $(CLEAN_DEPS))
+	$(info - Configure Targets: $(CONFIGURE_DEPS))
+	$(info - Health Targets:    $(HEALTH_DEPS))
+	$(info - Help Targets:      $(HELP_DEPS))
+	@false
 
-dist/update_time: $(DIST_FILES) | $(DIST_DIR)/. $(DIST_GITHASH)
-	$(info $@ DIST_FILES=$?)
-	@date -u > $@
+help:
+	@$(MAKE) -k -i $(HELP_DEPS)
 
-build/internal: $(INTERNAL_LINKS) | $(BUILD_DIR)/.
-	$(info Created Internal Links: $?)
-	@touch $@
+.PHONY: term help
 
-$(DIST_DIR)/%:
-	@$(info Dist $@ from $*)
-	@ln -s -f $(CURDIR)/$* $@
-
-dist/githash:
-	@echo $(shell git rev-parse HEAD) > $@
-
-xdg/git/.gitconfig_os: $(GITCONFIGOS)
-	$(info Linking $(CURDIR)/$< to $@)
-	@ln -s -f $(CURDIR)/$< $@
+.DEFAULT_GOAL := help

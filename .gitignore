@@ -9,3 +9,6 @@ home_backup/*
 nvimlog
 vimlog
 dist/*
+test-data/*
+test/*
+build/*
