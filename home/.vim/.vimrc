@@ -8,7 +8,7 @@
 " }
 
 " Plugged {
-    call plug#begin('~/.vim/plugged')
+    call plug#begin()
 
     " File explorer
     Plug 'scrooloose/nerdtree'
