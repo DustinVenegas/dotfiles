@@ -1,3 +1,8 @@
+[user]
+	name = Dustin Venegas
+	email = DustinVenegas@users.noreply.github.com
+[init]
+	defaultBranch = main
 [core]
 	excludesfile = ~/.gitignore
 	attributesfile = ~/.gitattributes # dotfiles hardlinked
@@ -128,6 +133,7 @@
 	log- = log --abbrev-commit --decorate
 	log-graph = "!git log- --graph --topo-order"
 	log-graph-oneline = "!git log-graph --pretty=oneline"
+	log-graph-summary = "!git log-graph --decorate --all --simplify-by-decoration"
 
 	# List commits showing changed files
 	log-numstat = "!git log- --numstat"
