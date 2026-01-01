@@ -1,7 +1,9 @@
 # filetype:brewfile
 tap "jandedobbeleer/oh-my-posh"
 brew "oh-my-posh"
-
+brew "zsh-syntax-highlighting"
+brew "zsh-you-should-use"
+brew "opentofu"
 brew "tree" # tree is useful for displaying file listings as a tree.
 
 brew "git"

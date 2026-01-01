@@ -1,46 +1,29 @@
 #!/bin/env zsh
 
-bindkey -e # emacs mode in zsh
-
-setopt no_beep
 setopt histignorealldups
 setopt sharehistory
 
-SAVEHIST=65535
-HISTFILE=~/.zsh_history
+bindkey -e # emacs mode in zsh
 
 # homebrew for linux envvars
 if [ -d /home/linuxbrew/ ]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-# Adds ~/.local/bin to PATH
-if [ -d "$HOME/.local/bin" ] && [[ ! "$PATH" == *$HOME/.local/bin* ]]; then export PATH="$PATH:$HOME/.local/bin"; fi
-
-# default editor
-if type vim >/dev/null 2>&1; then EDITOR=vim; fi
-if type nvim >/dev/null 2>&1; then EDITOR=nvim; fi
-export EDITOR
-
-# ripgrep, Makes $HOME/.ripgreprc the default configuration.
-if [ -f "$HOME/.ripgreprc" ]; then
-  # RIPGREP_CONFIG_PATH is required for ripgrep to respect the config.
-  export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
-fi
-
 # homebrew autocomplete
 if type brew >/dev/null 2>&1; then
   # homebrew zsh environment
-  if [ -d "$(brew --prefix)/share/zsh/site-functions" ]; then
-    # FPATH must be declared before calling compinit for zsh.
-    FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+  if [ -d "${HOMEBREW_PREFIX}/share/zsh/site-functions" ]; then
+    if [[ ! "$fpath" == *${HOMEBREW_PREFIX}/share/zsh/site-functions* ]]; then
+      fpath=("${HOMEBREW_PREFIX}/share/zsh/site-functions" $fpath)
+    fi
+    export fpath
   fi
 fi
 
-if type zoxide >/dev/null 2>&1; then eval "$(zoxide init bash)"; fi
+# if type zoxide >/dev/null 2>&1; then eval "$(zoxide init zsh)"; fi
 
 fzfShellDir="/usr/share/doc/fzf/examples" # Default on Ubuntu 20.04
-
 if type brew >/dev/null 2>&1; then
 
   fzfShellDir="$(brew --prefix)/opt/fzf/shell"
@@ -51,7 +34,6 @@ if type brew >/dev/null 2>&1; then
     export PATH
   fi
 fi
-
 if [ -d "$fzfShellDir" ]; then
   if [[ $- == *i* ]]; then
     # shellcheck source=/dev/null
@@ -63,16 +45,22 @@ if [ -d "$fzfShellDir" ]; then
 fi
 unset fzfShellDir
 
-# .zshrc.local, to override any settings from this .zshrc file.
+# Local settings to override this file.
 if [ -f "$HOME/.zshrc.local" ]; then
-  # shellcheck source=/dev/null
   source "$HOME/.zshrc.local"
 fi
 
 if [[ -o interactive ]]; then
+
   # Use modern completion system
   autoload -Uz compinit
   compinit
+
+  autoload -Uz edit-command-line
+  zle -N edit-command-line
+  bindkey "^X^E" edit-command-line
+
+  source /opt/homebrew/share/zsh-you-should-use/you-should-use.plugin.zsh
 
   if type oh-my-posh >/dev/null 2>&1; then
     promptVariation='.minimal'
@@ -114,3 +102,21 @@ alias esl=editSourceLocation
 alias gsl=getSourceLocation
 alias ssl=setSourceLocation
 alias psl=pushSourceLocation
+
+# Added by LM Studio CLI (lms)
+if type lms >/dev/null 2>&1; then
+  export PATH="$PATH:/Users/dustin/.cache/lm-studio/bin"
+fi
+# End of LM Studio CLI section
+
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/dustin/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
+
+if [[ -o interactive ]]; then
+  # zsh-syntax-highlighting
+  # Must be the last line in the file.
+  source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
