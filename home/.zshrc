@@ -31,10 +31,9 @@ if [ -f "$HOME/.zshrc.local" ]; then
 fi
 
 if [[ -o interactive ]]; then
-  # Customize zsh completions prior to 'compinit'.
-  if [ -f "${XDG_CONFIG_HOME}/zsh-vme/completions.sh" ]; then
-    source "${XDG_CONFIG_HOME}/zsh-vme/completions.sh"
-  fi
+
+  # Includes dotfiles zsh completions in the zsh file search path.
+  fpath=("${XDG_CONFIG_HOME}/zsh-vme/completions" $fpath)
 
   # Use modern completion system 'compinit'.
   autoload -Uz compinit

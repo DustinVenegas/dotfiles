@@ -20,15 +20,42 @@ if [[ ! "${RIPGREP_CONFIG_PATH}" ]] \
     export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 fi
 
-# default editor
-if type nvim >/dev/null 2>&1; then
-    export EDITOR=nvim;
-elif type vim >/dev/null 2>&1; then
+if [[ -o rcs ]]; then
+    # default editor when RCs are read
+    if type nvim >/dev/null 2>&1; then
+        export EDITOR=nvim;
+    elif type vim >/dev/null 2>&1; then
+        export EDITOR=vim;
+    elif type code >/dev/null 2>&1; then
+        export EDITOR=code;
+    fi
+else
     export EDITOR=vim;
-elif type code >/dev/null 2>&1; then
-    export EDITOR=code;
 fi
 
 if [[ -f "$HOME/.zshenv.local" ]]; then
     source "$HOME/.zshenv.local"
+fi
+
+# Set HOMEBREW_PREFIX based on OS if not already set.
+case "$(uname -s)" in
+    Darwin)
+        # Set HOMEBREW_PREFIX if not already set
+        HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-/opt/homebrew}"
+        ;;
+    Linux)
+        # Set HOMEBREW_PREFIX if not already set
+        HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-/home/linuxbrew/.linuxbrew}"
+        ;;
+    *)
+        echo "Error Locating HOMEBREW_PREFIX: Unknown OS type: $(uname -s)" 1>&2
+        ;;
+esac
+
+if type "${HOMEBREW_PREFIX}/bin/brew" >/dev/null 2>&1; then
+    export HOMEBREW_PREFIX
+fi
+
+if [[ -o rcs ]] && [[ -d "${HOMEBREW_PREFIX}/share/google-cloud-sdk" ]]; then
+    source "${HOMEBREW_PREFIX}/share/google-cloud-sdk/path.zsh.inc"
 fi
