@@ -1,4 +1,0 @@
-if [ -f "$(npm config get prefix)/etc/bash_completion.d/npm" ]; then
-  # shellcheck source=/dev/null
-  source "$(npm config get prefix)/etc/bash_completion.d/npm"
-fi

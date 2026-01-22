@@ -17,3 +17,5 @@ if type fzf >/dev/null 2>&1; then
   alias ssl=setSourceLocation
   alias psl=pushSourceLocation
 fi
+
+alias zshfresh-vme="zsh -f"

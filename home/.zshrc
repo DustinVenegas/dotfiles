@@ -1,10 +1,18 @@
 #!/bin/env zsh
 
-setopt histignorealldups
+setopt histignoredups # ignore preceding duplicates
+#setopt histignorealldups
 setopt sharehistory
 setopt autopushd
 # ignore duplicate pushd
-setopt pushdignoredups
+setopt pushdignoredups # Do not store duplicates in the stack.
+setopt pushdsilent # Do not print the directory stack after pushd or popd.
+setopt histverify # Confirm history expansion before executing
+
+setopt autocd
+setopt ignoreeof # do not exit the shell on Ctrl-D
+setopt autolist
+setopt recexact # select exact matches in tab completion
 
 bindkey -e # emacs mode in zsh
 
@@ -31,9 +39,13 @@ if [ -f "$HOME/.zshrc.local" ]; then
 fi
 
 if [[ -o interactive ]]; then
-
+  # Autoloads that compinit will discover (completion functions)
   # Includes dotfiles zsh completions in the zsh file search path.
   fpath=("${XDG_CONFIG_HOME}/zsh-vme/completions" $fpath)
+
+  if [[ ! "$fpath" == *"$HOME/.docker/completions"* ]] && [ -d "$HOME/.docker/completions" ]; then
+    fpath=("$HOME/.docker/completions" $fpath)
+  fi
 
   # Use modern completion system 'compinit'.
   autoload -Uz compinit

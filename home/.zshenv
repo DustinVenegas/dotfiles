@@ -42,6 +42,9 @@ case "$(uname -s)" in
     Darwin)
         # Set HOMEBREW_PREFIX if not already set
         HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-/opt/homebrew}"
+
+        # Enable colors in ls for files on macOS
+        export CLICOLOR=1
         ;;
     Linux)
         # Set HOMEBREW_PREFIX if not already set
