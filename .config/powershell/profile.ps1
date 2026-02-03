@@ -19,7 +19,7 @@ $script:PSDotfilesCfg = Invoke-Command {
 }
 
 # Optional local.profile.ps1 for profile machine-specific profile functions.
-if ($PSDotfilesCfg.LocalProfilePath -and (Test-Path $PSDotfilesCfg.LocalProfilePath)) {
+if ($PSDotfilesCfg.LocalProfilePath -and (Get-Item $PSDotfilesCfg.LocalProfilePath -Force -ErrorAction SilentlyContinue)) {
     . $PSDotfilesCfg.LocalProfilePath
 }
 

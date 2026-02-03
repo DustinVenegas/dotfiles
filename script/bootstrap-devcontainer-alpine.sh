@@ -1,4 +1,5 @@
 #!/bin/sh
+# expected to be run with sudo
 
 scriptroot=$(cd -- "$(dirname -- "$0")" && pwd)
 
@@ -10,13 +11,13 @@ bk '.gitconfig'
 bk '.zshrc'
 
 # dotfiles packages
-sudo apk add neovim ripgrep fzf
+apk add neovim ripgrep fzf
 
 installPwsh () {
 	####################
 	## PowerShell Core
 	# install the requirements
-	sudo apk add --no-cache \
+	apk add --no-cache \
 		ca-certificates \
 		less \
 		ncurses-terminfo-base \
@@ -31,29 +32,21 @@ installPwsh () {
 		icu-libs \
 		curl
 
-	sudo apk -X https://dl-cdn.alpinelinux.org/alpine/edge/main add --no-cache \
-		lttng-ust
+	# apk -X https://dl-cdn.alpinelinux.org/alpine/edge/main add --no-cache \
+	# 	lttng-ust
 
 	# Download the powershell '.tar.gz' archive
-	curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.3.0/powershell-7.3.0-linux-alpine-x64.tar.gz -o /tmp/powershell.tar.gz
-
-	# Create the target folder where powershell will be placed
-	sudo mkdir -p /opt/microsoft/powershell/7
-
-	# Expand powershell to the target folder
-	sudo tar zxf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/7
-
-	# Set execute permissions
-	sudo chmod +x /opt/microsoft/powershell/7/pwsh
-
-	# Create the symbolic link that points to pwsh
-	sudo ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh
+	curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.3.0/powershell-7.3.0-linux-alpine-x64.tar.gz -o /tmp/powershell.tar.gz && \
+	mkdir -p /opt/microsoft/powershell/7 && \
+	tar zxf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/7 && \
+	chmod +x /opt/microsoft/powershell/7/pwsh && \
+	ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh
 }
 
 if ! command -v pwsh 1>/dev/null; then installPwsh; fi
 if ! command -v oh-my-posh 1>/dev/null; then
-	sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
-	sudo chmod +x /usr/local/bin/oh-my-posh
+	wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
+	chmod +x /usr/local/bin/oh-my-posh
 fi
 
 # Farm symlinks with the generic bootstrapper.
