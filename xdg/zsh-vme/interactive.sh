@@ -50,8 +50,18 @@ autoload run-help \
   run−help−sudo
 
 if (( $+commands[npm] )); then
-  autoload -Uz _npm
-  _npm
+  # Obtained from the "type compdef" output of:
+  # > npm completion
+  _npm_completion() {
+    local si=$IFS
+    compadd -- $(COMP_CWORD=$((CURRENT-1)) \
+                  COMP_LINE=$BUFFER \
+                  COMP_POINT=0 \
+                  npm completion -- "${words[@]}" \
+                  2>/dev/null)
+    IFS=$si
+  }
+  compdef _npm_completion npm
 fi
 
 if (( $+commands[zoxide] )); then
