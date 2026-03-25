@@ -6,7 +6,9 @@ HISTFILE=~/.zsh_history
 
 # Set XDG_CONFIG_HOME if not already set
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_CONFIG_HOME
+export XDG_CACHE_HOME
 
 # Add ~/.local/bin to PATH
 if [[ -d "$HOME/.local/bin" ]] \
@@ -32,6 +34,12 @@ if [[ -o rcs ]]; then
 else
     export EDITOR=vim;
 fi
+
+# Added by LM Studio CLI (lms)
+if [ -f "${XDG_CACHE_HOME}/lm-studio/bin/lms" ]; then
+    export PATH="$PATH:${XDG_CACHE_HOME}/lm-studio/bin"
+fi
+# End of LM Studio CLI section
 
 if [[ -f "$HOME/.zshenv.local" ]]; then
     source "$HOME/.zshenv.local"
