@@ -6,11 +6,9 @@ setopt histignoredups # ignore preceding duplicates
 #setopt histignorealldups
 setopt sharehistory
 setopt autopushd
-# ignore duplicate pushd
 setopt pushdignoredups # Do not store duplicates in the stack.
 setopt pushdsilent # Do not print the directory stack after pushd or popd.
 setopt histverify # Confirm history expansion before executing
-
 setopt autocd
 setopt ignoreeof # do not exit the shell on Ctrl-D
 setopt autolist
