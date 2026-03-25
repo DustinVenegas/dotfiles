@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Test: Zsh Configuration",
+      "type": "shell",
+      "command": "zsh",
+      "args": [
+        "script/test-zshrc.zsh",
+        "-n"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": false
+      },
+      "problemMatcher": [
+        {
+          "owner": "zsh-config",
+          "fileLocation": "absolute",
+          "pattern": {
+            "regexp": "^Testing: (.+) \\..\\..\\. ✗ FAIL$",
+            "message": 1
+          },
+          "severity": "error"
+        },
+        "$gcc"
+      ]
+    }
+  ]
+}
