@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    "remark-gfm",
+    "remark-preset-lint-recommended",
+    "remark-frontmatter",
+    "remark-wiki-link"
+  ],
+  "settings": {
+    "bullet": "-",
+    "fence": "`"
+  }
+}

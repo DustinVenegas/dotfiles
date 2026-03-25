@@ -1,0 +1,32 @@
+{
+  "name": "dotfiles",
+  "version": "1.0.0",
+  "description": "[dotfiles](https://dotfiles.github.io/) configurations for a portable computing environment based on POSIX and PowerShell by [Dustin Venegas](https://dustinvenegas.com).",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dustinvenegas/dotfiles.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/dustinvenegas/dotfiles/issues"
+  },
+  "homepage": "https://github.com/dustinvenegas/dotfiles#readme",
+  "devDependencies": {
+    "remark-cli": "^12.0.1",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-preset-lint-recommended": "^7.0.1",
+    "remark-wiki-link": "^2.0.1"
+  }
+}

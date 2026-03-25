@@ -59,4 +59,9 @@ help:
 
 .PHONY: term help
 
+remark:
+	npx remark . --quiet --frail
+
+.PHONY: remark
+
 .DEFAULT_GOAL := help

@@ -13,3 +13,4 @@ dist/*
 test-data/*
 test/*
 build/*
+node_modules/*
