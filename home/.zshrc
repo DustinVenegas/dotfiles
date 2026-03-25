@@ -1,5 +1,7 @@
 #!/bin/env zsh
 
+# zmodload zsh/zprof
+
 setopt histignoredups # ignore preceding duplicates
 #setopt histignorealldups
 setopt sharehistory
@@ -84,3 +86,5 @@ if [[ -o interactive ]]; then
     source "${XDG_CONFIG_HOME}/zsh-vme/aliases.sh"
   fi
 fi
+
+# zprof;
