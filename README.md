@@ -7,19 +7,57 @@
 Targets Linux, macOS, and Windows with native bootstrap scripts. Environments are configured through the magic of symlinks.
 
 ![build](https://github.com/DustinVenegas/dotfiles/actions/workflows/main.yml/badge.svg)
+![dotfiles-ci](https://github.com/DustinVenegas/dotfiles/actions/workflows/dotfiles-ci.yml/badge.svg)
 
 ## Installation
 
-Bootstrap scripts are located under `./scripts/`. Using native POSIX/PowerShell scripts avoids taking bootstrapping dependencies.
+### chezmoi (recommended)
 
-Run a bootstrap script in 'whatif' mode:
+[chezmoi](https://www.chezmoi.io/) is the primary tool for applying these dotfiles. It handles per-file
+mappings to XDG destinations, templating, and host-specific overrides.
+
+**1. Install chezmoi**
+
+```sh
+# macOS (Homebrew)
+brew install chezmoi
+
+# Linux / macOS (official installer)
+sh -c "$(curl -fsLS get.chezmoi.io)"
+```
+
+**2. Apply dotfiles**
+
+```sh
+# Initialise chezmoi from this repository and apply in one step
+chezmoi init --apply DustinVenegas/dotfiles
+
+# Preview what would change without writing any files
+chezmoi init --apply --dry-run DustinVenegas/dotfiles
+```
+
+**3. Verify (optional — requires [mise](https://mise.jdx.dev/))**
+
+The post-apply hook `run_once_after_verify.sh` runs automatically after
+`chezmoi apply` when mise is on the `PATH`. To run it manually:
+
+```sh
+mise doctor
+```
+
+### Legacy bootstrap scripts
+
+The original POSIX/PowerShell bootstrap scripts are kept for backward
+compatibility. They create symlinks from this repository to `$HOME`.
+
+Run a bootstrap script in *whatif* mode first to preview changes:
 
 - POSIX-Based OS: `./script/bootstrap.sh --whatif --verbose`
 - Windows OS:  `./script/bootstrap.ps1 -verbose -whatif`
 
 ## Health
 
-Perform a basic environment health check with [`./script/check-dotfles-health.sh`](./script/check-dotfiles-health.sh).
+Perform a basic environment health check with [`./script/check-dotfiles-health.sh`](./script/check-dotfiles-health.sh).
 
 ## Why PowerShell Core?
 
@@ -92,6 +130,8 @@ Notable components included in this dotfiles repository.
 
 ## Related Projects
 
+* [chezmoi](https://www.chezmoi.io/), the dotfile manager used to apply these configurations.
+* [mise](https://mise.jdx.dev/), the dev-tools version manager used for post-apply verification.
 * [dotfiles](https://dotfiles.github.io/), your unofficial guide to dotfiles on GitHub.
 * [smkent/dotfiles](https://github.com/smkent/dotfiles), dotfiles repository of
   Stephen Kent.

@@ -92,11 +92,10 @@ handleLink () {
 }
 
 # Environmental prerequisites
-[ ! -d "$HOME/.config" ] && mkdir -p "$HOME/.config"; # non-standard xdc path?
 [ ! -d "$HOME/.local/share" ] && mkdir -p "$HOME/.local/share"; # non-standard xdc path?
 
 copyTemplate "$dotfiles/git/.gitconfig_local.template" "$dotfiles/dot_gitconfig_local"
-copyTemplate "$dotfiles/.config/nvim/local.dotfiles.vim.template" "$dotfiles/.config/nvim/local.dotfiles.vim"
+copyTemplate "$dotfiles/dot_config/nvim/local.dotfiles.vim.template" "$dotfiles/dot_config/nvim/local.dotfiles.vim"
 copyTemplate "$dotfiles/dot_vim/.vimrc.local.template" "$dotfiles/dot_vimrc.local"
 
 # Local links
@@ -105,8 +104,13 @@ l="$dotfiles/dot_gitconfig_os"
 handleLink "$l" "$f"
 
 # Item list to be symlinked.
-for f in "$dotfiles/." "$dotfiles"/dot_* "$dotfiles"/.config/* "$dotfiles/PSScripts"
+# dot_config/* is enumerated individually to create per-directory symlinks under
+# $HOME/.config/ rather than a single folder-level symlink for the whole directory.
+for f in "$dotfiles/." "$dotfiles"/dot_* "$dotfiles/PSScripts"
 do
+	# Skip dot_config directory itself; its contents are handled below.
+	if [ "$f" = "$dotfiles/dot_config" ]; then continue; fi
+
 	# Get item information.
 	r=$(realpath -s -q --relative-to="$dotfiles" "$f") # don't expand symlinks, quiet
 	r=$(echo "$r" | sed "s/dot_/./") # transform dot_ to .
@@ -119,6 +123,15 @@ do
 		l="$HOME/.local/share/powershell/Scripts"
 	fi
 
+	handleLink "$l" "$f"
+done
+
+# Symlink each XDG config sub-directory individually (per-directory, not folder-level).
+[ ! -d "$HOME/.config" ] && mkdir -p "$HOME/.config"
+for f in "$dotfiles"/dot_config/*
+do
+	r=$(realpath -s -q --relative-to="$dotfiles/dot_config" "$f") # relative name within dot_config
+	l="$HOME/.config/$r"
 	handleLink "$l" "$f"
 done
 
