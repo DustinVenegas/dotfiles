@@ -17,6 +17,8 @@ jobs:
   chezmoi-dry-run:
     name: chezmoi dry-run (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -55,6 +57,8 @@ jobs:
   chezmoi-dry-run-containers:
     name: chezmoi dry-run (${{ matrix.container }})
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
