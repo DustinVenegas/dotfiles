@@ -1,0 +1,97 @@
+# dotfiles-ci.yml — smoke tests for chezmoi-managed dotfiles.
+#
+# Runs `chezmoi apply --dry-run` across a matrix of operating systems and
+# containers to verify that all managed files can be applied without errors.
+# A separate mise verification step runs when mise is available in the runner.
+
+name: dotfiles-ci
+
+on:
+  push:
+    branches: ["main", "Mac-shell-mise"]
+  pull_request:
+    branches: ["main", "Mac-shell-mise"]
+
+jobs:
+  # ── Native runners (ubuntu-latest, macos-latest) ─────────────────────────
+  chezmoi-dry-run:
+    name: chezmoi dry-run (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+
+      - name: Add chezmoi to PATH
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: chezmoi apply --dry-run
+        env:
+          GIT_AUTHOR_NAME: "CI User"
+          GIT_AUTHOR_EMAIL: "ci@example.com"
+        run: |
+          chezmoi apply \
+            --source "${{ github.workspace }}" \
+            --dry-run \
+            --no-tty \
+            --verbose
+
+      - name: mise verification (if available)
+        run: |
+          if command -v mise >/dev/null 2>&1; then
+            echo "Running mise doctor..."
+            mise doctor || echo "WARN: mise doctor reported issues"
+          else
+            echo "mise not found — skipping verification"
+          fi
+
+  # ── Container runners (debian:latest, alpine:latest) ─────────────────────
+  chezmoi-dry-run-containers:
+    name: chezmoi dry-run (${{ matrix.container }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        container: [debian:latest, alpine:latest]
+    container:
+      image: ${{ matrix.container }}
+
+    steps:
+      - name: Install dependencies (Debian/Ubuntu)
+        if: startsWith(matrix.container, 'debian')
+        run: apt-get update && apt-get install -y --no-install-recommends curl git ca-certificates
+
+      - name: Install dependencies (Alpine)
+        if: startsWith(matrix.container, 'alpine')
+        run: apk add --no-cache curl git ca-certificates
+
+      - uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+
+      - name: chezmoi apply --dry-run
+        env:
+          GIT_AUTHOR_NAME: "CI User"
+          GIT_AUTHOR_EMAIL: "ci@example.com"
+        run: |
+          chezmoi apply \
+            --source "${{ github.workspace }}" \
+            --dry-run \
+            --no-tty \
+            --verbose
+
+      - name: mise verification (if available)
+        run: |
+          if command -v mise >/dev/null 2>&1; then
+            echo "Running mise doctor..."
+            mise doctor || echo "WARN: mise doctor reported issues"
+          else
+            echo "mise not found — skipping verification"
+          fi
